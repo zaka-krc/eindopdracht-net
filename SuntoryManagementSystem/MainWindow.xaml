@@ -5,8 +5,112 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SuntoryManagementSystem"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Suntory Management System" Height="700" Width="1200">
+    <Grid Margin="10">
+        <TabControl x:Name="tcMain">
+            
+            <!-- Tab: Leveranciers -->
+            <TabItem Header="Leveranciers">
+                <DataGrid x:Name="dgSuppliers" 
+                          AutoGenerateColumns="False" 
+                          IsReadOnly="True"
+                          CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding SupplierId}" Width="50"/>
+                        <DataGridTextColumn Header="Leverancier" Binding="{Binding SupplierName}" Width="*"/>
+                        <DataGridTextColumn Header="Contactpersoon" Binding="{Binding ContactPerson}" Width="150"/>
+                        <DataGridTextColumn Header="Telefoon" Binding="{Binding PhoneNumber}" Width="120"/>
+                        <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="180"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
 
+            <!-- Tab: Producten -->
+            <TabItem Header="Producten">
+                <DataGrid x:Name="dgProducts" 
+                          AutoGenerateColumns="False" 
+                          IsReadOnly="True"
+                          CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding ProductId}" Width="50"/>
+                        <DataGridTextColumn Header="Product" Binding="{Binding ProductName}" Width="*"/>
+                        <DataGridTextColumn Header="Categorie" Binding="{Binding Category}" Width="120"/>
+                        <DataGridTextColumn Header="Voorraad" Binding="{Binding StockQuantity}" Width="80"/>
+                        <DataGridTextColumn Header="Min. Voorraad" Binding="{Binding MinimumStock}" Width="100"/>
+                        <DataGridTextColumn Header="Verkoopprijs" Binding="{Binding SellingPrice, StringFormat=€{0:N2}}" Width="100"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <!-- Tab: Leveringen -->
+            <TabItem Header="Leveringen">
+                <DataGrid x:Name="dgDeliveries" 
+                          AutoGenerateColumns="False" 
+                          IsReadOnly="True"
+                          CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding DeliveryId}" Width="50"/>
+                        <DataGridTextColumn Header="Referentie" Binding="{Binding ReferenceNumber}" Width="150"/>
+                        <DataGridTextColumn Header="Verwachte Datum" Binding="{Binding ExpectedDeliveryDate, StringFormat=dd-MM-yyyy}" Width="120"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+                        <DataGridTextColumn Header="Totaalbedrag" Binding="{Binding TotalAmount, StringFormat=€{0:N2}}" Width="120"/>
+                        <DataGridCheckBoxColumn Header="Verwerkt" Binding="{Binding IsProcessed}" Width="80"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <!-- Tab: Voertuigen -->
+            <TabItem Header="Voertuigen">
+                <DataGrid x:Name="dgVehicles" 
+                          AutoGenerateColumns="False" 
+                          IsReadOnly="True"
+                          CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding VehicleId}" Width="50"/>
+                        <DataGridTextColumn Header="Kenteken" Binding="{Binding LicensePlate}" Width="120"/>
+                        <DataGridTextColumn Header="Merk" Binding="{Binding Brand}" Width="120"/>
+                        <DataGridTextColumn Header="Model" Binding="{Binding Model}" Width="*"/>
+                        <DataGridTextColumn Header="Capaciteit (kg)" Binding="{Binding Capacity}" Width="120"/>
+                        <DataGridCheckBoxColumn Header="Beschikbaar" Binding="{Binding IsAvailable}" Width="100"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <!-- Tab: Voorraad Alerts -->
+            <TabItem Header="Voorraad Alerts">
+                <DataGrid x:Name="dgStockAlerts" 
+                          AutoGenerateColumns="False" 
+                          IsReadOnly="True"
+                          CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding StockAlertId}" Width="50"/>
+                        <DataGridTextColumn Header="Product ID" Binding="{Binding ProductId}" Width="80"/>
+                        <DataGridTextColumn Header="Type" Binding="{Binding AlertType}" Width="120"/>
+                        <DataGridTextColumn Header="Huidige Voorraad" Binding="{Binding CurrentStock}" Width="120"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+                        <DataGridTextColumn Header="Gemaakt" Binding="{Binding CreatedDate, StringFormat=dd-MM-yyyy}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <!-- Tab: Voorraad Aanpassingen -->
+            <TabItem Header="Voorraad Aanpassingen">
+                <DataGrid x:Name="dgStockAdjustments" 
+                          AutoGenerateColumns="False" 
+                          IsReadOnly="True"
+                          CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding StockAdjustmentId}" Width="50"/>
+                        <DataGridTextColumn Header="Product ID" Binding="{Binding ProductId}" Width="80"/>
+                        <DataGridTextColumn Header="Type" Binding="{Binding AdjustmentType}" Width="100"/>
+                        <DataGridTextColumn Header="Aanpassing" Binding="{Binding QuantityChange}" Width="100"/>
+                        <DataGridTextColumn Header="Reden" Binding="{Binding Reason}" Width="*"/>
+                        <DataGridTextColumn Header="Aangepast door" Binding="{Binding AdjustedBy}" Width="150"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+        </TabControl>
     </Grid>
 </Window>
