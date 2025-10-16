@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SuntoryManagementSystem.Models
@@ -47,6 +49,68 @@ namespace SuntoryManagementSystem.Models
         public override string ToString()
         {
             return $"{DeliveryItemId} - {Quantity}x Product (ID: {ProductId}) @ €{UnitPrice}";
+        }
+
+        public static List<DeliveryItem> SeedingData()
+        {
+            var list = new List<DeliveryItem>();
+            list.AddRange(new[]
+            {
+                // Items voor DEL-2025-001 (Delivery ID: 1)
+                new DeliveryItem 
+                { 
+                    DeliveryId = 1,
+                    ProductId = 1,  // Orangina Original 330ml
+                    Quantity = 100,
+                    UnitPrice = 0.45m,
+                    IsProcessed = false
+                },
+                new DeliveryItem 
+                { 
+                    DeliveryId = 1,
+                    ProductId = 2,  // Lucozade Energy Original 380ml
+                    Quantity = 50,
+                    UnitPrice = 0.65m,
+                    IsProcessed = false
+                },
+
+                // Items voor DEL-2025-002 (Delivery ID: 2)
+                new DeliveryItem 
+                { 
+                    DeliveryId = 2,
+                    ProductId = 1,  // Orangina Original 330ml
+                    Quantity = 200,
+                    UnitPrice = 0.45m,
+                    IsProcessed = true
+                },
+                new DeliveryItem 
+                { 
+                    DeliveryId = 2,
+                    ProductId = 3,  // Ribena Blackcurrant 500ml
+                    Quantity = 150,
+                    UnitPrice = 0.80m,
+                    IsProcessed = true
+                },
+
+                // Items voor DEL-2025-003 (Delivery ID: 3)
+                new DeliveryItem 
+                { 
+                    DeliveryId = 3,
+                    ProductId = 4,  // Schweppes Tonic Water 200ml
+                    Quantity = 300,
+                    UnitPrice = 0.35m,
+                    IsProcessed = false
+                },
+                new DeliveryItem 
+                { 
+                    DeliveryId = 3,
+                    ProductId = 2,  // Lucozade Energy Original 380ml
+                    Quantity = 80,
+                    UnitPrice = 0.65m,
+                    IsProcessed = false
+                }
+            });
+            return list;
         }
     }
 }

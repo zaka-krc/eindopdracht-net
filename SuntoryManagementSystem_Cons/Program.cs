@@ -1,11 +1,11 @@
 ﻿// ============================================================================
 // SUNTORY MANAGEMENT SYSTEM (SMS)
-// Program.cs - Test Console Application voor Seeding Data
+// Program.cs - Console Application voor Database Testing
 // ============================================================================
 
 using SuntoryManagementSystem.Models;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace SuntoryManagementSystem_Cons
 {
@@ -14,212 +14,227 @@ namespace SuntoryManagementSystem_Cons
         static void Main(string[] args)
         {
             Console.WriteLine("=".PadRight(70, '='));
-            Console.WriteLine("SUNTORY MANAGEMENT SYSTEM - SEEDER TEST");
+            Console.WriteLine("SUNTORY MANAGEMENT SYSTEM - DATABASE TEST");
             Console.WriteLine("=".PadRight(70, '='));
             Console.WriteLine();
 
-            try
+            using (var context = new SuntoryDbContext())
             {
-                // Test Supplier Seeder
-                TestSupplierSeeder();
+                // Seed de database
+                SuntoryDbContext.Seeder(context);
 
-                // Test Product Seeder
-                TestProductSeeder();
+                // =================================================================
+                // 1. TOON ALLE SUPPLIERS
+                // =================================================================
+                Console.WriteLine("\n" + "━".PadRight(70, '━'));
+                Console.WriteLine("ALLE LEVERANCIERS:");
+                Console.WriteLine("━".PadRight(70, '━'));
+                
+                var alleSuppliers = context.Suppliers;
+                foreach (var supplier in alleSuppliers)
+                {
+                    Console.WriteLine("- " + supplier);
+                }
 
-                // Test Vehicle Seeder
-                TestVehicleSeeder();
+                // =================================================================
+                // 2. FILTER ACTIEVE SUPPLIERS
+                // =================================================================
+                // Gebruik Where met een gedelegeerde functie
+                var suppliers = context.Suppliers.Where(IsActive);
+                    bool IsActive(Supplier s)
+                    {
+                        return s.Status == "Active";
+                    }
 
-                // Test Delivery Seeder
-                TestDeliverySeeder();
+                // Doe exact hetzelfde met een anonieme delegate
+                suppliers = context.Suppliers
+                    .Where(delegate (Supplier s) { return s.Status == "Active"; });
 
-                // Test StockAlert Seeder
-                TestStockAlertSeeder();
+                // Doe weer exact hetzelfde met een lambda-expressie
+                suppliers = context.Suppliers
+                    .Where(s => s.Status == "Active")
+                    .OrderBy(s => s.SupplierName);
 
-                // Test StockAdjustment Seeder
-                TestStockAdjustmentSeeder();
+                Console.WriteLine("\n" + "━".PadRight(70, '━'));
+                Console.WriteLine("ALLEEN ACTIEVE LEVERANCIERS:");
+                Console.WriteLine("━".PadRight(70, '━'));
+                foreach (var supplier in suppliers)
+                {
+                    Console.WriteLine(supplier);
+                }
 
-                Console.WriteLine();
-                Console.WriteLine("=".PadRight(70, '='));
+                // =================================================================
+                // 3. TOON ALLE PRODUCTEN MET LAGE VOORRAAD
+                // =================================================================
+                var productenMetLageVoorraad = context.Products
+                    .Where(p => p.StockQuantity < p.MinimumStock && p.IsActive)
+                    .OrderBy(p => p.StockQuantity);
+
+                Console.WriteLine("\n" + "━".PadRight(70, '━'));
+                Console.WriteLine("PRODUCTEN MET LAGE VOORRAAD:");
+                Console.WriteLine("━".PadRight(70, '━'));
+                foreach (var product in productenMetLageVoorraad)
+                {
+                    Console.WriteLine($"- {product} (Voorraad: {product.StockQuantity}/{product.MinimumStock})");
+                }
+
+                // =================================================================
+                // 4. TOON ALLE LEVERINGEN DIE NOG NIET ZIJN VERWERKT
+                // =================================================================
+                var onverwerkteLeveringen = context.Deliveries
+                    .Where(d => !d.IsProcessed)
+                    .OrderBy(d => d.ExpectedDeliveryDate);
+
+                Console.WriteLine("\n" + "━".PadRight(70, '━'));
+                Console.WriteLine("ONVERWERKTE LEVERINGEN:");
+                Console.WriteLine("━".PadRight(70, '━'));
+                foreach (var delivery in onverwerkteLeveringen)
+                {
+                    Console.WriteLine(delivery);
+                }
+
+                // =================================================================
+                // 5. TOEVOEGEN VAN EEN NIEUW PRODUCT
+                // =================================================================
+                Product nieuwProduct = new Product()
+                {
+                    ProductName = "Pepsi Cola 330ml",
+                    Description = "Klassieke cola frisdrank",
+                    SKU = "PEP-330-001",
+                    Category = "Frisdrank",
+                    PurchasePrice = 0.40m,
+                    SellingPrice = 0.90m,
+                    StockQuantity = 150,
+                    MinimumStock = 50,
+                    SupplierId = 1,
+                    IsActive = true
+                };
+                
+                context.Add(nieuwProduct);  //zelfde als context.Products.Add(nieuwProduct);
+                context.SaveChanges();
+                
+                Console.WriteLine("\n" + "━".PadRight(70, '━'));
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("✓ ALLE SEEDERS SUCCESVOL GETEST!");
+                Console.WriteLine("✓ EEN NIEUW PRODUCT WERD TOEGEVOEGD:");
+                Console.ResetColor();
+                Console.WriteLine("━".PadRight(70, '━'));
+                Console.WriteLine(nieuwProduct);
+
+                // =================================================================
+                // 6. WIJZIGEN VAN EEN PRODUCT
+                // =================================================================
+                Product teWijzigen = context.Products.FirstOrDefault(p => p.SKU == "PEP-330-001");
+                if (teWijzigen != null)
+                {
+                    teWijzigen.StockQuantity = 200;
+                    teWijzigen.SellingPrice = 0.95m;
+                    teWijzigen.Description = "Verfrissende Pepsi Cola - nieuwe voorraad";
+                    
+                    context.Update(teWijzigen);  //zelfde als context.Products.Update(teWijzigen);
+                    context.SaveChanges();
+
+                    Console.WriteLine("\n" + "━".PadRight(70, '━'));
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("✓ PRODUCT WERD GEWIJZIGD:");
+                    Console.ResetColor();
+                    Console.WriteLine("━".PadRight(70, '━'));
+                    Console.WriteLine(teWijzigen);
+                }
+
+                // =================================================================
+                // 7. TOON ALLE PRODUCTEN VAN LEVERANCIER "Suntory"
+                // =================================================================
+                var suntorySupplier = context.Suppliers.FirstOrDefault(s => s.SupplierName.Contains("Suntory"));
+                if (suntorySupplier != null)
+                {
+                    var suntoryProducten = context.Products
+                        .Where(p => p.SupplierId == suntorySupplier.SupplierId)
+                        .OrderBy(p => p.ProductName);
+
+                    Console.WriteLine("\n" + "━".PadRight(70, '━'));
+                    Console.WriteLine($"PRODUCTEN VAN {suntorySupplier.SupplierName}:");
+                    Console.WriteLine("━".PadRight(70, '━'));
+                    foreach (var product in suntoryProducten)
+                    {
+                        Console.Write(product);
+                        Console.WriteLine($"  (Leverancier: {suntorySupplier.SupplierName})");
+                    }
+                }
+
+                // =================================================================
+                // 8. TOEVOEGEN VAN EEN NIEUWE STOCK ADJUSTMENT
+                // =================================================================
+                StockAdjustment nieuweAanpassing = new StockAdjustment()
+                {
+                    ProductId = nieuwProduct.ProductId,
+                    AdjustmentType = "Addition",
+                    QuantityChange = 50,
+                    PreviousQuantity = nieuwProduct.StockQuantity,
+                    NewQuantity = nieuwProduct.StockQuantity + 50,
+                    Reason = "Nieuwe voorraad aangevuld via console test",
+                    AdjustedBy = "System Admin"
+                };
+
+                context.Add(nieuweAanpassing);
+                context.SaveChanges();
+
+                Console.WriteLine("\n" + "━".PadRight(70, '━'));
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("✓ VOORRAAD AANPASSING TOEGEVOEGD:");
+                Console.ResetColor();
+                Console.WriteLine("━".PadRight(70, '━'));
+                Console.WriteLine(nieuweAanpassing);
+
+                // =================================================================
+                // 9. TOON ALLE BESCHIKBARE VOERTUIGEN
+                // =================================================================
+                var beschikbareVoertuigen = context.Vehicles
+                    .Where(v => v.IsAvailable)
+                    .OrderBy(v => v.Capacity);
+
+                Console.WriteLine("\n" + "━".PadRight(70, '━'));
+                Console.WriteLine("BESCHIKBARE VOERTUIGEN:");
+                Console.WriteLine("━".PadRight(70, '━'));
+                foreach (var vehicle in beschikbareVoertuigen)
+                {
+                    Console.WriteLine($"- {vehicle} - Capaciteit: {vehicle.Capacity} kg");
+                }
+
+                // =================================================================
+                // 10. TOON ACTIEVE STOCK ALERTS
+                // =================================================================
+                var actiefAlerts = context.StockAlerts
+                    .Where(sa => sa.Status == "Active")
+                    .OrderBy(sa => sa.CurrentStock);
+
+                Console.WriteLine("\n" + "━".PadRight(70, '━'));
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("⚠ ACTIEVE VOORRAAD WAARSCHUWINGEN:");
+                Console.ResetColor();
+                Console.WriteLine("━".PadRight(70, '━'));
+                foreach (var alert in actiefAlerts)
+                {
+                    Console.WriteLine(alert);
+                }
+
+                // =================================================================
+                // EINDRESULTAAT
+                // =================================================================
+                Console.WriteLine("\n" + "=".PadRight(70, '='));
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("✓ ALLE DATABASE OPERATIES SUCCESVOL UITGEVOERD!");
                 Console.ResetColor();
                 Console.WriteLine("=".PadRight(70, '='));
-            }
-            catch (Exception ex)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"\n✗ FOUT: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                Console.ResetColor();
+                Console.WriteLine($"\nTotaal aantal suppliers: {context.Suppliers.Count()}");
+                Console.WriteLine($"Totaal aantal producten: {context.Products.Count()}");
+                Console.WriteLine($"Totaal aantal voertuigen: {context.Vehicles.Count()}");
+                Console.WriteLine($"Totaal aantal leveringen: {context.Deliveries.Count()}");
+                Console.WriteLine($"Totaal aantal stock adjustments: {context.StockAdjustments.Count()}");
+                Console.WriteLine($"Totaal aantal stock alerts: {context.StockAlerts.Count()}");
             }
 
             Console.WriteLine("\nDruk op een toets om af te sluiten...");
             Console.ReadKey();
-        }
-
-        static void TestSupplierSeeder()
-        {
-            Console.WriteLine("━".PadRight(70, '━'));
-            Console.WriteLine("TEST: Supplier Seeder");
-            Console.WriteLine("━".PadRight(70, '━'));
-
-            var suppliers = Supplier.SeedingData();
-
-            Console.WriteLine($"Aantal suppliers aangemaakt: {suppliers.Count}");
-            Console.WriteLine();
-
-            foreach (var supplier in suppliers)
-            {
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine($"  • {supplier.SupplierName}");
-                Console.ResetColor();
-                Console.WriteLine($"    - Adres: {supplier.Address}, {supplier.PostalCode} {supplier.City}");
-                Console.WriteLine($"    - Contact: {supplier.ContactPerson} ({supplier.Email})");
-                Console.WriteLine($"    - Telefoon: {supplier.PhoneNumber}");
-                Console.WriteLine($"    - Status: {supplier.Status}");
-                Console.WriteLine($"    - ToString(): {supplier}");
-                Console.WriteLine();
-            }
-        }
-
-        static void TestProductSeeder()
-        {
-            Console.WriteLine("━".PadRight(70, '━'));
-            Console.WriteLine("TEST: Product Seeder");
-            Console.WriteLine("━".PadRight(70, '━'));
-
-            var products = Product.SeedingData();
-
-            Console.WriteLine($"Aantal producten aangemaakt: {products.Count}");
-            Console.WriteLine();
-
-            foreach (var product in products)
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"  • {product.ProductName}");
-                Console.ResetColor();
-                Console.WriteLine($"    - SKU: {product.SKU}");
-                Console.WriteLine($"    - Categorie: {product.Category}");
-                Console.WriteLine($"    - Beschrijving: {product.Description}");
-                Console.WriteLine($"    - Inkoopprijs: €{product.PurchasePrice:F2} | Verkoopprijs: €{product.SellingPrice:F2}");
-                Console.WriteLine($"    - Voorraad: {product.StockQuantity} (Min: {product.MinimumStock})");
-                Console.WriteLine($"    - Leverancier ID: {product.SupplierId}");
-                Console.WriteLine($"    - ToString(): {product}");
-                Console.WriteLine();
-            }
-        }
-
-        static void TestVehicleSeeder()
-        {
-            Console.WriteLine("━".PadRight(70, '━'));
-            Console.WriteLine("TEST: Vehicle Seeder");
-            Console.WriteLine("━".PadRight(70, '━'));
-
-            var vehicles = Vehicle.SeedingData();
-
-            Console.WriteLine($"Aantal voertuigen aangemaakt: {vehicles.Count}");
-            Console.WriteLine();
-
-            foreach (var vehicle in vehicles)
-            {
-                Console.ForegroundColor = ConsoleColor.Magenta;
-                Console.WriteLine($"  • {vehicle.Brand} {vehicle.Model}");
-                Console.ResetColor();
-                Console.WriteLine($"    - Kenteken: {vehicle.LicensePlate}");
-                Console.WriteLine($"    - Type: {vehicle.VehicleType}");
-                Console.WriteLine($"    - Capaciteit: {vehicle.Capacity} kg");
-                Console.WriteLine($"    - Beschikbaar: {(vehicle.IsAvailable ? "Ja" : "Nee")}");
-                Console.WriteLine($"    - Laatste onderhoud: {vehicle.LastMaintenanceDate?.ToString("dd-MM-yyyy") ?? "N/A"}");
-                if (!string.IsNullOrEmpty(vehicle.Notes))
-                    Console.WriteLine($"    - Opmerkingen: {vehicle.Notes}");
-                Console.WriteLine($"    - ToString(): {vehicle}");
-                Console.WriteLine();
-            }
-        }
-
-        static void TestDeliverySeeder()
-        {
-            Console.WriteLine("━".PadRight(70, '━'));
-            Console.WriteLine("TEST: Delivery Seeder");
-            Console.WriteLine("━".PadRight(70, '━'));
-
-            var deliveries = Delivery.SeedingData();
-
-            Console.WriteLine($"Aantal leveringen aangemaakt: {deliveries.Count}");
-            Console.WriteLine();
-
-            foreach (var delivery in deliveries)
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"  • {delivery.ReferenceNumber}");
-                Console.ResetColor();
-                Console.WriteLine($"    - Leverancier ID: {delivery.SupplierId}");
-                Console.WriteLine($"    - Status: {delivery.Status}");
-                Console.WriteLine($"    - Verwachte levering: {delivery.ExpectedDeliveryDate:dd-MM-yyyy HH:mm}");
-                if (delivery.ActualDeliveryDate.HasValue)
-                    Console.WriteLine($"    - Werkelijke levering: {delivery.ActualDeliveryDate:dd-MM-yyyy HH:mm}");
-                Console.WriteLine($"    - Totaalbedrag: €{delivery.TotalAmount:F2}");
-                Console.WriteLine($"    - Verwerkt: {(delivery.IsProcessed ? "Ja" : "Nee")}");
-                if (!string.IsNullOrEmpty(delivery.Notes))
-                    Console.WriteLine($"    - Opmerkingen: {delivery.Notes}");
-                Console.WriteLine($"    - ToString(): {delivery}");
-                Console.WriteLine();
-            }
-        }
-
-        static void TestStockAlertSeeder()
-        {
-            Console.WriteLine("━".PadRight(70, '━'));
-            Console.WriteLine("TEST: StockAlert Seeder");
-            Console.WriteLine("━".PadRight(70, '━'));
-
-            var stockAlerts = StockAlert.SeedingData();
-
-            Console.WriteLine($"Aantal voorraad waarschuwingen aangemaakt: {stockAlerts.Count}");
-            Console.WriteLine();
-
-            foreach (var alert in stockAlerts)
-            {
-                Console.ForegroundColor = alert.Status == "Active" ? ConsoleColor.Red : ConsoleColor.DarkGray;
-                Console.WriteLine($"  • Product ID: {alert.ProductId}");
-                Console.ResetColor();
-                Console.WriteLine($"    - Huidige voorraad: {alert.CurrentStock}");
-                Console.WriteLine($"    - Minimum voorraad: {alert.MinimumStock}");
-                Console.WriteLine($"    - Status: {alert.Status}");
-                Console.WriteLine($"    - Aangemaakt: {alert.CreatedDate:dd-MM-yyyy HH:mm}");
-                if (alert.ResolvedDate.HasValue)
-                    Console.WriteLine($"    - Opgelost: {alert.ResolvedDate:dd-MM-yyyy HH:mm}");
-                if (!string.IsNullOrEmpty(alert.Notes))
-                    Console.WriteLine($"    - Opmerkingen: {alert.Notes}");
-                Console.WriteLine($"    - ToString(): {alert}");
-                Console.WriteLine();
-            }
-        }
-
-        static void TestStockAdjustmentSeeder()
-        {
-            Console.WriteLine("━".PadRight(70, '━'));
-            Console.WriteLine("TEST: StockAdjustment Seeder");
-            Console.WriteLine("━".PadRight(70, '━'));
-
-            var stockAdjustments = StockAdjustment.SeedingData();
-
-            Console.WriteLine($"Aantal voorraad aanpassingen aangemaakt: {stockAdjustments.Count}");
-            Console.WriteLine();
-
-            foreach (var adjustment in stockAdjustments)
-            {
-                Console.ForegroundColor = adjustment.QuantityChange > 0 ? ConsoleColor.Green : ConsoleColor.Red;
-                Console.WriteLine($"  • Product ID: {adjustment.ProductId} - {adjustment.AdjustmentType}");
-                Console.ResetColor();
-                Console.WriteLine($"    - Wijziging: {adjustment.QuantityChange:+#;-#;0} stuks");
-                Console.WriteLine($"    - Voorraad: {adjustment.PreviousQuantity} → {adjustment.NewQuantity}");
-                Console.WriteLine($"    - Datum: {adjustment.AdjustmentDate:dd-MM-yyyy HH:mm}");
-                Console.WriteLine($"    - Reden: {adjustment.Reason}");
-                Console.WriteLine($"    - Aangepast door: {adjustment.AdjustedBy}");
-                Console.WriteLine($"    - ToString(): {adjustment}");
-                Console.WriteLine();
-            }
         }
     }
 }
