@@ -123,7 +123,7 @@ namespace SuntoryManagementSystem_Cons
                 // =================================================================
                 // 6. WIJZIGEN VAN EEN PRODUCT
                 // =================================================================
-                Product teWijzigen = context.Products.FirstOrDefault(p => p.SKU == "PEP-330-001");
+                Product? teWijzigen = context.Products.FirstOrDefault(p => p.SKU == "PEP-330-001");
                 if (teWijzigen != null)
                 {
                     teWijzigen.StockQuantity = 200;
