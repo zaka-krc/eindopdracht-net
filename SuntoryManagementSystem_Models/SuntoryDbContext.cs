@@ -7,6 +7,7 @@ namespace SuntoryManagementSystem.Models
     public class SuntoryDbContext : DbContext
     {
         public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<Customer> Customers { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<Delivery> Deliveries { get; set; }
@@ -45,6 +46,12 @@ namespace SuntoryManagementSystem.Models
             if (!context.Suppliers.Any())
             {
                 context.Suppliers.AddRange(Supplier.SeedingData());
+                context.SaveChanges();
+            }
+
+            if (!context.Customers.Any())
+            {
+                context.Customers.AddRange(Customer.SeedingData());
                 context.SaveChanges();
             }
 

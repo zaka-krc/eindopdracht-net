@@ -48,6 +48,9 @@ namespace SuntoryManagementSystem
         private void LoadDeliveries()
         {
             dgDeliveries.ItemsSource = _context.Deliveries
+                .Include(d => d.Supplier)
+                .Include(d => d.Customer)
+                .Include(d => d.Vehicle)
                 .Where(d => !d.IsDeleted)
                 .OrderByDescending(d => d.ExpectedDeliveryDate)
                 .ToList();
@@ -227,10 +230,28 @@ namespace SuntoryManagementSystem
             var dialog = new DeliveryDialog(_context);
             if (dialog.ShowDialog() == true)
             {
-                _context.Deliveries.Add(dialog.Delivery);
-                _context.SaveChanges();
-                LoadDeliveries();
-                MessageBox.Show("Levering succesvol toegevoegd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+                try
+                {
+                    _context.Deliveries.Add(dialog.Delivery);
+                    
+                    // Save delivery items if any
+                    if (dialog.Delivery.DeliveryItems != null && dialog.Delivery.DeliveryItems.Any())
+                    {
+                        foreach (var item in dialog.Delivery.DeliveryItems)
+                        {
+                            item.DeliveryId = dialog.Delivery.DeliveryId;
+                            _context.DeliveryItems.Add(item);
+                        }
+                    }
+                    
+                    _context.SaveChanges();
+                    LoadDeliveries();
+                    MessageBox.Show("Levering succesvol toegevoegd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Fout bij opslaan: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
@@ -241,13 +262,52 @@ namespace SuntoryManagementSystem
                 var dialog = new DeliveryDialog(_context, selectedDelivery);
                 if (dialog.ShowDialog() == true)
                 {
-                    _context.Deliveries.Update(selectedDelivery);
-                    _context.SaveChanges();
-                    LoadDeliveries();
-                    LoadProducts(); // Reload products als voorraad is gewijzigd
-                    LoadStockAdjustments(); // Reload adjustments
-                    LoadStockAlerts(); // Reload alerts
-                    MessageBox.Show("Levering succesvol gewijzigd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+                    try
+                    {
+                        _context.Deliveries.Update(selectedDelivery);
+                        
+                        // Update delivery items if modified
+                        if (dialog.Delivery.DeliveryItems != null)
+                        {
+                            // Remove old items that are not in the new list
+                            var existingItems = _context.DeliveryItems
+                                .Where(di => di.DeliveryId == selectedDelivery.DeliveryId)
+                                .ToList();
+                            
+                            foreach (var existingItem in existingItems)
+                            {
+                                if (!dialog.Delivery.DeliveryItems.Any(i => i.DeliveryItemId == existingItem.DeliveryItemId))
+                                {
+                                    _context.DeliveryItems.Remove(existingItem);
+                                }
+                            }
+                            
+                            // Add or update items
+                            foreach (var item in dialog.Delivery.DeliveryItems)
+                            {
+                                if (item.DeliveryItemId == 0)
+                                {
+                                    item.DeliveryId = selectedDelivery.DeliveryId;
+                                    _context.DeliveryItems.Add(item);
+                                }
+                                else
+                                {
+                                    _context.DeliveryItems.Update(item);
+                                }
+                            }
+                        }
+                        
+                        _context.SaveChanges();
+                        LoadDeliveries();
+                        LoadProducts(); // Reload products als voorraad is gewijzigd
+                        LoadStockAdjustments(); // Reload adjustments
+                        LoadStockAlerts(); // Reload alerts
+                        MessageBox.Show("Levering succesvol gewijzigd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Fout bij opslaan: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
         }
@@ -262,9 +322,14 @@ namespace SuntoryManagementSystem
                     return;
                 }
 
+                string actionText = selectedDelivery.DeliveryType == "Incoming" 
+                    ? "voorraad verhogen" 
+                    : "voorraad verlagen";
+
                 var result = MessageBox.Show(
                     $"Weet u zeker dat u levering '{selectedDelivery.ReferenceNumber}' wilt verwerken?\n\n" +
-                    "Dit zal de voorraad automatisch bijwerken.",
+                    $"Type: {selectedDelivery.DeliveryType}\n" +
+                    $"Dit zal de {actionText}.",
                     "Levering Verwerken",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Question);
@@ -273,7 +338,7 @@ namespace SuntoryManagementSystem
                 {
                     try
                     {
-                        // Markeer als verwerkt en verwerk via dialog logic
+                        // Markeer als verwerkt
                         selectedDelivery.IsProcessed = true;
                         
                         // Haal alle delivery items op
@@ -290,22 +355,40 @@ namespace SuntoryManagementSystem
                         }
 
                         int itemsProcessed = 0;
+                        bool isIncoming = selectedDelivery.DeliveryType == "Incoming";
+
                         foreach (var item in deliveryItems)
                         {
                             if (item.Product == null) continue;
 
                             int previousQty = item.Product.StockQuantity;
-                            int newQty = previousQty + item.Quantity;
+                            int quantityChange = isIncoming ? item.Quantity : -item.Quantity;
+                            int newQty = previousQty + quantityChange;
+
+                            // Check voor negatieve voorraad bij outgoing
+                            if (!isIncoming && newQty < 0)
+                            {
+                                MessageBox.Show(
+                                    $"Onvoldoende voorraad voor product '{item.Product.ProductName}'!\n" +
+                                    $"Huidige voorraad: {previousQty}\n" +
+                                    $"Gevraagd: {item.Quantity}",
+                                    "Voorraad Fout",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Error);
+                                selectedDelivery.IsProcessed = false;
+                                return;
+                            }
+
                             item.Product.StockQuantity = newQty;
 
                             var adjustment = new StockAdjustment
                             {
                                 ProductId = item.ProductId,
-                                AdjustmentType = "Addition",
-                                QuantityChange = item.Quantity,
+                                AdjustmentType = isIncoming ? "Addition" : "Removal",
+                                QuantityChange = quantityChange,
                                 PreviousQuantity = previousQty,
                                 NewQuantity = newQty,
-                                Reason = $"Levering {selectedDelivery.ReferenceNumber} verwerkt",
+                                Reason = $"{selectedDelivery.DeliveryType} levering {selectedDelivery.ReferenceNumber} verwerkt",
                                 AdjustedBy = "Systeem",
                                 AdjustmentDate = DateTime.Now
                             };
@@ -314,9 +397,10 @@ namespace SuntoryManagementSystem
                             item.IsProcessed = true;
                             itemsProcessed++;
 
-                            // Resolve alerts indien voorraad boven minimum
-                            if (newQty >= item.Product.MinimumStock)
+                            // Alert management
+                            if (isIncoming && newQty >= item.Product.MinimumStock)
                             {
+                                // Resolve alerts bij incoming delivery
                                 var alerts = _context.StockAlerts
                                     .Where(sa => sa.ProductId == item.ProductId && sa.Status == "Active" && !sa.IsDeleted)
                                     .ToList();
@@ -325,6 +409,32 @@ namespace SuntoryManagementSystem
                                 {
                                     alert.Status = "Resolved";
                                     alert.ResolvedDate = DateTime.Now;
+                                }
+                            }
+                            else if (!isIncoming && newQty < item.Product.MinimumStock)
+                            {
+                                // Maak alert bij outgoing delivery als voorraad laag is
+                                var existingAlert = _context.StockAlerts
+                                    .FirstOrDefault(sa => sa.ProductId == item.ProductId 
+                                        && sa.Status == "Active" 
+                                        && !sa.IsDeleted);
+
+                                if (existingAlert == null)
+                                {
+                                    string alertType = newQty == 0 ? "Out of Stock" : 
+                                                     newQty < (item.Product.MinimumStock / 2) ? "Critical" : 
+                                                     "Low Stock";
+
+                                    var alert = new StockAlert
+                                    {
+                                        ProductId = item.ProductId,
+                                        AlertType = alertType,
+                                        Status = "Active",
+                                        CreatedDate = DateTime.Now,
+                                        Notes = $"Voorraad laag na outgoing levering {selectedDelivery.ReferenceNumber}"
+                                    };
+
+                                    _context.StockAlerts.Add(alert);
                                 }
                             }
                         }
@@ -342,8 +452,10 @@ namespace SuntoryManagementSystem
                         LoadStockAdjustments();
                         LoadStockAlerts();
                         
+                        string typeStr = isIncoming ? "toegevoegd aan" : "verwijderd uit";
                         MessageBox.Show(
-                            $"Levering succesvol verwerkt!\n\n{itemsProcessed} product(en) toegevoegd aan voorraad.",
+                            $"Levering succesvol verwerkt!\n\n" +
+                            $"{itemsProcessed} product(en) {typeStr} voorraad.",
                             "Succes",
                             MessageBoxButton.OK,
                             MessageBoxImage.Information);

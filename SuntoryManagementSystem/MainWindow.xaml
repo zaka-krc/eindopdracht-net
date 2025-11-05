@@ -34,9 +34,9 @@
                     </DataGrid>
 
                     <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                        <Button x:Name="btnAddSupplier" Content="Toevoegen" Width="100" Margin="5" Click="btnAddSupplier_Click"/>
-                        <Button x:Name="btnEditSupplier" Content="Wijzigen" Width="100" Margin="5" IsEnabled="False" Click="btnEditSupplier_Click"/>
-                        <Button x:Name="btnDeleteSupplier" Content="Verwijderen" Width="100" Margin="5" IsEnabled="False" Click="btnDeleteSupplier_Click"/>
+                        <Button x:Name="btnAddSupplier" Content="Toevoegen" Width="100" Margin="5" Click="btnAddSupplier_Click" Background="LimeGreen" FontWeight="Bold"/>
+                        <Button x:Name="btnEditSupplier" Content="Wijzigen" Width="100" Margin="5" IsEnabled="False" Click="btnEditSupplier_Click" Background="LightBlue" FontWeight="Bold"/>
+                        <Button x:Name="btnDeleteSupplier" Content="Verwijderen" Width="100" Margin="5" IsEnabled="False" Click="btnDeleteSupplier_Click" Background="Salmon" FontWeight="Bold"/>
                     </StackPanel>
                 </Grid>
             </TabItem>
@@ -66,9 +66,9 @@
                     </DataGrid>
 
                     <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                        <Button x:Name="btnAddProduct" Content="Toevoegen" Width="100" Margin="5" Click="btnAddProduct_Click"/>
-                        <Button x:Name="btnEditProduct" Content="Wijzigen" Width="100" Margin="5" IsEnabled="False" Click="btnEditProduct_Click"/>
-                        <Button x:Name="btnDeleteProduct" Content="Verwijderen" Width="100" Margin="5" IsEnabled="False" Click="btnDeleteProduct_Click"/>
+                        <Button x:Name="btnAddProduct" Content="Toevoegen" Width="100" Margin="5" Click="btnAddProduct_Click" Background="LimeGreen" FontWeight="Bold"/>
+                        <Button x:Name="btnEditProduct" Content="Wijzigen" Width="100" Margin="5" IsEnabled="False" Click="btnEditProduct_Click" Background="LightBlue" FontWeight="Bold"/>
+                        <Button x:Name="btnDeleteProduct" Content="Verwijderen" Width="100" Margin="5" IsEnabled="False" Click="btnDeleteProduct_Click" Background="Salmon" FontWeight="Bold"/>
                     </StackPanel>
                 </Grid>
             </TabItem>
@@ -89,19 +89,22 @@
                               SelectionChanged="dgDeliveries_SelectionChanged">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding DeliveryId}" Width="50"/>
-                            <DataGridTextColumn Header="Referentie" Binding="{Binding ReferenceNumber}" Width="150"/>
-                            <DataGridTextColumn Header="Verwachte Datum" Binding="{Binding ExpectedDeliveryDate, StringFormat=dd-MM-yyyy}" Width="120"/>
+                            <DataGridTextColumn Header="Type" Binding="{Binding DeliveryType}" Width="80"/>
+                            <DataGridTextColumn Header="Referentie" Binding="{Binding ReferenceNumber}" Width="120"/>
+                            <DataGridTextColumn Header="Leverancier" Binding="{Binding Supplier.SupplierName}" Width="150"/>
+                            <DataGridTextColumn Header="Klant" Binding="{Binding Customer.CustomerName}" Width="150"/>
+                            <DataGridTextColumn Header="Verwacht" Binding="{Binding ExpectedDeliveryDate, StringFormat=dd-MM-yyyy}" Width="100"/>
                             <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
-                            <DataGridTextColumn Header="Totaalbedrag" Binding="{Binding TotalAmount, StringFormat=€{0:N2}}" Width="120"/>
+                            <DataGridTextColumn Header="Bedrag" Binding="{Binding TotalAmount, StringFormat=€{0:N2}}" Width="100"/>
                             <DataGridCheckBoxColumn Header="Verwerkt" Binding="{Binding IsProcessed}" Width="80"/>
                         </DataGrid.Columns>
                     </DataGrid>
 
                     <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                        <Button x:Name="btnAddDelivery" Content="Toevoegen" Width="100" Margin="5" Click="btnAddDelivery_Click"/>
-                        <Button x:Name="btnEditDelivery" Content="Wijzigen" Width="100" Margin="5" IsEnabled="False" Click="btnEditDelivery_Click"/>
-                        <Button x:Name="btnProcessDelivery" Content="Verwerken" Width="100" Margin="5" IsEnabled="False" Click="btnProcessDelivery_Click" Background="LightGreen"/>
-                        <Button x:Name="btnDeleteDelivery" Content="Verwijderen" Width="100" Margin="5" IsEnabled="False" Click="btnDeleteDelivery_Click"/>
+                        <Button x:Name="btnAddDelivery" Content="Toevoegen" Width="100" Margin="5" Click="btnAddDelivery_Click" Background="LimeGreen" FontWeight="Bold"/>
+                        <Button x:Name="btnEditDelivery" Content="Wijzigen" Width="100" Margin="5" IsEnabled="False" Click="btnEditDelivery_Click" Background="LightBlue" FontWeight="Bold"/>
+                        <Button x:Name="btnProcessDelivery" Content="Verwerken" Width="100" Margin="5" IsEnabled="False" Click="btnProcessDelivery_Click" Background="Orange" FontWeight="Bold"/>
+                        <Button x:Name="btnDeleteDelivery" Content="Verwijderen" Width="100" Margin="5" IsEnabled="False" Click="btnDeleteDelivery_Click" Background="Salmon" FontWeight="Bold"/>
                     </StackPanel>
                 </Grid>
             </TabItem>
@@ -131,9 +134,9 @@
                     </DataGrid>
 
                     <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                        <Button x:Name="btnAddVehicle" Content="Toevoegen" Width="100" Margin="5" Click="btnAddVehicle_Click"/>
-                        <Button x:Name="btnEditVehicle" Content="Wijzigen" Width="100" Margin="5" IsEnabled="False" Click="btnEditVehicle_Click"/>
-                        <Button x:Name="btnDeleteVehicle" Content="Verwijderen" Width="100" Margin="5" IsEnabled="False" Click="btnDeleteVehicle_Click"/>
+                        <Button x:Name="btnAddVehicle" Content="Toevoegen" Width="100" Margin="5" Click="btnAddVehicle_Click" Background="LimeGreen" FontWeight="Bold"/>
+                        <Button x:Name="btnEditVehicle" Content="Wijzigen" Width="100" Margin="5" IsEnabled="False" Click="btnEditVehicle_Click" Background="LightBlue" FontWeight="Bold"/>
+                        <Button x:Name="btnDeleteVehicle" Content="Verwijderen" Width="100" Margin="5" IsEnabled="False" Click="btnDeleteVehicle_Click" Background="Red" FontWeight="Bold"/>
                     </StackPanel>
                 </Grid>
             </TabItem>

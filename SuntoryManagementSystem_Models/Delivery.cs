@@ -5,21 +5,34 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SuntoryManagementSystem.Models
 {
-    /// Delivery - Leveringen van producten
+    /// Delivery - Leveringen van producten (Incoming = van supplier, Outgoing = naar klant)
     public class Delivery
     {
         /// Unieke identifier voor de levering
         [Key]
         public int DeliveryId { get; set; }
 
-        /// Foreign Key naar Supplier
-        [Required(ErrorMessage = "Leverancier is verplicht")]
+        /// Type levering: "Incoming" (van supplier) of "Outgoing" (naar klant)
+        [Required]
+        [StringLength(20)]
+        [Display(Name = "Type")]
+        public string DeliveryType { get; set; } = "Incoming";
+
+        /// Foreign Key naar Supplier (voor Incoming deliveries)
         [ForeignKey("Supplier")]
         [Display(Name = "Leverancier")]
-        public int SupplierId { get; set; }
+        public int? SupplierId { get; set; }
 
-        /// De leverancier van deze levering
+        /// De leverancier van deze levering (alleen bij Incoming)
         public Supplier? Supplier { get; set; }
+
+        /// Foreign Key naar Customer (voor Outgoing deliveries)
+        [ForeignKey("Customer")]
+        [Display(Name = "Klant")]
+        public int? CustomerId { get; set; }
+
+        /// De klant voor deze levering (alleen bij Outgoing)
+        public Customer? Customer { get; set; }
 
         /// Foreign Key naar Vehicle (optioneel)
         [ForeignKey("Vehicle")]
@@ -94,7 +107,8 @@ namespace SuntoryManagementSystem.Models
 
         public override string ToString()
         {
-            return $"{DeliveryId} - Levering {ReferenceNumber} op {ExpectedDeliveryDate:dd-MM-yyyy} ({Status})";
+            string typeStr = DeliveryType == "Incoming" ? "Inkoop" : "Verkoop";
+            return $"{DeliveryId} - {typeStr} {ReferenceNumber} op {ExpectedDeliveryDate:dd-MM-yyyy} ({Status})";
         }
 
         public static List<Delivery> SeedingData()
@@ -104,16 +118,18 @@ namespace SuntoryManagementSystem.Models
             {
                 new Delivery 
                 { 
+                    DeliveryType = "Incoming",
                     SupplierId = 1,
-                    ReferenceNumber = "DEL-2025-001",
+                    ReferenceNumber = "INC-2025-001",
                     ExpectedDeliveryDate = DateTime.Now.AddDays(2),
                     Status = "Pending",
                     TotalAmount = 450.00m
                 },
                 new Delivery 
                 { 
+                    DeliveryType = "Incoming",
                     SupplierId = 1,
-                    ReferenceNumber = "DEL-2025-002",
+                    ReferenceNumber = "INC-2025-002",
                     ExpectedDeliveryDate = DateTime.Now.AddDays(-3),
                     ActualDeliveryDate = DateTime.Now.AddDays(-3).AddHours(2),
                     Status = "Delivered",
@@ -122,11 +138,22 @@ namespace SuntoryManagementSystem.Models
                 },
                 new Delivery 
                 { 
+                    DeliveryType = "Incoming",
                     SupplierId = 2,
-                    ReferenceNumber = "DEL-2025-003",
+                    ReferenceNumber = "INC-2025-003",
                     ExpectedDeliveryDate = DateTime.Now.AddDays(5),
                     Status = "In Transit",
                     TotalAmount = 320.00m
+                },
+                new Delivery 
+                { 
+                    DeliveryType = "Outgoing",
+                    CustomerId = 1,
+                    VehicleId = 1,
+                    ReferenceNumber = "OUT-2025-001",
+                    ExpectedDeliveryDate = DateTime.Now.AddDays(1),
+                    Status = "Pending",
+                    TotalAmount = 250.00m
                 }
             });
             return list;

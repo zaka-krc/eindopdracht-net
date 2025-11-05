@@ -58,6 +58,12 @@ namespace SuntoryManagementSystem.Models
         [DataType(DataType.DateTime)]
         public DateTime? DeletedDate { get; set; }
 
+        // COMPUTED PROPERTIES
+        
+        /// Totaalprijs voor dit item (Quantity * UnitPrice)
+        [NotMapped]
+        public decimal Total => Quantity * UnitPrice;
+
         public override string ToString()
         {
             return $"{DeliveryItemId} - {Quantity}x Product (ID: {ProductId}) @ €{UnitPrice}";
