@@ -67,6 +67,18 @@ namespace SuntoryManagementSystem.Models
         [DataType(DataType.MultilineText)]
         public string Notes { get; set; } = string.Empty;
 
+        // SOFT DELETE PROPERTIES
+        
+        /// Is deze leverancier soft-deleted?
+        [Required]
+        [Display(Name = "Verwijderd")]
+        public bool IsDeleted { get; set; } = false;
+
+        /// Datum en tijd van soft delete
+        [Display(Name = "Verwijderd op")]
+        [DataType(DataType.DateTime)]
+        public DateTime? DeletedDate { get; set; }
+
         // NAVIGATION PROPERTIES - Relaties met andere entiteiten
 
         /// Alle producten van deze leverancier

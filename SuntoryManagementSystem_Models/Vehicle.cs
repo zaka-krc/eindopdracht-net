@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -64,6 +63,18 @@ namespace SuntoryManagementSystem.Models
         [Display(Name = "Opmerkingen")]
         [DataType(DataType.MultilineText)]
         public string Notes { get; set; } = string.Empty;
+
+        // SOFT DELETE PROPERTIES
+        
+        /// Is dit voertuig soft-deleted?
+        [Required]
+        [Display(Name = "Verwijderd")]
+        public bool IsDeleted { get; set; } = false;
+
+        /// Datum en tijd van soft delete
+        [Display(Name = "Verwijderd op")]
+        [DataType(DataType.DateTime)]
+        public DateTime? DeletedDate { get; set; }
 
         // NAVIGATION PROPERTIES - Relaties met andere entiteiten
 

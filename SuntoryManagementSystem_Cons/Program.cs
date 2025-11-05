@@ -4,6 +4,7 @@
 // ============================================================================
 
 using SuntoryManagementSystem.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
@@ -30,7 +31,7 @@ namespace SuntoryManagementSystem_Cons
                 Console.WriteLine("ALLE LEVERANCIERS:");
                 Console.WriteLine("━".PadRight(70, '━'));
                 
-                var alleSuppliers = context.Suppliers;
+                var alleSuppliers = context.Suppliers.Where(s => !s.IsDeleted);
                 foreach (var supplier in alleSuppliers)
                 {
                     Console.WriteLine("- " + supplier);
@@ -43,16 +44,16 @@ namespace SuntoryManagementSystem_Cons
                 var suppliers = context.Suppliers.Where(IsActive);
                     bool IsActive(Supplier s)
                     {
-                        return s.Status == "Active";
+                        return s.Status == "Active" && !s.IsDeleted;
                     }
 
                 // Doe exact hetzelfde met een anonieme delegate
                 suppliers = context.Suppliers
-                    .Where(delegate (Supplier s) { return s.Status == "Active"; });
+                    .Where(delegate (Supplier s) { return s.Status == "Active" && !s.IsDeleted; });
 
                 // Doe weer exact hetzelfde met een lambda-expressie
                 suppliers = context.Suppliers
-                    .Where(s => s.Status == "Active")
+                    .Where(s => s.Status == "Active" && !s.IsDeleted)
                     .OrderBy(s => s.SupplierName);
 
                 Console.WriteLine("\n" + "━".PadRight(70, '━'));
@@ -67,7 +68,7 @@ namespace SuntoryManagementSystem_Cons
                 // 3. TOON ALLE PRODUCTEN MET LAGE VOORRAAD
                 // =================================================================
                 var productenMetLageVoorraad = context.Products
-                    .Where(p => p.StockQuantity < p.MinimumStock && p.IsActive)
+                    .Where(p => p.StockQuantity < p.MinimumStock && p.IsActive && !p.IsDeleted)
                     .OrderBy(p => p.StockQuantity);
 
                 Console.WriteLine("\n" + "━".PadRight(70, '━'));
@@ -82,7 +83,7 @@ namespace SuntoryManagementSystem_Cons
                 // 4. TOON ALLE LEVERINGEN DIE NOG NIET ZIJN VERWERKT
                 // =================================================================
                 var onverwerkteLeveringen = context.Deliveries
-                    .Where(d => !d.IsProcessed)
+                    .Where(d => !d.IsProcessed && !d.IsDeleted)
                     .OrderBy(d => d.ExpectedDeliveryDate);
 
                 Console.WriteLine("\n" + "━".PadRight(70, '━'));
@@ -189,7 +190,7 @@ namespace SuntoryManagementSystem_Cons
                 // 9. TOON ALLE BESCHIKBARE VOERTUIGEN
                 // =================================================================
                 var beschikbareVoertuigen = context.Vehicles
-                    .Where(v => v.IsAvailable)
+                    .Where(v => v.IsAvailable && !v.IsDeleted)
                     .OrderBy(v => v.Capacity);
 
                 Console.WriteLine("\n" + "━".PadRight(70, '━'));
@@ -204,8 +205,9 @@ namespace SuntoryManagementSystem_Cons
                 // 10. TOON ACTIEVE STOCK ALERTS
                 // =================================================================
                 var actiefAlerts = context.StockAlerts
-                    .Where(sa => sa.Status == "Active")
-                    .OrderBy(sa => sa.CurrentStock);
+                    .Include(sa => sa.Product)
+                    .Where(sa => sa.Status == "Active" && !sa.IsDeleted)
+                    .OrderBy(sa => sa.Product.StockQuantity);
 
                 Console.WriteLine("\n" + "━".PadRight(70, '━'));
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -214,7 +216,7 @@ namespace SuntoryManagementSystem_Cons
                 Console.WriteLine("━".PadRight(70, '━'));
                 foreach (var alert in actiefAlerts)
                 {
-                    Console.WriteLine(alert);
+                    Console.WriteLine($"{alert} - Product: {alert.Product?.ProductName} (Voorraad: {alert.Product?.StockQuantity}/{alert.Product?.MinimumStock})");
                 }
 
                 // =================================================================

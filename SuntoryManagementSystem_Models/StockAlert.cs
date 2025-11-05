@@ -21,15 +21,11 @@ namespace SuntoryManagementSystem.Models
         /// Het product met lage voorraad
         public Product? Product { get; set; }
 
-        /// Huidige voorraad op moment van waarschuwing
+        /// Type waarschuwing: "Low Stock", "Out of Stock", "Critical"
         [Required]
-        [Display(Name = "Huidige voorraad")]
-        public int CurrentStock { get; set; } = 0;
-
-        /// Minimale voorraad drempel
-        [Required]
-        [Display(Name = "Minimum voorraad")]
-        public int MinimumStock { get; set; } = 10;
+        [StringLength(20)]
+        [Display(Name = "Type")]
+        public string AlertType { get; set; } = "Low Stock";
 
         /// Status van de waarschuwing: "Active", "Resolved", "Ignored"
         [Required]
@@ -54,9 +50,21 @@ namespace SuntoryManagementSystem.Models
         [DataType(DataType.MultilineText)]
         public string Notes { get; set; } = string.Empty;
 
+        // SOFT DELETE PROPERTIES
+        
+        /// Is deze waarschuwing soft-deleted?
+        [Required]
+        [Display(Name = "Verwijderd")]
+        public bool IsDeleted { get; set; } = false;
+
+        /// Datum en tijd van soft delete
+        [Display(Name = "Verwijderd op")]
+        [DataType(DataType.DateTime)]
+        public DateTime? DeletedDate { get; set; }
+
         public override string ToString()
         {
-            return $"{StockAlertId} - Lage voorraad voor Product ID: {ProductId} ({CurrentStock}/{MinimumStock}) - {Status}";
+            return $"{StockAlertId} - {AlertType} voor Product ID: {ProductId} - {Status}";
         }
 
         public static List<StockAlert> SeedingData()
@@ -67,24 +75,21 @@ namespace SuntoryManagementSystem.Models
                 new StockAlert 
                 { 
                     ProductId = 2,
-                    CurrentStock = 35,
-                    MinimumStock = 40,
+                    AlertType = "Low Stock",
                     Status = "Active",
                     Notes = "Voorraad bijna op, nieuwe bestelling plaatsen"
                 },
                 new StockAlert 
                 { 
                     ProductId = 3,
-                    CurrentStock = 25,
-                    MinimumStock = 30,
+                    AlertType = "Critical",
                     Status = "Active",
                     Notes = "Urgent: voorraad onder minimum"
                 },
                 new StockAlert 
                 { 
                     ProductId = 1,
-                    CurrentStock = 45,
-                    MinimumStock = 50,
+                    AlertType = "Low Stock",
                     Status = "Resolved",
                     ResolvedDate = DateTime.Now.AddDays(-2),
                     Notes = "Opgelost: nieuwe levering ontvangen"

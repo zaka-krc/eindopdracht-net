@@ -1,7 +1,9 @@
 ﻿using SuntoryManagementSystem.Models;
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.EntityFrameworkCore;
 
 namespace SuntoryManagementSystem
 {
@@ -29,32 +31,51 @@ namespace SuntoryManagementSystem
 
         private void LoadSuppliers()
         {
-            dgSuppliers.ItemsSource = _context.Suppliers.OrderBy(s => s.SupplierName).ToList();
+            dgSuppliers.ItemsSource = _context.Suppliers
+                .Where(s => !s.IsDeleted)
+                .OrderBy(s => s.SupplierName)
+                .ToList();
         }
 
         private void LoadProducts()
         {
-            dgProducts.ItemsSource = _context.Products.OrderBy(p => p.ProductName).ToList();
+            dgProducts.ItemsSource = _context.Products
+                .Where(p => !p.IsDeleted)
+                .OrderBy(p => p.ProductName)
+                .ToList();
         }
 
         private void LoadDeliveries()
         {
-            dgDeliveries.ItemsSource = _context.Deliveries.OrderByDescending(d => d.ExpectedDeliveryDate).ToList();
+            dgDeliveries.ItemsSource = _context.Deliveries
+                .Where(d => !d.IsDeleted)
+                .OrderByDescending(d => d.ExpectedDeliveryDate)
+                .ToList();
         }
 
         private void LoadVehicles()
         {
-            dgVehicles.ItemsSource = _context.Vehicles.OrderBy(v => v.LicensePlate).ToList();
+            dgVehicles.ItemsSource = _context.Vehicles
+                .Where(v => !v.IsDeleted)
+                .OrderBy(v => v.LicensePlate)
+                .ToList();
         }
 
         private void LoadStockAlerts()
         {
-            dgStockAlerts.ItemsSource = _context.StockAlerts.Where(sa => sa.Status == "Active").OrderBy(sa => sa.CurrentStock).ToList();
+            dgStockAlerts.ItemsSource = _context.StockAlerts
+                .Include(sa => sa.Product)
+                .Where(sa => !sa.IsDeleted && sa.Status == "Active")
+                .OrderBy(sa => sa.Product.StockQuantity)
+                .ToList();
         }
 
         private void LoadStockAdjustments()
         {
-            dgStockAdjustments.ItemsSource = _context.StockAdjustments.OrderByDescending(sa => sa.AdjustmentDate).ToList();
+            dgStockAdjustments.ItemsSource = _context.StockAdjustments
+                .Where(sa => !sa.IsDeleted)
+                .OrderByDescending(sa => sa.AdjustmentDate)
+                .ToList();
         }
 
         private void tcMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -112,14 +133,17 @@ namespace SuntoryManagementSystem
                 {
                     try
                     {
-                        _context.Suppliers.Remove(selectedSupplier);
+                        // SOFT DELETE
+                        selectedSupplier.IsDeleted = true;
+                        selectedSupplier.DeletedDate = DateTime.Now;
+                        _context.Suppliers.Update(selectedSupplier);
                         _context.SaveChanges();
                         LoadSuppliers();
                         MessageBox.Show("Leverancier succesvol verwijderd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     catch (System.Exception ex)
                     {
-                        MessageBox.Show($"Fout bij het verwijderen: {ex.Message}\n\nMogelijk zijn er nog producten of leveringen gekoppeld aan deze leverancier.", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Fout bij het verwijderen: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }
@@ -172,14 +196,17 @@ namespace SuntoryManagementSystem
                 {
                     try
                     {
-                        _context.Products.Remove(selectedProduct);
+                        // SOFT DELETE
+                        selectedProduct.IsDeleted = true;
+                        selectedProduct.DeletedDate = DateTime.Now;
+                        _context.Products.Update(selectedProduct);
                         _context.SaveChanges();
                         LoadProducts();
                         MessageBox.Show("Product succesvol verwijderd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     catch (System.Exception ex)
                     {
-                        MessageBox.Show($"Fout bij het verwijderen: {ex.Message}\n\nMogelijk zijn er nog leveringen of aanpassingen gekoppeld aan dit product.", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Fout bij het verwijderen: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }
@@ -187,8 +214,12 @@ namespace SuntoryManagementSystem
 
         private void dgDeliveries_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            btnEditDelivery.IsEnabled = dgDeliveries.SelectedItem != null;
-            btnDeleteDelivery.IsEnabled = dgDeliveries.SelectedItem != null;
+            bool hasSelection = dgDeliveries.SelectedItem != null;
+            bool isNotProcessed = hasSelection && dgDeliveries.SelectedItem is Delivery delivery && !delivery.IsProcessed;
+            
+            btnEditDelivery.IsEnabled = hasSelection;
+            btnDeleteDelivery.IsEnabled = hasSelection;
+            btnProcessDelivery.IsEnabled = isNotProcessed; // Alleen tonen als niet verwerkt
         }
 
         private void btnAddDelivery_Click(object sender, RoutedEventArgs e)
@@ -213,7 +244,114 @@ namespace SuntoryManagementSystem
                     _context.Deliveries.Update(selectedDelivery);
                     _context.SaveChanges();
                     LoadDeliveries();
+                    LoadProducts(); // Reload products als voorraad is gewijzigd
+                    LoadStockAdjustments(); // Reload adjustments
+                    LoadStockAlerts(); // Reload alerts
                     MessageBox.Show("Levering succesvol gewijzigd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+        }
+
+        private void btnProcessDelivery_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgDeliveries.SelectedItem is Delivery selectedDelivery)
+            {
+                if (selectedDelivery.IsProcessed)
+                {
+                    MessageBox.Show("Deze levering is al verwerkt!", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                var result = MessageBox.Show(
+                    $"Weet u zeker dat u levering '{selectedDelivery.ReferenceNumber}' wilt verwerken?\n\n" +
+                    "Dit zal de voorraad automatisch bijwerken.",
+                    "Levering Verwerken",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        // Markeer als verwerkt en verwerk via dialog logic
+                        selectedDelivery.IsProcessed = true;
+                        
+                        // Haal alle delivery items op
+                        var deliveryItems = _context.DeliveryItems
+                            .Include(di => di.Product)
+                            .Where(di => di.DeliveryId == selectedDelivery.DeliveryId && !di.IsDeleted)
+                            .ToList();
+
+                        if (!deliveryItems.Any())
+                        {
+                            MessageBox.Show("Deze levering heeft geen items!", "Fout", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            selectedDelivery.IsProcessed = false;
+                            return;
+                        }
+
+                        int itemsProcessed = 0;
+                        foreach (var item in deliveryItems)
+                        {
+                            if (item.Product == null) continue;
+
+                            int previousQty = item.Product.StockQuantity;
+                            int newQty = previousQty + item.Quantity;
+                            item.Product.StockQuantity = newQty;
+
+                            var adjustment = new StockAdjustment
+                            {
+                                ProductId = item.ProductId,
+                                AdjustmentType = "Addition",
+                                QuantityChange = item.Quantity,
+                                PreviousQuantity = previousQty,
+                                NewQuantity = newQty,
+                                Reason = $"Levering {selectedDelivery.ReferenceNumber} verwerkt",
+                                AdjustedBy = "Systeem",
+                                AdjustmentDate = DateTime.Now
+                            };
+
+                            _context.StockAdjustments.Add(adjustment);
+                            item.IsProcessed = true;
+                            itemsProcessed++;
+
+                            // Resolve alerts indien voorraad boven minimum
+                            if (newQty >= item.Product.MinimumStock)
+                            {
+                                var alerts = _context.StockAlerts
+                                    .Where(sa => sa.ProductId == item.ProductId && sa.Status == "Active" && !sa.IsDeleted)
+                                    .ToList();
+                                
+                                foreach (var alert in alerts)
+                                {
+                                    alert.Status = "Resolved";
+                                    alert.ResolvedDate = DateTime.Now;
+                                }
+                            }
+                        }
+
+                        if (selectedDelivery.Status != "Delivered")
+                            selectedDelivery.Status = "Delivered";
+                        
+                        if (selectedDelivery.ActualDeliveryDate == null)
+                            selectedDelivery.ActualDeliveryDate = DateTime.Now;
+
+                        _context.SaveChanges();
+                        
+                        LoadDeliveries();
+                        LoadProducts();
+                        LoadStockAdjustments();
+                        LoadStockAlerts();
+                        
+                        MessageBox.Show(
+                            $"Levering succesvol verwerkt!\n\n{itemsProcessed} product(en) toegevoegd aan voorraad.",
+                            "Succes",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Fout bij verwerken: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
         }
@@ -232,12 +370,15 @@ namespace SuntoryManagementSystem
                 {
                     try
                     {
-                        _context.Deliveries.Remove(selectedDelivery);
+                        // SOFT DELETE
+                        selectedDelivery.IsDeleted = true;
+                        selectedDelivery.DeletedDate = DateTime.Now;
+                        _context.Deliveries.Update(selectedDelivery);
                         _context.SaveChanges();
                         LoadDeliveries();
                         MessageBox.Show("Levering succesvol verwijderd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
-                    catch (System.Exception ex)
+                    catch (Exception ex)
                     {
                         MessageBox.Show($"Fout bij het verwijderen: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
@@ -292,7 +433,10 @@ namespace SuntoryManagementSystem
                 {
                     try
                     {
-                        _context.Vehicles.Remove(selectedVehicle);
+                        // SOFT DELETE
+                        selectedVehicle.IsDeleted = true;
+                        selectedVehicle.DeletedDate = DateTime.Now;
+                        _context.Vehicles.Update(selectedVehicle);
                         _context.SaveChanges();
                         LoadVehicles();
                         MessageBox.Show("Voertuig succesvol verwijderd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);

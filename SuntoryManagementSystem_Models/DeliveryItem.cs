@@ -46,6 +46,18 @@ namespace SuntoryManagementSystem.Models
         [Display(Name = "Verwerkt")]
         public bool IsProcessed { get; set; } = false;
 
+        // SOFT DELETE PROPERTIES
+        
+        /// Is dit leveringsitem soft-deleted?
+        [Required]
+        [Display(Name = "Verwijderd")]
+        public bool IsDeleted { get; set; } = false;
+
+        /// Datum en tijd van soft delete
+        [Display(Name = "Verwijderd op")]
+        [DataType(DataType.DateTime)]
+        public DateTime? DeletedDate { get; set; }
+
         public override string ToString()
         {
             return $"{DeliveryItemId} - {Quantity}x Product (ID: {ProductId}) @ €{UnitPrice}";

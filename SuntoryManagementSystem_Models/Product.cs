@@ -78,6 +78,18 @@ namespace SuntoryManagementSystem.Models
         [DataType(DataType.DateTime)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
+        // SOFT DELETE PROPERTIES
+        
+        /// Is dit product soft-deleted?
+        [Required]
+        [Display(Name = "Verwijderd")]
+        public bool IsDeleted { get; set; } = false;
+
+        /// Datum en tijd van soft delete
+        [Display(Name = "Verwijderd op")]
+        [DataType(DataType.DateTime)]
+        public DateTime? DeletedDate { get; set; }
+
         // NAVIGATION PROPERTIES - Relaties met andere entiteiten
 
         /// Alle levering items die dit product bevatten

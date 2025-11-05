@@ -59,6 +59,18 @@ namespace SuntoryManagementSystem.Models
         [Display(Name = "Aangepast door")]
         public string AdjustedBy { get; set; } = string.Empty;
 
+        // SOFT DELETE PROPERTIES
+        
+        /// Is deze aanpassing soft-deleted?
+        [Required]
+        [Display(Name = "Verwijderd")]
+        public bool IsDeleted { get; set; } = false;
+
+        /// Datum en tijd van soft delete
+        [Display(Name = "Verwijderd op")]
+        [DataType(DataType.DateTime)]
+        public DateTime? DeletedDate { get; set; }
+
         public override string ToString()
         {
             return $"{StockAdjustmentId} - {AdjustmentType} van {QuantityChange} stuks (Product ID: {ProductId}) op {AdjustmentDate:dd-MM-yyyy HH:mm}";
