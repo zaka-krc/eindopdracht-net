@@ -26,8 +26,4 @@
     <ProjectReference Include="..\SuntoryManagementSystem_Models\SuntoryManagementSystem_Models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Converters\" />
-  </ItemGroup>
-
 </Project>

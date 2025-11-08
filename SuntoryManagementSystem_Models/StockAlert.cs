@@ -72,27 +72,25 @@ namespace SuntoryManagementSystem.Models
             var list = new List<StockAlert>();
             list.AddRange(new[]
             {
+                // Product 2 (Lucozade): Voorraad = 100, Minimum = 120 → Low Stock Alert
                 new StockAlert 
                 { 
                     ProductId = 2,
                     AlertType = "Low Stock",
                     Status = "Active",
-                    Notes = "Voorraad bijna op, nieuwe bestelling plaatsen"
+                    CreatedDate = DateTime.Now.AddDays(-2).AddHours(4),
+                    Notes = "Voorraad onder minimum na outgoing levering OUT-2025-002. Nieuwe bestelling plaatsen."
                 },
-                new StockAlert 
-                { 
-                    ProductId = 3,
-                    AlertType = "Critical",
-                    Status = "Active",
-                    Notes = "Urgent: voorraad onder minimum"
-                },
+                
+                // Oude alert voor Product 1 die is opgelost door INC-2025-002
                 new StockAlert 
                 { 
                     ProductId = 1,
                     AlertType = "Low Stock",
                     Status = "Resolved",
-                    ResolvedDate = DateTime.Now.AddDays(-2),
-                    Notes = "Opgelost: nieuwe levering ontvangen"
+                    CreatedDate = DateTime.Now.AddDays(-5),
+                    ResolvedDate = DateTime.Now.AddDays(-3).AddHours(2),
+                    Notes = "Opgelost door verwerking van incoming levering INC-2025-002"
                 }
             });
             return list;

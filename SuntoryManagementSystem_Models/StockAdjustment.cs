@@ -81,35 +81,87 @@ namespace SuntoryManagementSystem.Models
             var list = new List<StockAdjustment>();
             list.AddRange(new[]
             {
+                // Aanpassing door verwerking van INC-2025-002 (3 dagen geleden)
                 new StockAdjustment 
                 { 
-                    ProductId = 1,
+                    ProductId = 1,  // Orangina
                     AdjustmentType = "Addition",
-                    QuantityChange = 50,
+                    QuantityChange = 200,
                     PreviousQuantity = 200,
-                    NewQuantity = 250,
-                    Reason = "Nieuwe levering ontvangen",
-                    AdjustedBy = "Admin"
+                    NewQuantity = 400,
+                    Reason = "Incoming levering INC-2025-002 verwerkt",
+                    AdjustedBy = "Systeem",
+                    AdjustmentDate = DateTime.Now.AddDays(-3).AddHours(2)
                 },
                 new StockAdjustment 
                 { 
-                    ProductId = 2,
+                    ProductId = 3,  // Ribena
+                    AdjustmentType = "Addition",
+                    QuantityChange = 150,
+                    PreviousQuantity = 120,
+                    NewQuantity = 270,
+                    Reason = "Incoming levering INC-2025-002 verwerkt",
+                    AdjustedBy = "Systeem",
+                    AdjustmentDate = DateTime.Now.AddDays(-3).AddHours(2).AddMinutes(1)
+                },
+                
+                // Aanpassing door verwerking van OUT-2025-002 (2 dagen geleden)
+                new StockAdjustment 
+                { 
+                    ProductId = 1,  // Orangina
+                    AdjustmentType = "Removal",
+                    QuantityChange = -100,
+                    PreviousQuantity = 400,
+                    NewQuantity = 300,
+                    Reason = "Outgoing levering OUT-2025-002 verwerkt",
+                    AdjustedBy = "Systeem",
+                    AdjustmentDate = DateTime.Now.AddDays(-2).AddHours(3)
+                },
+                new StockAdjustment 
+                { 
+                    ProductId = 2,  // Lucozade
+                    AdjustmentType = "Removal",
+                    QuantityChange = -80,
+                    PreviousQuantity = 180,
+                    NewQuantity = 100,
+                    Reason = "Outgoing levering OUT-2025-002 verwerkt",
+                    AdjustedBy = "Systeem",
+                    AdjustmentDate = DateTime.Now.AddDays(-2).AddHours(3).AddMinutes(1)
+                },
+                new StockAdjustment 
+                { 
+                    ProductId = 3,  // Ribena
+                    AdjustmentType = "Removal",
+                    QuantityChange = -50,
+                    PreviousQuantity = 270,
+                    NewQuantity = 220,
+                    Reason = "Outgoing levering OUT-2025-002 verwerkt",
+                    AdjustedBy = "Systeem",
+                    AdjustmentDate = DateTime.Now.AddDays(-2).AddHours(3).AddMinutes(2)
+                },
+                
+                // Handmatige correctie (1 week geleden)
+                new StockAdjustment 
+                { 
+                    ProductId = 2,  // Lucozade
                     AdjustmentType = "Damage",
                     QuantityChange = -15,
                     PreviousQuantity = 195,
                     NewQuantity = 180,
-                    Reason = "Beschadigde producten door transport",
-                    AdjustedBy = "Admin"
+                    Reason = "Beschadigde producten door transport - pallet omgevallen",
+                    AdjustedBy = "Warehouse Manager",
+                    AdjustmentDate = DateTime.Now.AddDays(-7).AddHours(10)
                 },
                 new StockAdjustment 
                 { 
-                    ProductId = 3,
+                    ProductId = 4,  // Schweppes
                     AdjustmentType = "Correction",
-                    QuantityChange = -5,
-                    PreviousQuantity = 125,
-                    NewQuantity = 120,
-                    Reason = "Tellingsverschil na inventarisatie",
-                    AdjustedBy = "Warehouse Manager"
+                    QuantityChange = -8,
+                    PreviousQuantity = 158,
+                    NewQuantity = 150,
+                    Reason = "Tellingsverschil na inventarisatie - correctie naar werkelijke voorraad",
+                    AdjustedBy = "Admin",
+                    AdjustmentDate = DateTime.Now.AddDays(-5).AddHours(14)
                 }
             });
             return list;

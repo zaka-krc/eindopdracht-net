@@ -74,7 +74,7 @@ namespace SuntoryManagementSystem.Models
             var list = new List<DeliveryItem>();
             list.AddRange(new[]
             {
-                // Items voor DEL-2025-001 (Delivery ID: 1)
+                // Items voor INC-2025-001 (Delivery ID: 1) - Gepland
                 new DeliveryItem 
                 { 
                     DeliveryId = 1,
@@ -92,7 +92,7 @@ namespace SuntoryManagementSystem.Models
                     IsProcessed = false
                 },
 
-                // Items voor DEL-2025-002 (Delivery ID: 2)
+                // Items voor INC-2025-002 (Delivery ID: 2) - Delivered
                 new DeliveryItem 
                 { 
                     DeliveryId = 2,
@@ -110,7 +110,7 @@ namespace SuntoryManagementSystem.Models
                     IsProcessed = true
                 },
 
-                // Items voor DEL-2025-003 (Delivery ID: 3)
+                // Items voor INC-2025-003 (Delivery ID: 3) - Gepland
                 new DeliveryItem 
                 { 
                     DeliveryId = 3,
@@ -126,6 +126,68 @@ namespace SuntoryManagementSystem.Models
                     Quantity = 80,
                     UnitPrice = 0.65m,
                     IsProcessed = false
+                },
+
+                // Items voor OUT-2025-001 (Delivery ID: 4) - Gepland
+                new DeliveryItem 
+                { 
+                    DeliveryId = 4,
+                    ProductId = 1,  // Orangina Original 330ml
+                    Quantity = 50,
+                    UnitPrice = 0.90m,  // Selling price
+                    IsProcessed = false
+                },
+                new DeliveryItem 
+                { 
+                    DeliveryId = 4,
+                    ProductId = 3,  // Ribena Blackcurrant 500ml
+                    Quantity = 30,
+                    UnitPrice = 1.50m,  // Selling price
+                    IsProcessed = false
+                },
+
+                // Items voor INC-2025-004 (Delivery ID: 5) - Geannuleerd
+                new DeliveryItem 
+                { 
+                    DeliveryId = 5,
+                    ProductId = 2,  // Lucozade Energy Original 380ml
+                    Quantity = 100,
+                    UnitPrice = 0.65m,
+                    IsProcessed = false
+                },
+                new DeliveryItem 
+                { 
+                    DeliveryId = 5,
+                    ProductId = 4,  // Schweppes Tonic Water 200ml
+                    Quantity = 150,
+                    UnitPrice = 0.35m,
+                    IsProcessed = false
+                },
+
+                // Items voor OUT-2025-002 (Delivery ID: 6) - Delivered
+                new DeliveryItem 
+                { 
+                    DeliveryId = 6,
+                    ProductId = 1,  // Orangina Original 330ml
+                    Quantity = 100,
+                    UnitPrice = 0.90m,  // Selling price
+                    IsProcessed = true
+                },
+                new DeliveryItem 
+                { 
+                    DeliveryId = 6,
+                    ProductId = 2,  // Lucozade Energy Original 380ml
+                    Quantity = 80,
+                    UnitPrice = 1.20m,  // Selling price
+                    IsProcessed = true
+                },
+                new DeliveryItem 
+                { 
+                    DeliveryId = 6,
+                    ProductId = 3,  // Ribena Blackcurrant 500ml
+                    Quantity = 50,
+                    UnitPrice = 1.50m,  // Selling price
+                    IsProcessed = true
                 }
             });
             return list;

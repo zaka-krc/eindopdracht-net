@@ -59,11 +59,11 @@ namespace SuntoryManagementSystem.Models
         [DataType(DataType.DateTime)]
         public DateTime? ActualDeliveryDate { get; set; }
 
-        /// Status van de levering: "Pending", "In Transit", "Delivered", "Cancelled"
+        /// Status van de levering: "Gepland", "Delivered", "Geannuleerd"
         [Required]
         [StringLength(20)]
         [Display(Name = "Status")]
-        public string Status { get; set; } = "Pending";
+        public string Status { get; set; } = "Gepland";
 
         /// Totaal bedrag van de levering
         [Required]
@@ -116,15 +116,20 @@ namespace SuntoryManagementSystem.Models
             var list = new List<Delivery>();
             list.AddRange(new[]
             {
+                // Geplande incoming levering (aangemaakt 3 dagen geleden)
                 new Delivery 
                 { 
                     DeliveryType = "Incoming",
                     SupplierId = 1,
                     ReferenceNumber = "INC-2025-001",
                     ExpectedDeliveryDate = DateTime.Now.AddDays(2),
-                    Status = "Pending",
-                    TotalAmount = 450.00m
+                    Status = "Gepland",
+                    TotalAmount = 450.00m,
+                    IsProcessed = false,
+                    CreatedDate = DateTime.Now.AddDays(-3),
+                    Notes = "Nieuwe voorraad Orangina en Lucozade"
                 },
+                // Verwerkte incoming levering (aangemaakt en verwerkt 3 dagen geleden)
                 new Delivery 
                 { 
                     DeliveryType = "Incoming",
@@ -134,17 +139,24 @@ namespace SuntoryManagementSystem.Models
                     ActualDeliveryDate = DateTime.Now.AddDays(-3).AddHours(2),
                     Status = "Delivered",
                     TotalAmount = 780.50m,
-                    IsProcessed = true
+                    IsProcessed = true,
+                    CreatedDate = DateTime.Now.AddDays(-5),
+                    Notes = "Levering succesvol ontvangen en verwerkt"
                 },
+                // Geplande incoming levering (aangemaakt 1 dag geleden)
                 new Delivery 
                 { 
                     DeliveryType = "Incoming",
                     SupplierId = 2,
                     ReferenceNumber = "INC-2025-003",
                     ExpectedDeliveryDate = DateTime.Now.AddDays(5),
-                    Status = "In Transit",
-                    TotalAmount = 320.00m
+                    Status = "Gepland",
+                    TotalAmount = 320.00m,
+                    IsProcessed = false,
+                    CreatedDate = DateTime.Now.AddDays(-1),
+                    Notes = "Verwachte levering eind van de week"
                 },
+                // Geplande outgoing levering naar klant (aangemaakt vandaag)
                 new Delivery 
                 { 
                     DeliveryType = "Outgoing",
@@ -152,8 +164,39 @@ namespace SuntoryManagementSystem.Models
                     VehicleId = 1,
                     ReferenceNumber = "OUT-2025-001",
                     ExpectedDeliveryDate = DateTime.Now.AddDays(1),
-                    Status = "Pending",
-                    TotalAmount = 250.00m
+                    Status = "Gepland",
+                    TotalAmount = 250.00m,
+                    IsProcessed = false,
+                    CreatedDate = DateTime.Now.AddHours(-5),
+                    Notes = "Bestelling voor Albert Heijn Brussel Centrum"
+                },
+                // Geannuleerde levering (aangemaakt 4 dagen geleden, geannuleerd 2 dagen geleden)
+                new Delivery 
+                { 
+                    DeliveryType = "Incoming",
+                    SupplierId = 1,
+                    ReferenceNumber = "INC-2025-004",
+                    ExpectedDeliveryDate = DateTime.Now.AddDays(-1),
+                    Status = "Geannuleerd",
+                    TotalAmount = 500.00m,
+                    IsProcessed = false,
+                    CreatedDate = DateTime.Now.AddDays(-4),
+                    Notes = "Geannuleerd wegens leveringsproblemen bij leverancier"
+                },
+                // Verwerkte outgoing levering (aangemaakt 3 dagen geleden, verwerkt 2 dagen geleden)
+                new Delivery 
+                { 
+                    DeliveryType = "Outgoing",
+                    CustomerId = 2,
+                    VehicleId = 2,
+                    ReferenceNumber = "OUT-2025-002",
+                    ExpectedDeliveryDate = DateTime.Now.AddDays(-2),
+                    ActualDeliveryDate = DateTime.Now.AddDays(-2).AddHours(3),
+                    Status = "Delivered",
+                    TotalAmount = 890.00m,
+                    IsProcessed = true,
+                    CreatedDate = DateTime.Now.AddDays(-3),
+                    Notes = "Succesvolle levering naar Horeca Groothandel De Smet"
                 }
             });
             return list;

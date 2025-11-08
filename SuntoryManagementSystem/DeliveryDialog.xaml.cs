@@ -41,17 +41,54 @@ namespace SuntoryManagementSystem
             _wasProcessed = delivery.IsProcessed;
             LoadDeliveryData();
             LoadDeliveryItems();
+            
+            // Toon "Levering Annuleren" knop alleen als levering nog niet verwerkt is en niet al geannuleerd
+            if (!delivery.IsProcessed && delivery.Status != "Geannuleerd")
+            {
+                btnCancelDelivery.Visibility = Visibility.Visible;
+            }
+            
+            // Als levering al verwerkt of geannuleerd is, maak velden read-only
+            if (delivery.IsProcessed || delivery.Status == "Geannuleerd")
+            {
+                cmbDeliveryType.IsEnabled = false;
+                txtReferenceNumber.IsReadOnly = true;
+                cmbSupplier.IsEnabled = false;
+                cmbCustomer.IsEnabled = false;
+                cmbVehicle.IsEnabled = false;
+                dpExpectedDate.IsEnabled = false;
+                txtNotes.IsReadOnly = true;
+                cmbProduct.IsEnabled = false;
+                txtQuantity.IsReadOnly = true;
+                txtUnitPrice.IsReadOnly = true;
+                btnAddItem.IsEnabled = false;
+                btnRemoveItem.IsEnabled = false;
+                btnSave.IsEnabled = false;
+                btnCancelDelivery.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void LoadComboBoxes()
         {
-            var suppliers = _context.Suppliers.Where(s => !s.IsDeleted).OrderBy(s => s.SupplierName).ToList();
+            // Alleen actieve leveranciers tonen
+            var suppliers = _context.Suppliers
+                .Where(s => !s.IsDeleted && s.Status == "Active")
+                .OrderBy(s => s.SupplierName)
+                .ToList();
             cmbSupplier.ItemsSource = suppliers;
             
-            var customers = _context.Customers.Where(c => !c.IsDeleted).OrderBy(c => c.CustomerName).ToList();
+            // Alleen actieve klanten tonen
+            var customers = _context.Customers
+                .Where(c => !c.IsDeleted && c.Status == "Active")
+                .OrderBy(c => c.CustomerName)
+                .ToList();
             cmbCustomer.ItemsSource = customers;
             
-            var vehicles = _context.Vehicles.Where(v => !v.IsDeleted).OrderBy(v => v.LicensePlate).ToList();
+            // Alleen beschikbare voertuigen tonen
+            var vehicles = _context.Vehicles
+                .Where(v => !v.IsDeleted && v.IsAvailable)
+                .OrderBy(v => v.LicensePlate)
+                .ToList();
             cmbVehicle.ItemsSource = vehicles;
             
             if (suppliers.Any())
@@ -63,6 +100,7 @@ namespace SuntoryManagementSystem
 
         private void LoadProducts()
         {
+            // Alleen actieve producten met voldoende voorraad tonen
             var products = _context.Products
                 .Where(p => !p.IsDeleted && p.IsActive)
                 .OrderBy(p => p.ProductName)
@@ -106,17 +144,6 @@ namespace SuntoryManagementSystem
             cmbCustomer.SelectedValue = Delivery.CustomerId;
             cmbVehicle.SelectedValue = Delivery.VehicleId;
             dpExpectedDate.SelectedDate = Delivery.ExpectedDeliveryDate;
-            
-            // Set status via loop through items
-            foreach (ComboBoxItem item in cmbStatus.Items)
-            {
-                if (item.Content.ToString() == Delivery.Status)
-                {
-                    cmbStatus.SelectedItem = item;
-                    break;
-                }
-            }
-            
             txtNotes.Text = Delivery.Notes;
             
             UpdateVisibility(Delivery.DeliveryType);
@@ -188,17 +215,44 @@ namespace SuntoryManagementSystem
             string deliveryType = ((ComboBoxItem)cmbDeliveryType.SelectedItem).Tag.ToString()!;
 
             // Check bij outgoing of er genoeg voorraad is
-            if (deliveryType == "Outgoing" && product.StockQuantity < quantity)
+            if (deliveryType == "Outgoing")
             {
-                var result = MessageBox.Show(
-                    $"Let op: Je probeert {quantity} stuks toe te voegen, maar er zijn slechts {product.StockQuantity} in voorraad.\n\n" +
-                    "Wil je toch doorgaan?",
-                    "Voorraad Waarschuwing",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
+                // Bereken hoeveel er al in de lijst zit van dit product
+                int alreadyInList = _items.Where(i => i.ProductId == product.ProductId)
+                                          .Sum(i => i.Quantity);
+                int totalRequested = alreadyInList + quantity;
 
-                if (result == MessageBoxResult.No)
+                if (totalRequested > product.StockQuantity)
+                {
+                    MessageBox.Show(
+                        $"ONVOLDOENDE VOORRAAD!\n\n" +
+                        $"Product: {product.ProductName}\n" +
+                        $"Beschikbare voorraad: {product.StockQuantity}\n" +
+                        $"Al in levering: {alreadyInList}\n" +
+                        $"Probeer toe te voegen: {quantity}\n" +
+                        $"Totaal gevraagd: {totalRequested}\n\n" +
+                        $"Je kunt maximaal {product.StockQuantity - alreadyInList} stuks toevoegen.",
+                        "Voorraad Fout",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                     return;
+                }
+
+                // Waarschuwing als het dicht bij de limiet komt
+                if (totalRequested == product.StockQuantity)
+                {
+                    var result = MessageBox.Show(
+                        $"LET OP!\n\n" +
+                        $"Je gebruikt de HELE voorraad van '{product.ProductName}'.\n" +
+                        $"Totaal: {totalRequested} van {product.StockQuantity} stuks\n\n" +
+                        "Wil je doorgaan?",
+                        "Voorraad Waarschuwing",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Warning);
+
+                    if (result == MessageBoxResult.No)
+                        return;
+                }
             }
 
             var item = new DeliveryItem
@@ -291,6 +345,42 @@ namespace SuntoryManagementSystem
                 return;
             }
 
+            // Extra validatie voor outgoing deliveries - check voorraad
+            if (deliveryType == "Outgoing" && !_wasProcessed)
+            {
+                var validationErrors = new System.Text.StringBuilder();
+                
+                // Groepeer items per product en check totale hoeveelheid
+                var productGroups = _items.GroupBy(i => i.ProductId);
+                foreach (var group in productGroups)
+                {
+                    var product = _context.Products.Find(group.Key);
+                    if (product != null)
+                    {
+                        int totalQuantity = group.Sum(i => i.Quantity);
+                        
+                        if (product.StockQuantity < totalQuantity)
+                        {
+                            validationErrors.AppendLine(
+                                $"- {product.ProductName}: voorraad {product.StockQuantity}, nodig {totalQuantity}");
+                        }
+                    }
+                }
+
+                if (validationErrors.Length > 0)
+                {
+                    MessageBox.Show(
+                        "ONVOLDOENDE VOORRAAD!\n\n" +
+                        "De volgende producten hebben onvoldoende voorraad:\n\n" + 
+                        validationErrors.ToString() +
+                        "\nDe levering kan niet worden opgeslagen.",
+                        "Voorraad Validatie",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    return;
+                }
+            }
+
             Delivery.DeliveryType = deliveryType;
             Delivery.ReferenceNumber = txtReferenceNumber.Text.Trim();
             
@@ -307,14 +397,16 @@ namespace SuntoryManagementSystem
             
             Delivery.VehicleId = cmbVehicle.SelectedValue as int?;
             Delivery.ExpectedDeliveryDate = dpExpectedDate.SelectedDate.Value;
-            Delivery.Status = ((ComboBoxItem)cmbStatus.SelectedItem).Content.ToString()!;
+            
+            // Status automatisch bepalen
+            if (!_isEditMode || !_wasProcessed)
+            {
+                Delivery.Status = "Gepland";
+            }
+            // Als het al verwerkt was (IsProcessed=true), blijft de status "Delivered"
+            
             Delivery.TotalAmount = _items.Sum(i => i.Quantity * i.UnitPrice);
             Delivery.Notes = txtNotes.Text.Trim();
-
-            if (Delivery.Status == "Delivered" && Delivery.ActualDeliveryDate == null)
-            {
-                Delivery.ActualDeliveryDate = DateTime.Now;
-            }
 
             if (!_isEditMode)
             {
@@ -326,6 +418,23 @@ namespace SuntoryManagementSystem
 
             DialogResult = true;
             Close();
+        }
+
+        private void btnCancelDelivery_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show(
+                $"Weet u zeker dat u levering '{Delivery.ReferenceNumber}' wilt annuleren?\n\n" +
+                "Deze actie kan niet ongedaan worden gemaakt.",
+                "Levering Annuleren",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                Delivery.Status = "Geannuleerd";
+                DialogResult = true;
+                Close();
+            }
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)

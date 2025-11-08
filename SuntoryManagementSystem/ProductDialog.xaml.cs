@@ -10,7 +10,10 @@ namespace SuntoryManagementSystem
         public Product Product { get; private set; }
         private readonly bool _isEditMode;
         private readonly SuntoryDbContext _context;
-        private int _originalStockQuantity; // Om voorraadwijzigingen te tracken
+        private int _originalStockQuantity;
+        public bool HasStockAdjustment { get; private set; } = false;
+        public int InitialStock { get; private set; }
+        public string AdjustmentType { get; private set; } = "Addition";
 
         public ProductDialog(SuntoryDbContext context)
         {
@@ -28,13 +31,16 @@ namespace SuntoryManagementSystem
             Title = "Product Wijzigen";
             _isEditMode = true;
             Product = product;
-            _originalStockQuantity = product.StockQuantity; // Bewaar originele voorraad
+            _originalStockQuantity = product.StockQuantity;
             LoadProductData();
         }
 
         private void LoadSuppliers()
         {
-            var suppliers = _context.Suppliers.OrderBy(s => s.SupplierName).ToList();
+            var suppliers = _context.Suppliers
+                .Where(s => !s.IsDeleted && s.Status == "Active")
+                .OrderBy(s => s.SupplierName)
+                .ToList();
             cmbSupplier.ItemsSource = suppliers;
             
             if (suppliers.Any())
@@ -118,119 +124,59 @@ namespace SuntoryManagementSystem
             Product.IsActive = chkIsActive.IsChecked ?? true;
             Product.Description = txtDescription.Text.Trim();
 
-            // NIEUW: Check of voorraad is gewijzigd en maak StockAdjustment
-            if (_isEditMode && stockQuantity != _originalStockQuantity)
+            bool isNewProduct = !_isEditMode;
+            bool stockChanged = _isEditMode && stockQuantity != _originalStockQuantity;
+            string adjustmentType = "Addition";
+
+            if (stockChanged)
             {
-                CreateStockAdjustment(_originalStockQuantity, stockQuantity);
+                int quantityChange = stockQuantity - _originalStockQuantity;
+                
+                if (quantityChange < 0)
+                {
+                    var typeDialog = new StockAdjustmentTypeDialog(quantityChange);
+                    
+                    if (typeDialog.ShowDialog() == true)
+                    {
+                        adjustmentType = typeDialog.AdjustmentType;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                else if (quantityChange > 0)
+                {
+                    var typeDialog = new StockAdditionTypeDialog(quantityChange);
+                    
+                    if (typeDialog.ShowDialog() == true)
+                    {
+                        adjustmentType = typeDialog.AdjustmentType;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
             }
 
             Product.StockQuantity = stockQuantity;
 
+            if (isNewProduct && stockQuantity > 0)
+            {
+                HasStockAdjustment = true;
+                InitialStock = stockQuantity;
+                AdjustmentType = "Addition";
+            }
+            else if (stockChanged)
+            {
+                HasStockAdjustment = true;
+                InitialStock = stockQuantity;
+                AdjustmentType = adjustmentType;
+            }
+
             DialogResult = true;
             Close();
-        }
-
-        /// <summary>
-        /// Maakt automatisch een StockAdjustment record aan bij voorraadwijziging
-        /// </summary>
-        private void CreateStockAdjustment(int previousQuantity, int newQuantity)
-        {
-            int quantityChange = newQuantity - previousQuantity;
-            string adjustmentType;
-            string reason;
-
-            if (quantityChange > 0)
-            {
-                adjustmentType = "Addition";
-                reason = $"Handmatige voorraad aanpassing: +{quantityChange} stuks toegevoegd";
-            }
-            else
-            {
-                adjustmentType = "Removal";
-                reason = $"Handmatige voorraad aanpassing: {quantityChange} stuks verwijderd";
-            }
-
-            var adjustment = new StockAdjustment
-            {
-                ProductId = Product.ProductId,
-                AdjustmentType = adjustmentType,
-                QuantityChange = quantityChange,
-                PreviousQuantity = previousQuantity,
-                NewQuantity = newQuantity,
-                Reason = reason,
-                AdjustedBy = "Systeem - Handmatige wijziging",
-                AdjustmentDate = DateTime.Now
-            };
-
-            _context.StockAdjustments.Add(adjustment);
-
-            // Check of we een StockAlert moeten maken
-            if (newQuantity < Product.MinimumStock)
-            {
-                CreateOrUpdateStockAlert(newQuantity);
-            }
-            else
-            {
-                // Resolve bestaande alerts als voorraad weer boven minimum is
-                ResolveStockAlerts();
-            }
-        }
-
-        /// <summary>
-        /// Maakt een StockAlert aan of update bestaande alert
-        /// </summary>
-        private void CreateOrUpdateStockAlert(int currentStock)
-        {
-            var existingAlert = _context.StockAlerts
-                .FirstOrDefault(sa => sa.ProductId == Product.ProductId 
-                    && sa.Status == "Active" 
-                    && !sa.IsDeleted);
-
-            if (existingAlert == null)
-            {
-                // Maak nieuwe alert
-                string alertType = currentStock == 0 ? "Out of Stock" : 
-                                 currentStock < (Product.MinimumStock / 2) ? "Critical" : 
-                                 "Low Stock";
-
-                var alert = new StockAlert
-                {
-                    ProductId = Product.ProductId,
-                    AlertType = alertType,
-                    Status = "Active",
-                    CreatedDate = DateTime.Now,
-                    Notes = $"Voorraad is {currentStock} stuks, minimum is {Product.MinimumStock}"
-                };
-
-                _context.StockAlerts.Add(alert);
-            }
-            else
-            {
-                // Update bestaande alert type
-                existingAlert.AlertType = currentStock == 0 ? "Out of Stock" : 
-                                        currentStock < (Product.MinimumStock / 2) ? "Critical" : 
-                                        "Low Stock";
-                existingAlert.Notes = $"Voorraad is {currentStock} stuks, minimum is {Product.MinimumStock}";
-            }
-        }
-
-        /// <summary>
-        /// Resolved actieve StockAlerts voor dit product
-        /// </summary>
-        private void ResolveStockAlerts()
-        {
-            var activeAlerts = _context.StockAlerts
-                .Where(sa => sa.ProductId == Product.ProductId 
-                    && sa.Status == "Active" 
-                    && !sa.IsDeleted)
-                .ToList();
-
-            foreach (var alert in activeAlerts)
-            {
-                alert.Status = "Resolved";
-                alert.ResolvedDate = DateTime.Now;
-                alert.Notes += " - Opgelost: voorraad weer boven minimum";
-            }
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)

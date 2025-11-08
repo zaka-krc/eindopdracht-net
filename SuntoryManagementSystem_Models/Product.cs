@@ -111,6 +111,8 @@ namespace SuntoryManagementSystem.Models
             var list = new List<Product>();
             list.AddRange(new[]
             {
+                // Product 1: Orangina
+                // Start: 200 → +200 (INC-002) = 400 → -100 (OUT-002) = 300
                 new Product 
                 { 
                     ProductName = "Orangina Original 330ml",
@@ -119,10 +121,14 @@ namespace SuntoryManagementSystem.Models
                     Category = "Frisdrank",
                     PurchasePrice = 0.45m,
                     SellingPrice = 0.95m,
-                    StockQuantity = 250,
+                    StockQuantity = 300,  // Huidige voorraad na verwerking
                     MinimumStock = 50,
-                    SupplierId = 1
+                    SupplierId = 1,
+                    IsActive = true,
+                    CreatedDate = DateTime.Now.AddMonths(-2)
                 },
+                // Product 2: Lucozade
+                // Start: 195 → -15 (Damage) = 180 → -80 (OUT-002) = 100
                 new Product 
                 { 
                     ProductName = "Lucozade Energy Original 380ml",
@@ -131,10 +137,14 @@ namespace SuntoryManagementSystem.Models
                     Category = "Energiedrank",
                     PurchasePrice = 0.65m,
                     SellingPrice = 1.25m,
-                    StockQuantity = 180,
-                    MinimumStock = 40,
-                    SupplierId = 1
+                    StockQuantity = 100,  // Onder minimum! (Low Stock Alert)
+                    MinimumStock = 120,
+                    SupplierId = 1,
+                    IsActive = true,
+                    CreatedDate = DateTime.Now.AddMonths(-2)
                 },
+                // Product 3: Ribena
+                // Start: 120 → +150 (INC-002) = 270 → -50 (OUT-002) = 220
                 new Product 
                 { 
                     ProductName = "Ribena Blackcurrant 500ml",
@@ -143,10 +153,14 @@ namespace SuntoryManagementSystem.Models
                     Category = "Frisdrank",
                     PurchasePrice = 0.80m,
                     SellingPrice = 1.50m,
-                    StockQuantity = 120,
-                    MinimumStock = 30,
-                    SupplierId = 1
+                    StockQuantity = 220,
+                    MinimumStock = 80,
+                    SupplierId = 1,
+                    IsActive = true,
+                    CreatedDate = DateTime.Now.AddMonths(-2)
                 },
+                // Product 4: Schweppes
+                // Start: 158 → -8 (Correction) = 150
                 new Product 
                 { 
                     ProductName = "Schweppes Tonic Water 200ml",
@@ -155,9 +169,11 @@ namespace SuntoryManagementSystem.Models
                     Category = "Mixer",
                     PurchasePrice = 0.35m,
                     SellingPrice = 0.75m,
-                    StockQuantity = 300,
+                    StockQuantity = 150,
                     MinimumStock = 60,
-                    SupplierId = 2
+                    SupplierId = 2,
+                    IsActive = true,
+                    CreatedDate = DateTime.Now.AddMonths(-1)
                 }
             });
             return list;
