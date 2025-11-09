@@ -10,7 +10,7 @@ Het **Suntory Management System** is een WPF desktop applicatie voor het beheren
 
 ## Functionaliteiten
 
-### 🗄️ Voorraadbeheer
+### Voorraadbeheer
 - **Product CRUD** met real-time voorraadtracking
 - **Automatische waarschuwingen** bij lage voorraad
 - **Voorraadcorrecties** met categorie en reden:
@@ -90,6 +90,9 @@ Alle rapporten worden opgeslagen in: `Documenten\Suntory Reports\`
 - ClosedXML voor Excel-rapporten
 - Soft delete op entiteiten (`IsDeleted`, `DeletedDate`)
 
+
+## ProjectStructuur
+```
 SuntoryManagementSystem/
 ├─ SuntoryManagementSystem/                 # WPF Desktop App (UI Layer)
 │  ├─ MainWindow.xaml(.cs)                  # Hoofdvenster met tabs
@@ -138,6 +141,7 @@ SuntoryManagementSystem/
 │  └─ SuntoryDbContext.cs                   # EF Core DbContext + Seeding
 │
 └─ SuntoryManagementSystem_Cons/            # Console testapp (optioneel)
+```
 
 
 ## Installatie en starten
@@ -189,9 +193,12 @@ Dit project maakt gebruik van **GitHub Copilot** voor:
 - LINQ queries (Method & Query Syntax)
 - Lambda expressies voor data filtering
 - Async/await implementaties
+- Implementatie van een zelf-ontworpen control
+- Conversie van Boolean naar Status
 - Entity Framework queries
 - XAML data binding syntaxis
 - Try-catch error handling
+- Deze README
 
 **Disclaimer**: Dit is een educatief project en niet bedoeld voor commercieel gebruik. Alle rechten op externe libraries behoren toe aan hun respectievelijke eigenaars.
 
