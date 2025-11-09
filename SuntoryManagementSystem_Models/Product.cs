@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,7 +14,6 @@ namespace SuntoryManagementSystem.Models
 
         // Foreign Key naar Supplier
         [Required(ErrorMessage = "Leverancier is verplicht")]
-        [ForeignKey("Supplier")]
         [Display(Name = "Leverancier")]
         public int SupplierId { get; set; }
 
@@ -90,17 +89,6 @@ namespace SuntoryManagementSystem.Models
         [DataType(DataType.DateTime)]
         public DateTime? DeletedDate { get; set; }
 
-        // NAVIGATION PROPERTIES - Relaties met andere entiteiten
-
-        // Alle levering items die dit product bevatten
-        public ICollection<DeliveryItem>? DeliveryItems { get; set; }
-
-        // Alle voorraad aanpassingen voor dit product
-        public ICollection<StockAdjustment>? StockAdjustments { get; set; }
-
-        // Alle voorraad waarschuwingen voor dit product
-        public ICollection<StockAlert>? StockAlerts { get; set; }
-
         public override string ToString()
         {
             return $"{ProductId} - {ProductName} (SKU: {SKU}, Voorraad: {StockQuantity})";
@@ -112,7 +100,13 @@ namespace SuntoryManagementSystem.Models
             list.AddRange(new[]
             {
                 // Product 1: Orangina
-                // Start: 200 → +200 (INC-002) = 400 → -100 (OUT-002) = 300
+                // Start: 200 
+                // + INC-001: +100 = 300
+                // + INC-002: +200 = 500
+                // - OUT-001: -50 = 450
+                // - OUT-002: -100 = 350
+                // + levering 7: +5 = 355
+                // Huidige voorraad: 355
                 new Product 
                 { 
                     ProductName = "Orangina Original 330ml",
@@ -121,14 +115,20 @@ namespace SuntoryManagementSystem.Models
                     Category = "Frisdrank",
                     PurchasePrice = 0.45m,
                     SellingPrice = 0.95m,
-                    StockQuantity = 300,  // Huidige voorraad na verwerking
+                    StockQuantity = 355,
                     MinimumStock = 50,
                     SupplierId = 1,
                     IsActive = true,
                     CreatedDate = DateTime.Now.AddMonths(-2)
                 },
                 // Product 2: Lucozade
-                // Start: 195 → -15 (Damage) = 180 → -80 (OUT-002) = 100
+                // Start: 195
+                // + INC-001: +50 = 245
+                // + INC-003: +80 = 325
+                // - Damage: -15 = 310
+                // - OUT-002: -80 = 230
+                // + levering 8: +100 = 330
+                // Huidige voorraad: 330
                 new Product 
                 { 
                     ProductName = "Lucozade Energy Original 380ml",
@@ -137,14 +137,18 @@ namespace SuntoryManagementSystem.Models
                     Category = "Energiedrank",
                     PurchasePrice = 0.65m,
                     SellingPrice = 1.25m,
-                    StockQuantity = 100,  // Onder minimum! (Low Stock Alert)
+                    StockQuantity = 330,
                     MinimumStock = 120,
                     SupplierId = 1,
                     IsActive = true,
                     CreatedDate = DateTime.Now.AddMonths(-2)
                 },
                 // Product 3: Ribena
-                // Start: 120 → +150 (INC-002) = 270 → -50 (OUT-002) = 220
+                // Start: 120
+                // + INC-002: +150 = 270
+                // - OUT-001: -30 = 240
+                // - OUT-002: -50 = 190
+                // Huidige voorraad: 190
                 new Product 
                 { 
                     ProductName = "Ribena Blackcurrant 500ml",
@@ -153,14 +157,18 @@ namespace SuntoryManagementSystem.Models
                     Category = "Frisdrank",
                     PurchasePrice = 0.80m,
                     SellingPrice = 1.50m,
-                    StockQuantity = 220,
+                    StockQuantity = 190,
                     MinimumStock = 80,
                     SupplierId = 1,
                     IsActive = true,
                     CreatedDate = DateTime.Now.AddMonths(-2)
                 },
                 // Product 4: Schweppes
-                // Start: 158 → -8 (Correction) = 150
+                // Start: 158
+                // + INC-003: +300 = 458
+                // - Correction: -8 = 450
+                // + levering 8: +200 = 650
+                // Huidige voorraad: 650
                 new Product 
                 { 
                     ProductName = "Schweppes Tonic Water 200ml",
@@ -169,7 +177,7 @@ namespace SuntoryManagementSystem.Models
                     Category = "Mixer",
                     PurchasePrice = 0.35m,
                     SellingPrice = 0.75m,
-                    StockQuantity = 150,
+                    StockQuantity = 650,
                     MinimumStock = 60,
                     SupplierId = 2,
                     IsActive = true,

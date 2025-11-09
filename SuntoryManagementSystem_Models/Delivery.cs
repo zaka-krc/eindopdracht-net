@@ -19,7 +19,6 @@ namespace SuntoryManagementSystem.Models
         public string DeliveryType { get; set; } = "Incoming";
 
         // Foreign Key naar Supplier (voor Incoming deliveries)
-        [ForeignKey("Supplier")]
         [Display(Name = "Leverancier")]
         public int? SupplierId { get; set; }
 
@@ -27,7 +26,6 @@ namespace SuntoryManagementSystem.Models
         public Supplier? Supplier { get; set; }
 
         // Foreign Key naar Customer (voor Outgoing deliveries)
-        [ForeignKey("Customer")]
         [Display(Name = "Klant")]
         public int? CustomerId { get; set; }
 
@@ -35,7 +33,6 @@ namespace SuntoryManagementSystem.Models
         public Customer? Customer { get; set; }
 
         // Foreign Key naar Vehicle (optioneel)
-        [ForeignKey("Vehicle")]
         [Display(Name = "Voertuig")]
         public int? VehicleId { get; set; }
 
@@ -105,6 +102,26 @@ namespace SuntoryManagementSystem.Models
         // Alle items in deze levering
         public ICollection<DeliveryItem>? DeliveryItems { get; set; }
 
+        // COMPUTED PROPERTIES
+        
+        // Partner naam (Leverancier of Klant, afhankelijk van DeliveryType)
+        [NotMapped]
+        public string PartnerName
+        {
+            get
+            {
+                if (DeliveryType == "Incoming")
+                {
+                    return Supplier?.SupplierName ?? "Geen leverancier";
+                }
+                else if (DeliveryType == "Outgoing")
+                {
+                    return Customer?.CustomerName ?? "Geen klant";
+                }
+                return string.Empty;
+            }
+        }
+
         public override string ToString()
         {
             string typeStr = DeliveryType == "Incoming" ? "Inkoop" : "Verkoop";
@@ -116,78 +133,81 @@ namespace SuntoryManagementSystem.Models
             var list = new List<Delivery>();
             list.AddRange(new[]
             {
-                // Geplande incoming levering (aangemaakt 3 dagen geleden)
+                // ID 1: INC-2025-001 - Delivered (verwerkt 3 dagen geleden)
                 new Delivery 
                 { 
                     DeliveryType = "Incoming",
-                    SupplierId = 1,
+                    SupplierId = 1,  // Suntory Beverage & Food Europe
                     ReferenceNumber = "INC-2025-001",
-                    ExpectedDeliveryDate = DateTime.Now.AddDays(2),
-                    Status = "Gepland",
-                    TotalAmount = 450.00m,
-                    IsProcessed = false,
-                    CreatedDate = DateTime.Now.AddDays(-3),
-                    Notes = "Nieuwe voorraad Orangina en Lucozade"
-                },
-                // Verwerkte incoming levering (aangemaakt en verwerkt 3 dagen geleden)
-                new Delivery 
-                { 
-                    DeliveryType = "Incoming",
-                    SupplierId = 1,
-                    ReferenceNumber = "INC-2025-002",
                     ExpectedDeliveryDate = DateTime.Now.AddDays(-3),
                     ActualDeliveryDate = DateTime.Now.AddDays(-3).AddHours(2),
                     Status = "Delivered",
-                    TotalAmount = 780.50m,
+                    TotalAmount = 78.15m,
                     IsProcessed = true,
                     CreatedDate = DateTime.Now.AddDays(-5),
                     Notes = "Levering succesvol ontvangen en verwerkt"
                 },
-                // Geplande incoming levering (aangemaakt 1 dag geleden)
+                // ID 2: INC-2025-002 - Delivered (verwerkt 3 dagen geleden)
                 new Delivery 
                 { 
                     DeliveryType = "Incoming",
-                    SupplierId = 2,
+                    SupplierId = 1,  // Suntory Beverage & Food Europe
+                    ReferenceNumber = "INC-2025-002",
+                    ExpectedDeliveryDate = DateTime.Now.AddDays(-4),
+                    ActualDeliveryDate = DateTime.Now.AddDays(-4).AddHours(2),
+                    Status = "Delivered",
+                    TotalAmount = 780.50m,
+                    IsProcessed = true,
+                    CreatedDate = DateTime.Now.AddDays(-6),
+                    Notes = "Levering succesvol ontvangen en verwerkt"
+                },
+                // ID 3: INC-2025-003 - Delivered
+                new Delivery 
+                { 
+                    DeliveryType = "Incoming",
+                    SupplierId = 2,  // Nederlandse Dranken Distributie
                     ReferenceNumber = "INC-2025-003",
-                    ExpectedDeliveryDate = DateTime.Now.AddDays(5),
-                    Status = "Gepland",
-                    TotalAmount = 320.00m,
-                    IsProcessed = false,
-                    CreatedDate = DateTime.Now.AddDays(-1),
-                    Notes = "Verwachte levering eind van de week"
+                    ExpectedDeliveryDate = DateTime.Now.AddDays(-7),
+                    ActualDeliveryDate = DateTime.Now.AddDays(-7).AddHours(3),
+                    Status = "Delivered",
+                    TotalAmount = 157.00m,
+                    IsProcessed = true,
+                    CreatedDate = DateTime.Now.AddDays(-10),
+                    Notes = "Levering succesvol verwerkt"
                 },
-                // Geplande outgoing levering naar klant (aangemaakt vandaag)
-                new Delivery 
-                { 
-                    DeliveryType = "Outgoing",
-                    CustomerId = 1,
-                    VehicleId = 1,
-                    ReferenceNumber = "OUT-2025-001",
-                    ExpectedDeliveryDate = DateTime.Now.AddDays(1),
-                    Status = "Gepland",
-                    TotalAmount = 250.00m,
-                    IsProcessed = false,
-                    CreatedDate = DateTime.Now.AddHours(-5),
-                    Notes = "Bestelling voor Albert Heijn Brussel Centrum"
-                },
-                // Geannuleerde levering (aangemaakt 4 dagen geleden, geannuleerd 2 dagen geleden)
+                // ID 4: INC-2025-004 - Geannuleerd
                 new Delivery 
                 { 
                     DeliveryType = "Incoming",
-                    SupplierId = 1,
+                    SupplierId = 1,  // Suntory Beverage & Food Europe
                     ReferenceNumber = "INC-2025-004",
-                    ExpectedDeliveryDate = DateTime.Now.AddDays(-1),
+                    ExpectedDeliveryDate = DateTime.Now.AddDays(-2),
                     Status = "Geannuleerd",
                     TotalAmount = 500.00m,
                     IsProcessed = false,
-                    CreatedDate = DateTime.Now.AddDays(-4),
+                    CreatedDate = DateTime.Now.AddDays(-8),
                     Notes = "Geannuleerd wegens leveringsproblemen bij leverancier"
                 },
-                // Verwerkte outgoing levering (aangemaakt 3 dagen geleden, verwerkt 2 dagen geleden)
+                // ID 5: OUT-2025-001 - Delivered (uitgaande levering)
                 new Delivery 
                 { 
                     DeliveryType = "Outgoing",
-                    CustomerId = 2,
+                    CustomerId = 1,  // Albert Heijn Brussel Centrum
+                    VehicleId = 1,
+                    ReferenceNumber = "OUT-2025-001",
+                    ExpectedDeliveryDate = DateTime.Now.AddDays(-5),
+                    ActualDeliveryDate = DateTime.Now.AddDays(-5).AddHours(4),
+                    Status = "Delivered",
+                    TotalAmount = 90.65m,
+                    IsProcessed = true,
+                    CreatedDate = DateTime.Now.AddDays(-6),
+                    Notes = "Succesvolle levering naar Albert Heijn"
+                },
+                // ID 6: OUT-2025-002 - Delivered (uitgaande levering)
+                new Delivery 
+                { 
+                    DeliveryType = "Outgoing",
+                    CustomerId = 2,  // Horeca Groothandel De Smet
                     VehicleId = 2,
                     ReferenceNumber = "OUT-2025-002",
                     ExpectedDeliveryDate = DateTime.Now.AddDays(-2),
@@ -197,6 +217,34 @@ namespace SuntoryManagementSystem.Models
                     IsProcessed = true,
                     CreatedDate = DateTime.Now.AddDays(-3),
                     Notes = "Succesvolle levering naar Horeca Groothandel De Smet"
+                },
+                // ID 7: Nieuwe incoming levering zonder referentie (zoals in screenshot)
+                new Delivery 
+                { 
+                    DeliveryType = "Incoming",
+                    SupplierId = 2,  // Nederlandse Dranken Distributie
+                    ReferenceNumber = "ee",
+                    ExpectedDeliveryDate = DateTime.Now.AddDays(-3),
+                    ActualDeliveryDate = DateTime.Now.AddDays(-3).AddHours(1),
+                    Status = "Delivered",
+                    TotalAmount = 2.60m,
+                    IsProcessed = true,
+                    CreatedDate = DateTime.Now.AddDays(-4),
+                    Notes = "Kleine levering"
+                },
+                // ID 8: Incoming levering met nummer
+                new Delivery 
+                { 
+                    DeliveryType = "Incoming",
+                    SupplierId = 2,  // Nederlandse Dranken Distributie
+                    ReferenceNumber = "123465",
+                    ExpectedDeliveryDate = DateTime.Now.AddDays(-3),
+                    ActualDeliveryDate = DateTime.Now.AddDays(-3).AddHours(2),
+                    Status = "Delivered",
+                    TotalAmount = 250.00m,
+                    IsProcessed = true,
+                    CreatedDate = DateTime.Now.AddDays(-4),
+                    Notes = "Levering verwerkt"
                 }
             });
             return list;

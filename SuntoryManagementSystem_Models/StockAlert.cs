@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -13,7 +13,6 @@ namespace SuntoryManagementSystem.Models
 
         // Foreign Key naar Product
         [Required(ErrorMessage = "Product is verplicht")]
-        [ForeignKey("Product")]
         [Display(Name = "Product")]
         public int ProductId { get; set; }
 
@@ -71,25 +70,37 @@ namespace SuntoryManagementSystem.Models
             var list = new List<StockAlert>();
             list.AddRange(new[]
             {
-                // Product 2 (Lucozade): Voorraad = 100, Minimum = 120 → Low Stock Alert
+                // Oude alert voor Product 2 (Lucozade) die is opgelost door levering 8
                 new StockAlert 
                 { 
                     ProductId = 2,
                     AlertType = "Low Stock",
-                    Status = "Active",
-                    CreatedDate = DateTime.Now.AddDays(-2).AddHours(4),
-                    Notes = "Voorraad onder minimum na outgoing levering OUT-2025-002. Nieuwe bestelling plaatsen."
+                    Status = "Resolved",
+                    CreatedDate = DateTime.Now.AddDays(-4),
+                    ResolvedDate = DateTime.Now.AddDays(-3).AddHours(2),
+                    Notes = "Voorraad was onder minimum (230 < 120). Opgelost door verwerking van incoming levering 123465"
                 },
                 
-                // Oude alert voor Product 1 die is opgelost door INC-2025-002
+                // Oude alert voor Product 1 (Orangina) die is opgelost door INC-2025-002
                 new StockAlert 
                 { 
                     ProductId = 1,
                     AlertType = "Low Stock",
                     Status = "Resolved",
-                    CreatedDate = DateTime.Now.AddDays(-5),
-                    ResolvedDate = DateTime.Now.AddDays(-3).AddHours(2),
-                    Notes = "Opgelost door verwerking van incoming levering INC-2025-002"
+                    CreatedDate = DateTime.Now.AddDays(-6),
+                    ResolvedDate = DateTime.Now.AddDays(-4).AddHours(2),
+                    Notes = "Voorraad was onder minimum. Opgelost door verwerking van incoming levering INC-2025-002"
+                },
+
+                // Oude critical alert voor Product 3 (Ribena) die is opgelost
+                new StockAlert 
+                { 
+                    ProductId = 3,
+                    AlertType = "Critical",
+                    Status = "Resolved",
+                    CreatedDate = DateTime.Now.AddDays(-10),
+                    ResolvedDate = DateTime.Now.AddDays(-4).AddHours(2),
+                    Notes = "Kritiek lage voorraad (< 40 stuks). Opgelost door verwerking van incoming levering INC-2025-002"
                 }
             });
             return list;

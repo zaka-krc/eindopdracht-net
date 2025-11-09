@@ -29,17 +29,80 @@ namespace SuntoryManagementSystem.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            // Voorkom multiple cascade paths door enkele relaties op Restrict te zetten
-            modelBuilder.Entity<DeliveryItem>()
-                .HasOne<Product>()
-                .WithMany()
-                .HasForeignKey(di => di.ProductId)
+            // ===================================================================
+            // DELIVERY RELATIONSHIPS
+            // ===================================================================
+            
+            // Delivery -> Supplier (optional, voor Incoming deliveries)
+            modelBuilder.Entity<Delivery>()
+                .HasOne(d => d.Supplier)
+                .WithMany()  // Supplier heeft geen Deliveries navigation property
+                .HasForeignKey(d => d.SupplierId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Delivery -> Customer (optional, voor Outgoing deliveries)
             modelBuilder.Entity<Delivery>()
-                .HasOne<Vehicle>()
-                .WithMany()
+                .HasOne(d => d.Customer)
+                .WithMany()  // Customer heeft geen Deliveries navigation property
+                .HasForeignKey(d => d.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Delivery -> Vehicle (optional)
+            modelBuilder.Entity<Delivery>()
+                .HasOne(d => d.Vehicle)
+                .WithMany()  // Vehicle heeft geen Deliveries navigation property
                 .HasForeignKey(d => d.VehicleId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // ===================================================================
+            // DELIVERY ITEM RELATIONSHIPS
+            // ===================================================================
+            
+            // DeliveryItem -> Delivery (required)
+            modelBuilder.Entity<DeliveryItem>()
+                .HasOne(di => di.Delivery)
+                .WithMany(d => d.DeliveryItems)  // Delivery heeft DeliveryItems collection
+                .HasForeignKey(di => di.DeliveryId)
+                .OnDelete(DeleteBehavior.Cascade);  // Als Delivery verwijderd wordt, verwijder ook items
+
+            // DeliveryItem -> Product (required)
+            modelBuilder.Entity<DeliveryItem>()
+                .HasOne(di => di.Product)
+                .WithMany()  // Product heeft geen DeliveryItems navigation property
+                .HasForeignKey(di => di.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);  // Voorkom cascade delete via Product
+
+            // ===================================================================
+            // PRODUCT RELATIONSHIPS
+            // ===================================================================
+            
+            // Product -> Supplier (required)
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Supplier)
+                .WithMany()  // Supplier heeft geen Products navigation property
+                .HasForeignKey(p => p.SupplierId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // ===================================================================
+            // STOCK ADJUSTMENT RELATIONSHIPS
+            // ===================================================================
+            
+            // StockAdjustment -> Product (required)
+            modelBuilder.Entity<StockAdjustment>()
+                .HasOne(sa => sa.Product)
+                .WithMany()  // Product heeft geen StockAdjustments navigation property
+                .HasForeignKey(sa => sa.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // ===================================================================
+            // STOCK ALERT RELATIONSHIPS
+            // ===================================================================
+            
+            // StockAlert -> Product (required)
+            modelBuilder.Entity<StockAlert>()
+                .HasOne(sa => sa.Product)
+                .WithMany()  // Product heeft geen StockAlerts navigation property
+                .HasForeignKey(sa => sa.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
 

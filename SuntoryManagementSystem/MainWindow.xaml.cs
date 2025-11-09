@@ -95,6 +95,10 @@ namespace SuntoryManagementSystem
             var registerWindow = new RegisterWindow();
             if (registerWindow.ShowDialog() == true && registerWindow.NewUser != null)
             {
+                // FIXED: Dispose oude context en maak nieuwe
+                _context?.Dispose();
+                _context = new SuntoryDbContext();
+                
                 // Haal de rollen op van de nieuwe gebruiker
                 var userRoles = (from ur in _context.UserRoles
                                 where ur.UserId == registerWindow.NewUser.Id
@@ -123,6 +127,10 @@ namespace SuntoryManagementSystem
             
             if (loginWindow.ShowDialog() == true && loginWindow.LoggedInUser != null)
             {
+                // FIXED: Dispose oude context en maak nieuwe
+                _context?.Dispose();
+                _context = new SuntoryDbContext();
+                
                 // Haal de rollen op van de ingelogde gebruiker
                 var userRoles = (from ur in _context.UserRoles
                                 where ur.UserId == loginWindow.LoggedInUser.Id
@@ -146,7 +154,11 @@ namespace SuntoryManagementSystem
 
             if (result == MessageBoxResult.Yes)
             {
-                // FIXED: Reset to guest mode in current window
+                // FIXED: Dispose oude context en maak nieuwe
+                _context?.Dispose();
+                _context = new SuntoryDbContext();
+                
+                // Reset to guest mode in current window
                 SetCurrentUser(null, new List<string> { "Guest" });
                 await LoadAllDataAsync();
                 

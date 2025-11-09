@@ -7,6 +7,8 @@ namespace SuntoryManagementSystem
 {
     public partial class UserInfoPopup : Window
     {
+        private bool _isClosing = false;
+
         public UserInfoPopup(ApplicationUser user, string roles)
         {
             InitializeComponent();
@@ -19,18 +21,47 @@ namespace SuntoryManagementSystem
             txtLastLogin.Text = user.LastLoginDate?.ToString("dd-MM-yyyy HH:mm") ?? "Nooit";
 
             // Allow dragging
-            MouseLeftButtonDown += (s, e) => DragMove();
+            MouseLeftButtonDown += (s, e) => 
+            {
+                try
+                {
+                    if (e.LeftButton == MouseButtonState.Pressed)
+                    {
+                        DragMove();
+                    }
+                }
+                catch
+                {
+                    // Ignore any exceptions during drag
+                }
+            };
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            SafeClose();
         }
 
         private void Window_Deactivated(object sender, EventArgs e)
         {
             // Auto-close when clicking outside
-            Close();
+            SafeClose();
+        }
+
+        private void SafeClose()
+        {
+            if (_isClosing)
+                return;
+
+            try
+            {
+                _isClosing = true;
+                Close();
+            }
+            catch (InvalidOperationException)
+            {
+                // Window is already closing or closed, ignore
+            }
         }
 
         // Position popup near the button that opened it
