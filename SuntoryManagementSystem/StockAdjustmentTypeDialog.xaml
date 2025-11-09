@@ -24,13 +24,13 @@
                 </Grid.RowDefinitions>
 
                 <!-- Header met info -->
-                <Border Grid.Row="0" Background="#FFF3E0" BorderBrush="#FF9800" BorderThickness="2" 
+                <Border x:Name="headerBorder" Grid.Row="0" Background="#FFF3E0" BorderBrush="#FF9800" BorderThickness="2" 
                         Padding="12" Margin="0,0,0,15" CornerRadius="4">
                     <StackPanel>
-                        <TextBlock FontWeight="Bold" FontSize="14" Foreground="#E65100">
+                        <TextBlock x:Name="headerTitle" FontWeight="Bold" FontSize="14" Foreground="#E65100">
                             Voorraad Vermindering Gedetecteerd
                         </TextBlock>
-                        <TextBlock Margin="0,5,0,0" TextWrapping="Wrap" Foreground="#E65100">
+                        <TextBlock Margin="0,5,0,0" TextWrapping="Wrap" x:Name="headerText" Foreground="#E65100">
                             <Run Text="Je vermindert de voorraad met "/>
                             <Run x:Name="txtQuantityChange" FontWeight="Bold"/>
                             <Run Text=" stuks."/>
@@ -44,7 +44,7 @@
                 <TextBlock Grid.Row="1" Text="Type Aanpassing:" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,10"/>
                 
                 <StackPanel Grid.Row="2">
-                    <RadioButton x:Name="rbRemoval" GroupName="AdjustmentType" Margin="0,5" IsChecked="True">
+                    <RadioButton x:Name="rbRemoval" GroupName="AdjustmentType" Margin="0,5" IsChecked="True" Checked="RadioButton_Checked">
                         <StackPanel>
                             <TextBlock FontWeight="SemiBold" FontSize="13">
                                 Removal (Verwijdering)
@@ -55,7 +55,7 @@
                         </StackPanel>
                     </RadioButton>
 
-                    <RadioButton x:Name="rbDamage" GroupName="AdjustmentType" Margin="0,10">
+                    <RadioButton x:Name="rbDamage" GroupName="AdjustmentType" Margin="0,10" Checked="RadioButton_Checked">
                         <StackPanel>
                             <TextBlock FontWeight="SemiBold" FontSize="13">
                                 Damage (Schade)
@@ -66,7 +66,7 @@
                         </StackPanel>
                     </RadioButton>
 
-                    <RadioButton x:Name="rbTheft" GroupName="AdjustmentType" Margin="0,10">
+                    <RadioButton x:Name="rbTheft" GroupName="AdjustmentType" Margin="0,10" Checked="RadioButton_Checked">
                         <StackPanel>
                             <TextBlock FontWeight="SemiBold" FontSize="13">
                                 Theft (Diefstal)
@@ -77,7 +77,7 @@
                         </StackPanel>
                     </RadioButton>
 
-                    <RadioButton x:Name="rbCorrection" GroupName="AdjustmentType" Margin="0,10,0,5">
+                    <RadioButton x:Name="rbCorrection" GroupName="AdjustmentType" Margin="0,10,0,5" Checked="RadioButton_Checked">
                         <StackPanel>
                             <TextBlock FontWeight="SemiBold" FontSize="13">
                                 Correction (Correctie)

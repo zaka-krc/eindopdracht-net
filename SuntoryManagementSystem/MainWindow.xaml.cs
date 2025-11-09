@@ -107,7 +107,7 @@ namespace SuntoryManagementSystem
             bool isEmployee = _userRoles.Contains("Employee");
             bool isGuest = _userRoles.Contains("Guest") || _userRoles.Count == 0;
 
-            // GUEST MODE: Alleen-lezen toegang (alles zichtbaar, niets aanpasbaar)
+            // GUEST MODE: Alleen-lezen toegang (alles zichtbaar, niks aanpasbaar)
             if (isGuest)
             {
                 // Verberg alle wijzigingsknoppen
@@ -1200,6 +1200,13 @@ namespace SuntoryManagementSystem
                     }
                 }
             }
+        }
+
+        private void btnGenerateReports_Click(object sender, RoutedEventArgs e)
+        {
+            var reportsWindow = new ReportsWindow();
+            reportsWindow.Owner = this;
+            reportsWindow.ShowDialog();
         }
     }
 }

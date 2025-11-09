@@ -4,69 +4,69 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SuntoryManagementSystem.Models
 {
-    /// StockAdjustment - Aanpassingen in productvoorraad
+    // StockAdjustment - Aanpassingen in productvoorraad
     public class StockAdjustment
     {
-        /// Unieke identifier voor de voorraad aanpassing
+        // Unieke identifier voor de voorraad aanpassing
         [Key]
         public int StockAdjustmentId { get; set; }
 
-        /// Foreign Key naar Product
+        // Foreign Key naar Product
         [Required(ErrorMessage = "Product is verplicht")]
         [ForeignKey("Product")]
         [Display(Name = "Product")]
         public int ProductId { get; set; }
 
-        /// Het product waarvan de voorraad is aangepast
+        // Het product waarvan de voorraad is aangepast
         public Product? Product { get; set; }
 
-        /// Type aanpassing: "Addition", "Removal", "Correction", "Damage", "Theft"
+        // Type aanpassing: "Addition", "Removal", "Correction", "Damage", "Theft"
         [Required(ErrorMessage = "Type aanpassing is verplicht")]
         [StringLength(20)]
         [Display(Name = "Type aanpassing")]
         public string AdjustmentType { get; set; } = "Correction";
 
-        /// Hoeveelheid aanpassing (positief of negatief)
+        // Hoeveelheid aanpassing (positief of negatief)
         [Required]
         [Display(Name = "Hoeveelheid")]
         public int QuantityChange { get; set; } = 0;
 
-        /// Voorraad voor de aanpassing
+        // Voorraad voor de aanpassing
         [Required]
         [Display(Name = "Voorraad voor")]
         public int PreviousQuantity { get; set; } = 0;
 
-        /// Voorraad na de aanpassing
+        // Voorraad na de aanpassing
         [Required]
         [Display(Name = "Voorraad na")]
         public int NewQuantity { get; set; } = 0;
 
-        /// Reden voor de aanpassing
+        // Reden voor de aanpassing
         [Required(ErrorMessage = "Reden is verplicht")]
         [StringLength(500)]
         [Display(Name = "Reden")]
         [DataType(DataType.MultilineText)]
         public string Reason { get; set; } = string.Empty;
 
-        /// Datum en tijd van de aanpassing
+        // Datum en tijd van de aanpassing
         [Required]
         [Display(Name = "Datum aanpassing")]
         [DataType(DataType.DateTime)]
         public DateTime AdjustmentDate { get; set; } = DateTime.Now;
 
-        /// Wie heeft de aanpassing gedaan
+        // Wie heeft de aanpassing gedaan
         [StringLength(100)]
         [Display(Name = "Aangepast door")]
         public string AdjustedBy { get; set; } = string.Empty;
 
         // SOFT DELETE PROPERTIES
         
-        /// Is deze aanpassing soft-deleted?
+        // Is deze aanpassing soft-deleted?
         [Required]
         [Display(Name = "Verwijderd")]
         public bool IsDeleted { get; set; } = false;
 
-        /// Datum en tijd van soft delete
+        // Datum en tijd van soft delete
         [Display(Name = "Verwijderd op")]
         [DataType(DataType.DateTime)]
         public DateTime? DeletedDate { get; set; }

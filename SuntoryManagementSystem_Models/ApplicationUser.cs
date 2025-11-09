@@ -3,52 +3,38 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SuntoryManagementSystem.Models
 {
-    /// <summary>
-    /// Gebruiker van het Suntory Management System
-    /// Afgeleid van IdentityUser met extra bedrijfsspecifieke eigenschappen
-    /// </summary>
+    // Gebruiker van het Suntory Management System
+    // Afgeleid van IdentityUser met extra bedrijfsspecifieke eigenschappen
     public class ApplicationUser : IdentityUser
     {
-        /// <summary>
-        /// Volledige naam van de gebruiker
-        /// </summary>
+        // Volledige naam van de gebruiker
         [Required(ErrorMessage = "Volledige naam is verplicht")]
         [StringLength(100, ErrorMessage = "Naam mag maximaal 100 tekens zijn")]
         [Display(Name = "Volledige Naam")]
         public string FullName { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Afdeling waar de gebruiker werkt
-        /// </summary>
+        // Afdeling waar de gebruiker werkt
         [StringLength(50)]
         [Display(Name = "Afdeling")]
         public string? Department { get; set; }
 
-        /// <summary>
-        /// Functietitel van de gebruiker
-        /// </summary>
+        // Functietitel van de gebruiker
         [StringLength(50)]
         [Display(Name = "Functie")]
         public string? JobTitle { get; set; }
 
-        /// <summary>
-        /// Datum waarop de gebruiker is aangemaakt
-        /// </summary>
+        // Datum waarop de gebruiker is aangemaakt
         [Required]
         [Display(Name = "Aangemaakt op")]
         [DataType(DataType.DateTime)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-        /// <summary>
-        /// Laatste login datum
-        /// </summary>
+        // Laatste login datum
         [Display(Name = "Laatste Login")]
         [DataType(DataType.DateTime)]
         public DateTime? LastLoginDate { get; set; }
 
-        /// <summary>
-        /// Is het account actief?
-        /// </summary>
+        // Is het account actief?
         [Required]
         [Display(Name = "Actief")]
         public bool IsActive { get; set; } = true;
@@ -58,11 +44,9 @@ namespace SuntoryManagementSystem.Models
             return $"{FullName} ({Email}) - {Department ?? "Geen afdeling"}";
         }
 
-        /// <summary>
-        /// Seeding data voor test gebruikers
-        /// Wachtwoorden: Admin@123, Manager@123, Employee@123
-        /// Minimaal 1 gebruiker per rol (Administrator, Manager, Employee)
-        /// </summary>
+        // Seeding data voor test gebruikers
+        // Wachtwoorden: Admin@123, Manager@123, Employee@123
+        // Minimaal 1 gebruiker per rol (Administrator, Manager, Employee)
         public static List<ApplicationUser> SeedingData()
         {
             var passwordHasher = new PasswordHasher<ApplicationUser>();

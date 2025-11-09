@@ -519,20 +519,8 @@
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="FontWeight" Value="Bold"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding AdjustmentType}" Value="Addition">
-                                                    <Setter Property="Foreground" Value="Green"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding AdjustmentType}" Value="Removal">
-                                                    <Setter Property="Foreground" Value="Red"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding AdjustmentType}" Value="Damage">
-                                                    <Setter Property="Foreground" Value="DarkOrange"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding AdjustmentType}" Value="Correction">
-                                                    <Setter Property="Foreground" Value="DarkBlue"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
+                                            <Setter Property="Foreground" Value="#333"/>
+                                            <Setter Property="HorizontalAlignment" Value="Center"/>
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
@@ -603,7 +591,7 @@
                             Padding="10" Margin="0,0,0,10" CornerRadius="5">
                             <StackPanel>
                                 <TextBlock FontWeight="Bold" FontSize="14" Foreground="#C62828">
-                                🔒 Administrator - Gebruikersbeheer
+                                Administrator - Gebruikersbeheer
                                 </TextBlock>
                                 <TextBlock Margin="0,5,0,0" Foreground="#C62828">
                                 Beheer gebruikers, rollen en accountstatussen. Alleen zichtbaar voor Administrators.
@@ -657,6 +645,63 @@
                                 IsEnabled="False" 
                                 Style="{StaticResource SecondaryButtonStyle}"
                                 Click="btnResetPassword_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+
+                <!-- Tab: Rapporten -->
+                <TabItem Header="Rapporten">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Info banner -->
+                        <Border Grid.Row="0" Background="#E8F5E9" BorderBrush="#4CAF50" BorderThickness="1" 
+                            Padding="10" Margin="0,0,0,10" CornerRadius="5">
+                            <StackPanel>
+                                <TextBlock FontWeight="Bold" FontSize="14" Foreground="#2E7D32">
+                                Rapporten Genereren
+                                </TextBlock>
+                                <TextBlock Margin="0,5,0,0" Foreground="#2E7D32">
+                                Genereer Excel-rapporten voor voorraadbeheer, leveringen, waarschuwingen en financiële analyse. 
+                                Rapporten worden automatisch opgeslagen in Mijn Documenten > Suntory Reports.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <StackPanel Grid.Row="1" Margin="10">
+                            <Button x:Name="btnGenerateReports" 
+                                Content="RAPPORTEN OPENEN"
+                                Padding="20,15"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Background="#4CAF50"
+                                Foreground="White"
+                                Click="btnGenerateReports_Click"
+                                Height="50"/>
+                            
+                            <TextBlock Margin="0,20,0,10" FontSize="13" FontWeight="Bold">Beschikbare Rapporten:</TextBlock>
+                            
+                            <TextBlock Margin="10,5" Foreground="#333">
+                            • <Bold>Inventarisrapport</Bold> - Volledige overzicht van alle producten en voorraden
+                            </TextBlock>
+                            <TextBlock Margin="10,5" Foreground="#333">
+                            • <Bold>Voorraadbewegingen</Bold> - Alle aanvoeringen en verwijderingen met details
+                            </TextBlock>
+                            <TextBlock Margin="10,5" Foreground="#333">
+                            • <Bold>Leveringen</Bold> - Alle inkomende en uitgaande leveringen met status
+                            </TextBlock>
+                            <TextBlock Margin="10,5" Foreground="#333">
+                            • <Bold>Voorraadwaarschuwingen</Bold> - Producten met lage/kritieke voorraad
+                            </TextBlock>
+                            <TextBlock Margin="10,5" Foreground="#333">
+                            • <Bold>Financieel</Bold> - Inkoopwaarden, verkoopwaarden en margeanalyse
+                            </TextBlock>
+                            <TextBlock Margin="10,5" Foreground="#333">
+                            • <Bold>Volledig Rapport</Bold> - Samengesteld rapport met alle statistieken
+                            </TextBlock>
                         </StackPanel>
                     </Grid>
                 </TabItem>

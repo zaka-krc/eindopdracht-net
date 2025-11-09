@@ -5,69 +5,69 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SuntoryManagementSystem.Models
 {
-    /// Customer - Klanten die producten afnemen van Suntory
+    // Customer - Klanten die producten afnemen van Suntory
     public class Customer
     {
-        /// Unieke identifier voor de klant
+        // Unieke identifier voor de klant
         [Key]
         public int CustomerId { get; set; }
 
-        /// Bedrijfsnaam van de klant
+        // Bedrijfsnaam van de klant
         [Required(ErrorMessage = "Klantnaam is verplicht")]
         [StringLength(100, ErrorMessage = "Klantnaam mag maximaal 100 tekens zijn")]
         [Display(Name = "Klantnaam")]
         public string CustomerName { get; set; } = string.Empty;
 
-        /// Adres van de klant
+        // Adres van de klant
         [StringLength(200)]
         [Display(Name = "Adres")]
         public string Address { get; set; } = string.Empty;
 
-        /// Postcode van de klant
+        // Postcode van de klant
         [StringLength(20)]
         [Display(Name = "Postcode")]
         public string PostalCode { get; set; } = string.Empty;
 
-        /// Plaats/Stad van de klant
+        // Plaats/Stad van de klant
         [StringLength(100)]
         [Display(Name = "Plaats")]
         public string City { get; set; } = string.Empty;
 
-        /// Telefoonnummer voor contact
+        // Telefoonnummer voor contact
         [StringLength(20)]
         [Display(Name = "Telefoonnummer")]
         public string PhoneNumber { get; set; } = string.Empty;
 
-        /// E-mailadres van de klant
+        // E-mailadres van de klant
         [StringLength(100)]
         [EmailAddress(ErrorMessage = "Geldig e-mailadres vereist")]
         [Display(Name = "E-mail")]
         public string Email { get; set; } = string.Empty;
 
-        /// Naam van contactpersoon bij de klant
+        // Naam van contactpersoon bij de klant
         [StringLength(100)]
         [Display(Name = "Contactpersoon")]
         public string ContactPerson { get; set; } = string.Empty;
 
-        /// Type klant: "Retail", "Wholesale", "HoReCa"
+        // Type klant: "Retail", "Wholesale", "HoReCa"
         [Required]
         [StringLength(20)]
         [Display(Name = "Type")]
         public string CustomerType { get; set; } = "Retail";
 
-        /// Status van de klant: "Active", "Inactive"
+        // Status van de klant: "Active", "Inactive"
         [Required]
         [StringLength(20)]
         [Display(Name = "Status")]
         public string Status { get; set; } = "Active";
 
-        /// Datum en tijd van aanmaak
+        // Datum en tijd van aanmaak
         [Required]
         [Display(Name = "Aangemaakt")]
         [DataType(DataType.DateTime)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-        /// Aanvullende opmerkingen over de klant
+        // Aanvullende opmerkingen over de klant
         [StringLength(500)]
         [Display(Name = "Opmerkingen")]
         [DataType(DataType.MultilineText)]
@@ -75,19 +75,19 @@ namespace SuntoryManagementSystem.Models
 
         // SOFT DELETE PROPERTIES
         
-        /// Is deze klant soft-deleted?
+        // Is deze klant soft-deleted?
         [Required]
         [Display(Name = "Verwijderd")]
         public bool IsDeleted { get; set; } = false;
 
-        /// Datum en tijd van soft delete
+        // Datum en tijd van soft delete
         [Display(Name = "Verwijderd op")]
         [DataType(DataType.DateTime)]
         public DateTime? DeletedDate { get; set; }
 
         // NAVIGATION PROPERTIES - Relaties met andere entiteiten
 
-        /// Alle leveringen naar deze klant
+        // Alle leveringen naar deze klant
         public ICollection<Delivery>? Deliveries { get; set; }
 
         public override string ToString()

@@ -5,84 +5,84 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SuntoryManagementSystem.Models
 {
-    /// Delivery - Leveringen van producten (Incoming = van supplier, Outgoing = naar klant)
+    // Delivery - Leveringen van producten (Incoming = van supplier, Outgoing = naar klant)
     public class Delivery
     {
-        /// Unieke identifier voor de levering
+        // Unieke identifier voor de levering
         [Key]
         public int DeliveryId { get; set; }
 
-        /// Type levering: "Incoming" (van supplier) of "Outgoing" (naar klant)
+        // Type levering: "Incoming" (van supplier) of "Outgoing" (naar klant)
         [Required]
         [StringLength(20)]
         [Display(Name = "Type")]
         public string DeliveryType { get; set; } = "Incoming";
 
-        /// Foreign Key naar Supplier (voor Incoming deliveries)
+        // Foreign Key naar Supplier (voor Incoming deliveries)
         [ForeignKey("Supplier")]
         [Display(Name = "Leverancier")]
         public int? SupplierId { get; set; }
 
-        /// De leverancier van deze levering (alleen bij Incoming)
+        // De leverancier van deze levering (alleen bij Incoming)
         public Supplier? Supplier { get; set; }
 
-        /// Foreign Key naar Customer (voor Outgoing deliveries)
+        // Foreign Key naar Customer (voor Outgoing deliveries)
         [ForeignKey("Customer")]
         [Display(Name = "Klant")]
         public int? CustomerId { get; set; }
 
-        /// De klant voor deze levering (alleen bij Outgoing)
+        // De klant voor deze levering (alleen bij Outgoing)
         public Customer? Customer { get; set; }
 
-        /// Foreign Key naar Vehicle (optioneel)
+        // Foreign Key naar Vehicle (optioneel)
         [ForeignKey("Vehicle")]
         [Display(Name = "Voertuig")]
         public int? VehicleId { get; set; }
 
-        /// Het voertuig gebruikt voor deze levering
+        // Het voertuig gebruikt voor deze levering
         public Vehicle? Vehicle { get; set; }
 
-        /// Referentienummer van de levering (bijv. leverbon nummer)
+        // Referentienummer van de levering (bijv. leverbon nummer)
         [Required(ErrorMessage = "Referentienummer is verplicht")]
         [StringLength(50)]
         [Display(Name = "Referentie")]
         public string ReferenceNumber { get; set; } = string.Empty;
 
-        /// Verwachte leverdatum en tijd
+        // Verwachte leverdatum en tijd
         [Required]
         [Display(Name = "Verwachte levering")]
         [DataType(DataType.DateTime)]
         public DateTime ExpectedDeliveryDate { get; set; } = DateTime.Now.AddDays(1);
 
-        /// Werkelijke leverdatum en tijd
+        // Werkelijke leverdatum en tijd
         [Display(Name = "Werkelijke levering")]
         [DataType(DataType.DateTime)]
         public DateTime? ActualDeliveryDate { get; set; }
 
-        /// Status van de levering: "Gepland", "Delivered", "Geannuleerd"
+        // Status van de levering: "Gepland", "Delivered", "Geannuleerd"
         [Required]
         [StringLength(20)]
         [Display(Name = "Status")]
         public string Status { get; set; } = "Gepland";
 
-        /// Totaal bedrag van de levering
+        // Totaal bedrag van de levering
         [Required]
         [Column(TypeName = "DECIMAL(10, 2)")]
         [Display(Name = "Totaalbedrag")]
         public decimal TotalAmount { get; set; } = 0.00m;
 
-        /// Is de levering verwerkt in de voorraad?
+        // Is de levering verwerkt in de voorraad?
         [Required]
         [Display(Name = "Verwerkt")]
         public bool IsProcessed { get; set; } = false;
 
-        /// Datum en tijd van aanmaak
+        // Datum en tijd van aanmaak
         [Required]
         [Display(Name = "Aangemaakt")]
         [DataType(DataType.DateTime)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-        /// Opmerkingen over de levering
+        // Opmerkingen over de levering
         [StringLength(500)]
         [Display(Name = "Opmerkingen")]
         [DataType(DataType.MultilineText)]
@@ -90,19 +90,19 @@ namespace SuntoryManagementSystem.Models
 
         // SOFT DELETE PROPERTIES
         
-        /// Is deze levering soft-deleted?
+        // Is deze levering soft-deleted?
         [Required]
         [Display(Name = "Verwijderd")]
         public bool IsDeleted { get; set; } = false;
 
-        /// Datum en tijd van soft delete
+        // Datum en tijd van soft delete
         [Display(Name = "Verwijderd op")]
         [DataType(DataType.DateTime)]
         public DateTime? DeletedDate { get; set; }
 
         // NAVIGATION PROPERTIES - Relaties met andere entiteiten
 
-        /// Alle items in deze levering
+        // Alle items in deze levering
         public ICollection<DeliveryItem>? DeliveryItems { get; set; }
 
         public override string ToString()

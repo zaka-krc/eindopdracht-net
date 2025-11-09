@@ -5,74 +5,74 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SuntoryManagementSystem.Models
 {
-    /// Product - Producten die worden beheerd in het systeem
+    // Product - Producten die worden beheerd in het systeem
     public class Product
     {
-        /// Unieke identifier voor het product
+        // Unieke identifier voor het product
         [Key]
         public int ProductId { get; set; }
 
-        /// Foreign Key naar Supplier
+        // Foreign Key naar Supplier
         [Required(ErrorMessage = "Leverancier is verplicht")]
         [ForeignKey("Supplier")]
         [Display(Name = "Leverancier")]
         public int SupplierId { get; set; }
 
-        /// De leverancier van dit product
+        // De leverancier van dit product
         public Supplier? Supplier { get; set; }
 
-        /// Naam van het product
+        // Naam van het product
         [Required(ErrorMessage = "Productnaam is verplicht")]
         [StringLength(100, ErrorMessage = "Productnaam mag maximaal 100 tekens zijn")]
         [Display(Name = "Productnaam")]
         public string ProductName { get; set; } = string.Empty;
 
-        /// Beschrijving van het product
+        // Beschrijving van het product
         [StringLength(500)]
         [Display(Name = "Beschrijving")]
         [DataType(DataType.MultilineText)]
         public string Description { get; set; } = string.Empty;
 
-        /// SKU (Stock Keeping Unit) - unieke productcode
+        // SKU (Stock Keeping Unit) - unieke productcode
         [Required(ErrorMessage = "SKU is verplicht")]
         [StringLength(50)]
         [Display(Name = "SKU")]
         public string SKU { get; set; } = string.Empty;
 
-        /// Categorie van het product (bijv. "Frisdrank", "Water", "Energiedrank")
+        // Categorie van het product (bijv. "Frisdrank", "Water", "Energiedrank")
         [Required]
         [StringLength(50)]
         [Display(Name = "Categorie")]
         public string Category { get; set; } = "Frisdrank";
 
-        /// Inkoopprijs per eenheid
+        // Inkoopprijs per eenheid
         [Required(ErrorMessage = "Inkoopprijs is verplicht")]
         [Column(TypeName = "DECIMAL(10, 2)")]
         [Display(Name = "Inkoopprijs")]
         public decimal PurchasePrice { get; set; } = 0.00m;
 
-        /// Verkoopprijs per eenheid
+        // Verkoopprijs per eenheid
         [Required(ErrorMessage = "Verkoopprijs is verplicht")]
         [Column(TypeName = "DECIMAL(10, 2)")]
         [Display(Name = "Verkoopprijs")]
         public decimal SellingPrice { get; set; } = 0.00m;
 
-        /// Huidige voorraad
+        // Huidige voorraad
         [Required]
         [Display(Name = "Voorraad")]
         public int StockQuantity { get; set; } = 0;
 
-        /// Minimale voorraad voordat een waarschuwing wordt gegeven
+        // Minimale voorraad voordat een waarschuwing wordt gegeven
         [Required]
         [Display(Name = "Min. voorraad")]
         public int MinimumStock { get; set; } = 10;
 
-        /// Is het product actief?
+        // Is het product actief?
         [Required]
         [Display(Name = "Actief")]
         public bool IsActive { get; set; } = true;
 
-        /// Datum en tijd van aanmaak
+        // Datum en tijd van aanmaak
         [Required]
         [Display(Name = "Aangemaakt")]
         [DataType(DataType.DateTime)]
@@ -80,25 +80,25 @@ namespace SuntoryManagementSystem.Models
 
         // SOFT DELETE PROPERTIES
         
-        /// Is dit product soft-deleted?
+        // Is dit product soft-deleted?
         [Required]
         [Display(Name = "Verwijderd")]
         public bool IsDeleted { get; set; } = false;
 
-        /// Datum en tijd van soft delete
+        // Datum en tijd van soft delete
         [Display(Name = "Verwijderd op")]
         [DataType(DataType.DateTime)]
         public DateTime? DeletedDate { get; set; }
 
         // NAVIGATION PROPERTIES - Relaties met andere entiteiten
 
-        /// Alle levering items die dit product bevatten
+        // Alle levering items die dit product bevatten
         public ICollection<DeliveryItem>? DeliveryItems { get; set; }
 
-        /// Alle voorraad aanpassingen voor dit product
+        // Alle voorraad aanpassingen voor dit product
         public ICollection<StockAdjustment>? StockAdjustments { get; set; }
 
-        /// Alle voorraad waarschuwingen voor dit product
+        // Alle voorraad waarschuwingen voor dit product
         public ICollection<StockAlert>? StockAlerts { get; set; }
 
         public override string ToString()

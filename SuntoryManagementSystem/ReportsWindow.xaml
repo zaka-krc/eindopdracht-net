@@ -1,0 +1,159 @@
+<Window x:Class="SuntoryManagementSystem.ReportsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Rapporten Genereren" Height="650" Width="700"
+        WindowStartupLocation="CenterOwner"
+        Background="#F5F5F5">
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="20">
+                <TextBlock Text="Rapporten" FontSize="24" FontWeight="Bold" Foreground="#333" Margin="0,0,0,20"/>
+                
+                <TextBlock Text="Kies een rapport om te genereren:" FontSize="14" Margin="0,0,0,15"/>
+                
+                <StackPanel Orientation="Vertical">
+                    <!-- Inventory Report -->
+                    <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="5" Padding="15" Background="White" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel Grid.Column="0" Orientation="Vertical">
+                                <TextBlock Text="Inventarisrapport" FontSize="14" FontWeight="Bold" Foreground="#0066CC"/>
+                                <TextBlock Text="Geeft een overzicht van alle huidige voorraadniveaus en hun waarden" 
+                                         FontSize="11" Foreground="#666" Margin="0,5,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            
+                            <Button Grid.Column="1" Name="btnInventoryReport" Click="btnInventoryReport_Click"
+                                   Background="#0066CC" Foreground="White" Padding="15,10" 
+                                   FontSize="12" FontWeight="Bold" Cursor="Hand">
+                                Genereren
+                            </Button>
+                        </Grid>
+                    </Border>
+                    
+                    <!-- Stock Movement Report -->
+                    <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="5" Padding="15" Background="White" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel Grid.Column="0" Orientation="Vertical">
+                                <TextBlock Text="Voorraadbewegingen Rapport" FontSize="14" FontWeight="Bold" Foreground="#0066CC"/>
+                                <TextBlock Text="Toont alle aanvoeringen en verwijderingen van producten" 
+                                         FontSize="11" Foreground="#666" Margin="0,5,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            
+                            <Button Grid.Column="1" Name="btnStockMovementReport" Click="btnStockMovementReport_Click"
+                                   Background="#0066CC" Foreground="White" Padding="15,10" 
+                                   FontSize="12" FontWeight="Bold" Cursor="Hand">
+                                Genereren
+                            </Button>
+                        </Grid>
+                    </Border>
+                    
+                    <!-- Delivery Report -->
+                    <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="5" Padding="15" Background="White" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel Grid.Column="0" Orientation="Vertical">
+                                <TextBlock Text="Leveringen Rapport" FontSize="14" FontWeight="Bold" Foreground="#0066CC"/>
+                                <TextBlock Text="Geeft een overzicht van alle inkomende en uitgaande leveringen" 
+                                         FontSize="11" Foreground="#666" Margin="0,5,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            
+                            <Button Grid.Column="1" Name="btnDeliveryReport" Click="btnDeliveryReport_Click"
+                                   Background="#0066CC" Foreground="White" Padding="15,10" 
+                                   FontSize="12" FontWeight="Bold" Cursor="Hand">
+                                Genereren
+                            </Button>
+                        </Grid>
+                    </Border>
+                    
+                    <!-- Stock Alert Report -->
+                    <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="5" Padding="15" Background="White" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel Grid.Column="0" Orientation="Vertical">
+                                <TextBlock Text="Voorraadwaarschuwingen Rapport" FontSize="14" FontWeight="Bold" Foreground="#FF6600"/>
+                                <TextBlock Text="Toont alle producten met lage of kritieke voorraad" 
+                                         FontSize="11" Foreground="#666" Margin="0,5,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            
+                            <Button Grid.Column="1" Name="btnStockAlertReport" Click="btnStockAlertReport_Click"
+                                   Background="#FF6600" Foreground="White" Padding="15,10" 
+                                   FontSize="12" FontWeight="Bold" Cursor="Hand">
+                                Genereren
+                            </Button>
+                        </Grid>
+                    </Border>
+                    
+                    <!-- Financial Report -->
+                    <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="5" Padding="15" Background="White" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel Grid.Column="0" Orientation="Vertical">
+                                <TextBlock Text="Financieel Rapport" FontSize="14" FontWeight="Bold" Foreground="#009900"/>
+                                <TextBlock Text="Analyse van inkoopwaarden, verkoopwaarden en marges" 
+                                         FontSize="11" Foreground="#666" Margin="0,5,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            
+                            <Button Grid.Column="1" Name="btnFinancialReport" Click="btnFinancialReport_Click"
+                                   Background="#009900" Foreground="White" Padding="15,10" 
+                                   FontSize="12" FontWeight="Bold" Cursor="Hand">
+                                Genereren
+                            </Button>
+                        </Grid>
+                    </Border>
+                    
+                    <!-- Comprehensive Report -->
+                    <Border BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="5" Padding="15" Background="White" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel Grid.Column="0" Orientation="Vertical">
+                                <TextBlock Text="Volledig Magazijnrapport" FontSize="14" FontWeight="Bold" Foreground="#9933CC"/>
+                                <TextBlock Text="Uitgebreid rapport met alle informatie en statistieken" 
+                                         FontSize="11" Foreground="#666" Margin="0,5,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            
+                            <Button Grid.Column="1" Name="btnComprehensiveReport" Click="btnComprehensiveReport_Click"
+                                   Background="#9933CC" Foreground="White" Padding="15,10" 
+                                   FontSize="12" FontWeight="Bold" Cursor="Hand">
+                                Genereren
+                            </Button>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+                
+                <Separator Margin="0,20"/>
+                
+                <TextBlock Text="Rapporten worden opgeslagen in: Mijn Documenten > Suntory Reports" 
+                         FontSize="11" Foreground="#999" FontStyle="Italic" Margin="0,10"/>
+                
+                <Button Content="Sluiten" Click="btnClose_Click" 
+                       Background="#999" Foreground="White" Padding="15,10" 
+                       FontSize="12" FontWeight="Bold" Cursor="Hand" HorizontalAlignment="Right" Margin="0,20,0,0"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

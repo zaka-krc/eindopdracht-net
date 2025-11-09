@@ -4,47 +4,46 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SuntoryManagementSystem.Models
 {
-
-    /// StockAlert - Waarschuwingen voor lage voorraad
+    // StockAlert - Waarschuwingen voor lage voorraad
     public class StockAlert
     {
-        /// Unieke identifier voor de voorraad waarschuwing
+        // Unieke identifier voor de voorraad waarschuwing
         [Key]
         public int StockAlertId { get; set; }
 
-        /// Foreign Key naar Product
+        // Foreign Key naar Product
         [Required(ErrorMessage = "Product is verplicht")]
         [ForeignKey("Product")]
         [Display(Name = "Product")]
         public int ProductId { get; set; }
 
-        /// Het product met lage voorraad
+        // Het product met lage voorraad
         public Product? Product { get; set; }
 
-        /// Type waarschuwing: "Low Stock", "Out of Stock", "Critical"
+        // Type waarschuwing: "Low Stock", "Out of Stock", "Critical"
         [Required]
         [StringLength(20)]
         [Display(Name = "Type")]
         public string AlertType { get; set; } = "Low Stock";
 
-        /// Status van de waarschuwing: "Active", "Resolved", "Ignored"
+        // Status van de waarschuwing: "Active", "Resolved", "Ignored"
         [Required]
         [StringLength(20)]
         [Display(Name = "Status")]
         public string Status { get; set; } = "Active";
 
-        /// Datum en tijd waarop de waarschuwing is aangemaakt
+        // Datum en tijd waarop de waarschuwing is aangemaakt
         [Required]
         [Display(Name = "Aangemaakt")]
         [DataType(DataType.DateTime)]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-        /// Datum en tijd waarop de waarschuwing is opgelost
+        // Datum en tijd waarop de waarschuwing is opgelost
         [Display(Name = "Opgelost")]
         [DataType(DataType.DateTime)]
         public DateTime? ResolvedDate { get; set; }
 
-        /// Opmerkingen over de waarschuwing
+        // Opmerkingen over de waarschuwing
         [StringLength(500)]
         [Display(Name = "Opmerkingen")]
         [DataType(DataType.MultilineText)]
@@ -52,12 +51,12 @@ namespace SuntoryManagementSystem.Models
 
         // SOFT DELETE PROPERTIES
         
-        /// Is deze waarschuwing soft-deleted?
+        // Is deze waarschuwing soft-deleted?
         [Required]
         [Display(Name = "Verwijderd")]
         public bool IsDeleted { get; set; } = false;
 
-        /// Datum en tijd van soft delete
+        // Datum en tijd van soft delete
         [Display(Name = "Verwijderd op")]
         [DataType(DataType.DateTime)]
         public DateTime? DeletedDate { get; set; }
