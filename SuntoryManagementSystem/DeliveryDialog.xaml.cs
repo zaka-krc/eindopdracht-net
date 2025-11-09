@@ -1,4 +1,5 @@
 using SuntoryManagementSystem.Models;
+using SuntoryManagementSystem.Models.Constants;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -43,13 +44,13 @@ namespace SuntoryManagementSystem
             LoadDeliveryItems();
             
             // Toon "Levering Annuleren" knop alleen als levering nog niet verwerkt is en niet al geannuleerd
-            if (!delivery.IsProcessed && delivery.Status != "Geannuleerd")
+            if (!delivery.IsProcessed && delivery.Status != DeliveryConstants.Status.Cancelled)
             {
                 btnCancelDelivery.Visibility = Visibility.Visible;
             }
             
             // Als levering al verwerkt of geannuleerd is, maak velden read-only
-            if (delivery.IsProcessed || delivery.Status == "Geannuleerd")
+            if (delivery.IsProcessed || delivery.Status == DeliveryConstants.Status.Cancelled)
             {
                 cmbDeliveryType.IsEnabled = false;
                 txtReferenceNumber.IsReadOnly = true;
@@ -72,14 +73,14 @@ namespace SuntoryManagementSystem
         {
             // Alleen actieve leveranciers tonen
             var suppliers = _context.Suppliers
-                .Where(s => !s.IsDeleted && s.Status == "Active")
+                .Where(s => !s.IsDeleted && s.Status == StatusConstants.Active)
                 .OrderBy(s => s.SupplierName)
                 .ToList();
             cmbSupplier.ItemsSource = suppliers;
             
             // Alleen actieve klanten tonen
             var customers = _context.Customers
-                .Where(c => !c.IsDeleted && c.Status == "Active")
+                .Where(c => !c.IsDeleted && c.Status == StatusConstants.Active)
                 .OrderBy(c => c.CustomerName)
                 .ToList();
             cmbCustomer.ItemsSource = customers;
@@ -95,7 +96,7 @@ namespace SuntoryManagementSystem
                 cmbSupplier.SelectedIndex = 0;
             
             // Set initial visibility to Incoming
-            UpdateVisibility("Incoming");
+            UpdateVisibility(DeliveryConstants.Types.Incoming);
         }
 
         private void LoadProducts()
@@ -136,7 +137,7 @@ namespace SuntoryManagementSystem
             // Set delivery type
             if (!string.IsNullOrEmpty(Delivery.DeliveryType))
             {
-                cmbDeliveryType.SelectedIndex = Delivery.DeliveryType == "Incoming" ? 0 : 1;
+                cmbDeliveryType.SelectedIndex = Delivery.DeliveryType == DeliveryConstants.Types.Incoming ? 0 : 1;
             }
             
             txtReferenceNumber.Text = Delivery.ReferenceNumber;
@@ -161,9 +162,9 @@ namespace SuntoryManagementSystem
         private void UpdateVisibility(string deliveryType)
         {
             if (string.IsNullOrEmpty(deliveryType))
-                deliveryType = "Incoming";
+                deliveryType = DeliveryConstants.Types.Incoming;
                 
-            bool isIncoming = deliveryType == "Incoming";
+            bool isIncoming = deliveryType == DeliveryConstants.Types.Incoming;
             
             // Check of controls bestaan (voor initialisatie problemen)
             if (lblSupplier != null && cmbSupplier != null && lblCustomer != null && cmbCustomer != null)
@@ -181,7 +182,7 @@ namespace SuntoryManagementSystem
             if (cmbProduct.SelectedItem is Product product)
             {
                 string deliveryType = ((ComboBoxItem)cmbDeliveryType.SelectedItem).Tag.ToString()!;
-                decimal price = deliveryType == "Incoming" 
+                decimal price = deliveryType == DeliveryConstants.Types.Incoming 
                     ? product.PurchasePrice 
                     : product.SellingPrice;
                 
@@ -215,7 +216,7 @@ namespace SuntoryManagementSystem
             string deliveryType = ((ComboBoxItem)cmbDeliveryType.SelectedItem).Tag.ToString()!;
 
             // Check bij outgoing of er genoeg voorraad is
-            if (deliveryType == "Outgoing")
+            if (deliveryType == DeliveryConstants.Types.Outgoing)
             {
                 // Bereken hoeveel er al in de lijst zit van dit product
                 int alreadyInList = _items.Where(i => i.ProductId == product.ProductId)
@@ -271,7 +272,7 @@ namespace SuntoryManagementSystem
             txtQuantity.Text = "1";
             if (cmbProduct.SelectedItem is Product selectedProduct)
             {
-                decimal price = deliveryType == "Incoming" 
+                decimal price = deliveryType == DeliveryConstants.Types.Incoming 
                     ? selectedProduct.PurchasePrice 
                     : selectedProduct.SellingPrice;
                 txtUnitPrice.Text = price.ToString("F2");
@@ -318,14 +319,14 @@ namespace SuntoryManagementSystem
 
             string deliveryType = ((ComboBoxItem)cmbDeliveryType.SelectedItem).Tag.ToString()!;
             
-            if (deliveryType == "Incoming" && cmbSupplier.SelectedItem == null)
+            if (deliveryType == DeliveryConstants.Types.Incoming && cmbSupplier.SelectedItem == null)
             {
                 MessageBox.Show("Selecteer een leverancier!", "Validatie", MessageBoxButton.OK, MessageBoxImage.Warning);
                 cmbSupplier.Focus();
                 return;
             }
 
-            if (deliveryType == "Outgoing" && cmbCustomer.SelectedItem == null)
+            if (deliveryType == DeliveryConstants.Types.Outgoing && cmbCustomer.SelectedItem == null)
             {
                 MessageBox.Show("Selecteer een klant!", "Validatie", MessageBoxButton.OK, MessageBoxImage.Warning);
                 cmbCustomer.Focus();
@@ -346,7 +347,7 @@ namespace SuntoryManagementSystem
             }
 
             // Extra validatie voor outgoing deliveries - check voorraad
-            if (deliveryType == "Outgoing" && !_wasProcessed)
+            if (deliveryType == DeliveryConstants.Types.Outgoing && !_wasProcessed)
             {
                 var validationErrors = new System.Text.StringBuilder();
                 
@@ -384,7 +385,7 @@ namespace SuntoryManagementSystem
             Delivery.DeliveryType = deliveryType;
             Delivery.ReferenceNumber = txtReferenceNumber.Text.Trim();
             
-            if (deliveryType == "Incoming")
+            if (deliveryType == DeliveryConstants.Types.Incoming)
             {
                 Delivery.SupplierId = (int)cmbSupplier.SelectedValue;
                 Delivery.CustomerId = null;
@@ -401,7 +402,7 @@ namespace SuntoryManagementSystem
             // Status automatisch bepalen
             if (!_isEditMode || !_wasProcessed)
             {
-                Delivery.Status = "Gepland";
+                Delivery.Status = DeliveryConstants.Status.Planned;
             }
             // Als het al verwerkt was (IsProcessed=true), blijft de status "Delivered"
             
@@ -431,7 +432,7 @@ namespace SuntoryManagementSystem
 
             if (result == MessageBoxResult.Yes)
             {
-                Delivery.Status = "Geannuleerd";
+                Delivery.Status = DeliveryConstants.Status.Cancelled;
                 DialogResult = true;
                 Close();
             }

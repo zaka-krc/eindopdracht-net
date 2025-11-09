@@ -1,5 +1,6 @@
 using ClosedXML.Excel;
 using SuntoryManagementSystem.Models;
+using SuntoryManagementSystem.Models.Constants;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -164,15 +165,16 @@ namespace SuntoryManagementSystem.Services
                     worksheet.Cell(row, 8).Value = adjustment.AdjustedBy;
 
                     // Aanpassingstypen kleurcoderen
-                    if (adjustment.AdjustmentType == "Addition")
+                    if (adjustment.AdjustmentType == StockAdjustmentConstants.Types.Addition)
                     {
                         worksheet.Row(row).Style.Fill.BackgroundColor = XLColor.LightGreen;
                     }
-                    else if (adjustment.AdjustmentType == "Removal")
+                    else if (adjustment.AdjustmentType == StockAdjustmentConstants.Types.Removal)
                     {
                         worksheet.Row(row).Style.Fill.BackgroundColor = XLColor.Red;
                     }
-                    else if (adjustment.AdjustmentType == "Damage" || adjustment.AdjustmentType == "Theft")
+                    else if (adjustment.AdjustmentType == StockAdjustmentConstants.Types.Damage || 
+                             adjustment.AdjustmentType == StockAdjustmentConstants.Types.Theft)
                     {
                         worksheet.Row(row).Style.Fill.BackgroundColor = XLColor.Orange;
                     }
@@ -234,15 +236,15 @@ namespace SuntoryManagementSystem.Services
                 foreach (var delivery in deliveries)
                 {
                     worksheet.Cell(row, 1).Value = delivery.ReferenceNumber;
-                    worksheet.Cell(row, 2).Value = delivery.DeliveryType == "Incoming" ? "Inkomend" : "Uitgaand";
+                    worksheet.Cell(row, 2).Value = delivery.DeliveryType == DeliveryConstants.Types.Incoming ? "Inkomend" : "Uitgaand";
                     
                     // Partnerinformatie
                     string partnerName = "";
-                    if (delivery.DeliveryType == "Incoming" && delivery.Supplier != null)
+                    if (delivery.DeliveryType == DeliveryConstants.Types.Incoming && delivery.Supplier != null)
                     {
                         partnerName = delivery.Supplier.SupplierName;
                     }
-                    else if (delivery.DeliveryType == "Outgoing" && delivery.Customer != null)
+                    else if (delivery.DeliveryType == DeliveryConstants.Types.Outgoing && delivery.Customer != null)
                     {
                         partnerName = delivery.Customer.CustomerName;
                     }
@@ -265,11 +267,11 @@ namespace SuntoryManagementSystem.Services
                     worksheet.Cell(row, 8).Value = delivery.IsProcessed ? "Ja" : "Nee";
 
                     // Status kleurcoderen
-                    if (delivery.Status == "Delivered")
+                    if (delivery.Status == DeliveryConstants.Status.Delivered)
                     {
                         worksheet.Row(row).Style.Fill.BackgroundColor = XLColor.LightGreen;
                     }
-                    else if (delivery.Status == "Geannuleerd")
+                    else if (delivery.Status == DeliveryConstants.Status.Cancelled)
                     {
                         worksheet.Row(row).Style.Fill.BackgroundColor = XLColor.Red;
                     }
@@ -328,7 +330,7 @@ namespace SuntoryManagementSystem.Services
 
                 // Actieve voorraadwaarschuwingen ophalen
                 var stockAlerts = _context.StockAlerts
-                    .Where(sa => !sa.IsDeleted && sa.Status == "Active")
+                    .Where(sa => !sa.IsDeleted && sa.Status == StockAlertConstants.Status.Active)
                     .OrderBy(sa => sa.CreatedDate)
                     .ToList();
 
@@ -569,7 +571,7 @@ namespace SuntoryManagementSystem.Services
                 var products = _context.Products.Where(p => !p.IsDeleted).ToList();
                 var deliveries = _context.Deliveries.Where(d => !d.IsDeleted).ToList();
                 var lowStockProducts = products.Where(p => p.StockQuantity < p.MinimumStock).Count();
-                var activeAlerts = _context.StockAlerts.Where(sa => !sa.IsDeleted && sa.Status == "Active").Count();
+                var activeAlerts = _context.StockAlerts.Where(sa => !sa.IsDeleted && sa.Status == StockAlertConstants.Status.Active).Count();
 
                 overviewSheet.Cell(row, 1).Value = "STATISTIEKEN";
                 overviewSheet.Cell(row, 1).Style.Font.Bold = true;
@@ -582,7 +584,7 @@ namespace SuntoryManagementSystem.Services
                     ("Producten met Lage Voorraad", lowStockProducts.ToString()),
                     ("Actieve Waarschuwingen", activeAlerts.ToString()),
                     ("Totaal Leveringen", deliveries.Count.ToString()),
-                    ("Geplande Leveringen", deliveries.Count(d => d.Status == "Gepland").ToString()),
+                    ("Geplande Leveringen", deliveries.Count(d => d.Status == DeliveryConstants.Status.Planned).ToString()),
                     ("Verwerkte Leveringen", deliveries.Count(d => d.IsProcessed).ToString())
                 };
 
@@ -690,8 +692,8 @@ namespace SuntoryManagementSystem.Services
                     var itemCount = _context.DeliveryItems.Where(di => di.DeliveryId == delivery.DeliveryId && !di.IsDeleted).Count();
 
                     deliveriesSheet.Cell(row, 1).Value = delivery.ReferenceNumber;
-                    deliveriesSheet.Cell(row, 2).Value = delivery.DeliveryType == "Incoming" ? "Inkomend" : "Uitgaand";
-                    deliveriesSheet.Cell(row, 3).Value = delivery.DeliveryType == "Incoming" 
+                    deliveriesSheet.Cell(row, 2).Value = delivery.DeliveryType == DeliveryConstants.Types.Incoming ? "Inkomend" : "Uitgaand";
+                    deliveriesSheet.Cell(row, 3).Value = delivery.DeliveryType == DeliveryConstants.Types.Incoming 
                         ? delivery.Supplier?.SupplierName ?? "N/A" 
                         : delivery.Customer?.CustomerName ?? "N/A";
                     deliveriesSheet.Cell(row, 4).Value = delivery.ExpectedDeliveryDate;
@@ -706,11 +708,11 @@ namespace SuntoryManagementSystem.Services
                     deliveriesSheet.Cell(row, 7).Style.NumberFormat.Format = "€#,##0.00";
                     deliveriesSheet.Cell(row, 8).Value = itemCount;
 
-                    if (delivery.Status == "Delivered")
+                    if (delivery.Status == DeliveryConstants.Status.Delivered)
                     {
                         deliveriesSheet.Row(row).Style.Fill.BackgroundColor = XLColor.LightGreen;
                     }
-                    else if (delivery.Status == "Geannuleerd")
+                    else if (delivery.Status == DeliveryConstants.Status.Cancelled)
                     {
                         deliveriesSheet.Row(row).Style.Fill.BackgroundColor = XLColor.Red;
                     }

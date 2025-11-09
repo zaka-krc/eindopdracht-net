@@ -1,4 +1,5 @@
 using SuntoryManagementSystem.Models;
+using SuntoryManagementSystem.Models.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,27 +30,42 @@ namespace SuntoryManagementSystem
             _context = new SuntoryDbContext();
             _currentUser = currentUser ?? new ApplicationUser 
             { 
-                FullName = "Gast (Alleen-lezen)", 
+                FullName = "Gast", 
                 Email = "guest@suntory.com",
                 Id = "guest"
             };
             _userRoles = userRoles ?? new List<string> { "Guest" };
 
-            // Set user info in header
-            txtUserName.Text = _currentUser.FullName;
-            txtUserRole.Text = string.Join(", ", _userRoles.Count == 1 && _userRoles[0] == "Guest" ? new[] { "Gast - Alleen Lezen" } : _userRoles);
-
-            // Configure buttons based on login status
+            // Configure buttons and user info based on login status
             bool isGuest = _userRoles.Contains("Guest") || _userRoles.Count == 0 || currentUser == null;
-            btnLogin.Visibility = isGuest ? Visibility.Visible : Visibility.Collapsed;
-            btnRegister.Visibility = isGuest ? Visibility.Visible : Visibility.Collapsed;
-            btnLogout.Visibility = isGuest ? Visibility.Collapsed : Visibility.Visible;
+            
+            if (isGuest)
+            {
+                // GUEST MODE: Hide user info, show login & register buttons
+                borderUserInfo.Visibility = Visibility.Collapsed;
+                btnLogin.Visibility = Visibility.Visible;
+                btnRegister.Visibility = Visibility.Visible;
+                btnLogout.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                // LOGGED IN: Show user info and logout button, hide login & register
+                borderUserInfo.Visibility = Visibility.Visible;
+                txtUserName.Text = _currentUser.FullName;
+                txtUserRole.Text = string.Join(", ", _userRoles);
+
+                btnLogin.Visibility = Visibility.Collapsed;
+                btnRegister.Visibility = Visibility.Collapsed;
+                btnLogout.Visibility = Visibility.Visible;
+            }
 
             // Configure menu based on roles
             ConfigureMenuForRoles();
 
             SuntoryDbContext.Seeder(_context);
-            LoadAllData();
+            
+            // Load data asynchronously
+            Loaded += async (s, e) => await LoadAllDataAsync();
         }
 
         private void btnRegister_Click(object sender, RoutedEventArgs e)
@@ -200,34 +216,79 @@ namespace SuntoryManagementSystem
             }
         }
 
-        private void LoadAllData()
+        private async Task LoadSuppliersAsync()
         {
-            try
-            {
-                LoadSuppliers();
-                LoadCustomers();
-                LoadProducts();
-                LoadDeliveries();
-                LoadVehicles();
-                LoadLowStockProducts();
-                LoadStockAdjustments();
-                LoadUsers(); // NEW: Load users for admin panel
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Fout bij laden van data: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            dgSuppliers.ItemsSource = await _context.Suppliers
+                .Where(s => !s.IsDeleted)
+                .OrderBy(s => s.Status == StatusConstants.Active ? 0 : 1) // Actieve eerst
+                .ThenBy(s => s.SupplierName)
+                .ToListAsync();
         }
 
-        // NEW: Load users voor User Management tab
-        private void LoadUsers()
+        private async Task LoadCustomersAsync()
+        {
+            dgCustomers.ItemsSource = await _context.Customers
+                .Where(c => !c.IsDeleted)
+                .OrderBy(c => c.Status == StatusConstants.Active ? 0 : 1) // Actieve eerst
+                .ThenBy(c => c.CustomerName)
+                .ToListAsync();
+        }
+
+        private async Task LoadProductsAsync()
+        {
+            dgProducts.ItemsSource = await _context.Products
+                .Where(p => !p.IsDeleted)
+                .OrderBy(p => p.ProductName)
+                .ToListAsync();
+        }
+
+        private async Task LoadDeliveriesAsync()
+        {
+            dgDeliveries.ItemsSource = await _context.Deliveries
+                .Include(d => d.Supplier)
+                .Include(d => d.Customer)
+                .Include(d => d.Vehicle)
+                .Where(d => !d.IsDeleted)
+                .OrderByDescending(d => d.ExpectedDeliveryDate)
+                .ToListAsync();
+        }
+
+        private async Task LoadVehiclesAsync()
+        {
+            dgVehicles.ItemsSource = await _context.Vehicles
+                .Where(v => !v.IsDeleted)
+                .OrderBy(v => v.LicensePlate)
+                .ToListAsync();
+        }
+
+        private async Task LoadLowStockProductsAsync()
+        {
+            // Gewoon producten tonen waar voorraad onder minimum is
+            dgStockAlerts.ItemsSource = await _context.Products
+                .Include(p => p.Supplier)
+                .Where(p => !p.IsDeleted && p.IsActive)
+                .Where(p => p.StockQuantity < p.MinimumStock)
+                .OrderBy(p => p.StockQuantity)
+                .ToListAsync();
+        }
+
+        private async Task LoadStockAdjustmentsAsync()
+        {
+            dgStockAdjustments.ItemsSource = await _context.StockAdjustments
+                .Include(sa => sa.Product)  // Laad Product relatie
+                .Where(sa => !sa.IsDeleted)
+                .OrderByDescending(sa => sa.AdjustmentDate)
+                .ToListAsync();
+        }
+
+        private async Task LoadUsersAsync()
         {
             try
             {
                 // LINQ Query Syntax om alle gebruikers te laden
-                var users = (from u in _context.Users
+                var users = await (from u in _context.Users
                             orderby u.IsActive descending, u.FullName
-                            select u).ToList();
+                            select u).ToListAsync();
 
                 dgUsers.ItemsSource = users;
             }
@@ -237,77 +298,31 @@ namespace SuntoryManagementSystem
             }
         }
 
-        private void LoadSuppliers()
+        private async Task LoadAllDataAsync()
         {
-            dgSuppliers.ItemsSource = _context.Suppliers
-                .Where(s => !s.IsDeleted)
-                .OrderBy(s => s.Status == "Active" ? 0 : 1) // Actieve eerst
-                .ThenBy(s => s.SupplierName)
-                .ToList();
+            try
+            {
+                await LoadSuppliersAsync();
+                await LoadCustomersAsync();
+                await LoadProductsAsync();
+                await LoadDeliveriesAsync();
+                await LoadVehiclesAsync();
+                await LoadLowStockProductsAsync();
+                await LoadStockAdjustmentsAsync();
+                await LoadUsersAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fout bij laden van data: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        private void LoadCustomers()
-        {
-            dgCustomers.ItemsSource = _context.Customers
-                .Where(c => !c.IsDeleted)
-                .OrderBy(c => c.Status == "Active" ? 0 : 1) // Actieve eerst
-                .ThenBy(c => c.CustomerName)
-                .ToList();
-        }
-
-        private void LoadProducts()
-        {
-            dgProducts.ItemsSource = _context.Products
-                .Where(p => !p.IsDeleted)
-                .OrderBy(p => p.ProductName)
-                .ToList();
-        }
-
-        private void LoadDeliveries()
-        {
-            dgDeliveries.ItemsSource = _context.Deliveries
-                .Include(d => d.Supplier)
-                .Include(d => d.Customer)
-                .Include(d => d.Vehicle)
-                .Where(d => !d.IsDeleted)
-                .OrderByDescending(d => d.ExpectedDeliveryDate)
-                .ToList();
-        }
-
-        private void LoadVehicles()
-        {
-            dgVehicles.ItemsSource = _context.Vehicles
-                .Where(v => !v.IsDeleted)
-                .OrderBy(v => v.LicensePlate)
-                .ToList();
-        }
-
-        private void LoadLowStockProducts()
-        {
-            // Gewoon producten tonen waar voorraad onder minimum is
-            dgStockAlerts.ItemsSource = _context.Products
-                .Include(p => p.Supplier)
-                .Where(p => !p.IsDeleted && p.IsActive)
-                .Where(p => p.StockQuantity < p.MinimumStock)
-                .OrderBy(p => p.StockQuantity)
-                .ToList();
-        }
-
-        private void LoadStockAdjustments()
-        {
-            dgStockAdjustments.ItemsSource = _context.StockAdjustments
-                .Include(sa => sa.Product)  // Laad Product relatie
-                .Where(sa => !sa.IsDeleted)
-                .OrderByDescending(sa => sa.AdjustmentDate)
-                .ToList();
-        }
-
-        private void tcMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void tcMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (tcMain.SelectedIndex == 4)
-                LoadLowStockProducts(); // Refresh wanneer tab wordt geopend
+                await LoadLowStockProductsAsync(); // Refresh wanneer tab wordt geopend
             else if (tcMain.SelectedIndex == 5)
-                LoadStockAdjustments();
+                await LoadStockAdjustmentsAsync();
         }
 
         private void dgSuppliers_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -316,19 +331,19 @@ namespace SuntoryManagementSystem
             btnDeleteSupplier.IsEnabled = dgSuppliers.SelectedItem != null;
         }
 
-        private void btnAddSupplier_Click(object sender, RoutedEventArgs e)
+        private async void btnAddSupplier_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new SupplierDialog();
             if (dialog.ShowDialog() == true)
             {
                 _context.Suppliers.Add(dialog.Supplier);
-                _context.SaveChanges();
-                LoadSuppliers();
+                await _context.SaveChangesAsync();
+                await LoadSuppliersAsync();
                 MessageBox.Show("Leverancier succesvol toegevoegd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
-        private void btnEditSupplier_Click(object sender, RoutedEventArgs e)
+        private async void btnEditSupplier_Click(object sender, RoutedEventArgs e)
         {
             if (dgSuppliers.SelectedItem is Supplier selectedSupplier)
             {
@@ -336,14 +351,14 @@ namespace SuntoryManagementSystem
                 if (dialog.ShowDialog() == true)
                 {
                     _context.Suppliers.Update(selectedSupplier);
-                    _context.SaveChanges();
-                    LoadSuppliers();
+                    await _context.SaveChangesAsync();
+                    await LoadSuppliersAsync();
                     MessageBox.Show("Leverancier succesvol gewijzigd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
         }
 
-        private void btnDeleteSupplier_Click(object sender, RoutedEventArgs e)
+        private async void btnDeleteSupplier_Click(object sender, RoutedEventArgs e)
         {
             if (dgSuppliers.SelectedItem is Supplier selectedSupplier)
             {
@@ -361,8 +376,8 @@ namespace SuntoryManagementSystem
                         selectedSupplier.IsDeleted = true;
                         selectedSupplier.DeletedDate = DateTime.Now;
                         _context.Suppliers.Update(selectedSupplier);
-                        _context.SaveChanges();
-                        LoadSuppliers();
+                        await _context.SaveChangesAsync();
+                        await LoadSuppliersAsync();
                         MessageBox.Show("Leverancier succesvol verwijderd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     catch (System.Exception ex)
@@ -379,19 +394,19 @@ namespace SuntoryManagementSystem
             btnDeleteCustomer.IsEnabled = dgCustomers.SelectedItem != null;
         }
 
-        private void btnAddCustomer_Click(object sender, RoutedEventArgs e)
+        private async void btnAddCustomer_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new CustomerDialog();
             if (dialog.ShowDialog() == true)
             {
                 _context.Customers.Add(dialog.Customer);
-                _context.SaveChanges();
-                LoadCustomers();
+                await _context.SaveChangesAsync();
+                await LoadCustomersAsync();
                 MessageBox.Show("Klant succesvol toegevoegd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
-        private void btnEditCustomer_Click(object sender, RoutedEventArgs e)
+        private async void btnEditCustomer_Click(object sender, RoutedEventArgs e)
         {
             if (dgCustomers.SelectedItem is Customer selectedCustomer)
             {
@@ -399,14 +414,14 @@ namespace SuntoryManagementSystem
                 if (dialog.ShowDialog() == true)
                 {
                     _context.Customers.Update(selectedCustomer);
-                    _context.SaveChanges();
-                    LoadCustomers();
+                    await _context.SaveChangesAsync();
+                    await LoadCustomersAsync();
                     MessageBox.Show("Klant succesvol gewijzigd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
         }
 
-        private void btnDeleteCustomer_Click(object sender, RoutedEventArgs e)
+        private async void btnDeleteCustomer_Click(object sender, RoutedEventArgs e)
         {
             if (dgCustomers.SelectedItem is Customer selectedCustomer)
             {
@@ -424,8 +439,8 @@ namespace SuntoryManagementSystem
                         selectedCustomer.IsDeleted = true;
                         selectedCustomer.DeletedDate = DateTime.Now;
                         _context.Customers.Update(selectedCustomer);
-                        _context.SaveChanges();
-                        LoadCustomers();
+                        await _context.SaveChangesAsync();
+                        await LoadCustomersAsync();
                         MessageBox.Show("Klant succesvol verwijderd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     catch (System.Exception ex)
@@ -442,23 +457,23 @@ namespace SuntoryManagementSystem
             btnDeleteProduct.IsEnabled = dgProducts.SelectedItem != null;
         }
 
-        private void btnAddProduct_Click(object sender, RoutedEventArgs e)
+        private async void btnAddProduct_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new ProductDialog(_context);
             if (dialog.ShowDialog() == true)
             {
                 _context.Products.Add(dialog.Product);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 if (dialog.HasStockAdjustment)
                 {
                     CreateStockAdjustmentForNewProduct(dialog.Product, dialog.InitialStock);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
 
-                LoadProducts();
-                LoadLowStockProducts();
-                LoadStockAdjustments();
+                await LoadProductsAsync();
+                await LoadLowStockProductsAsync();
+                await LoadStockAdjustmentsAsync();
 
                 if (dialog.HasStockAdjustment)
                 {
@@ -478,7 +493,7 @@ namespace SuntoryManagementSystem
             }
         }
 
-        private void btnEditProduct_Click(object sender, RoutedEventArgs e)
+        private async void btnEditProduct_Click(object sender, RoutedEventArgs e)
         {
             if (dgProducts.SelectedItem is Product selectedProduct)
             {
@@ -488,17 +503,17 @@ namespace SuntoryManagementSystem
                 if (dialog.ShowDialog() == true)
                 {
                     _context.Products.Update(selectedProduct);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
 
                     if (dialog.HasStockAdjustment)
                     {
                         CreateStockAdjustment(selectedProduct, originalStock, dialog.InitialStock, dialog.AdjustmentType);
-                        _context.SaveChanges();
+                        await _context.SaveChangesAsync();
                     }
 
-                    LoadProducts();
-                    LoadLowStockProducts();
-                    LoadStockAdjustments();
+                    await LoadProductsAsync();
+                    await LoadLowStockProductsAsync();
+                    await LoadStockAdjustmentsAsync();
 
                     if (dialog.HasStockAdjustment)
                     {
@@ -519,7 +534,7 @@ namespace SuntoryManagementSystem
             }
         }
 
-        private void btnDeleteProduct_Click(object sender, RoutedEventArgs e)
+        private async void btnDeleteProduct_Click(object sender, RoutedEventArgs e)
         {
             if (dgProducts.SelectedItem is Product selectedProduct)
             {
@@ -536,8 +551,8 @@ namespace SuntoryManagementSystem
                         selectedProduct.IsDeleted = true;
                         selectedProduct.DeletedDate = DateTime.Now;
                         _context.Products.Update(selectedProduct);
-                        _context.SaveChanges();
-                        LoadProducts();
+                        await _context.SaveChangesAsync();
+                        await LoadProductsAsync();
                         MessageBox.Show("Product succesvol verwijderd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     catch (System.Exception ex)
@@ -757,7 +772,7 @@ namespace SuntoryManagementSystem
             }
         }
 
-        private void btnAddDelivery_Click(object sender, RoutedEventArgs e)
+        private async void btnAddDelivery_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new DeliveryDialog(_context);
             if (dialog.ShowDialog() == true)
@@ -776,8 +791,8 @@ namespace SuntoryManagementSystem
                         }
                     }
 
-                    _context.SaveChanges();
-                    LoadDeliveries();
+                    await _context.SaveChangesAsync();
+                    await LoadDeliveriesAsync();
                     MessageBox.Show("Levering succesvol toegevoegd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
@@ -787,7 +802,7 @@ namespace SuntoryManagementSystem
             }
         }
 
-        private void btnEditDelivery_Click(object sender, RoutedEventArgs e)
+        private async void btnEditDelivery_Click(object sender, RoutedEventArgs e)
         {
             if (dgDeliveries.SelectedItem is Delivery selectedDelivery)
             {
@@ -802,9 +817,9 @@ namespace SuntoryManagementSystem
                         if (dialog.Delivery.DeliveryItems != null)
                         {
                             // Remove old items that are not in the new list
-                            var existingItems = _context.DeliveryItems
+                            var existingItems = await _context.DeliveryItems
                                 .Where(di => di.DeliveryId == selectedDelivery.DeliveryId)
-                                .ToList();
+                                .ToListAsync();
 
                             foreach (var existingItem in existingItems)
                             {
@@ -829,11 +844,11 @@ namespace SuntoryManagementSystem
                             }
                         }
 
-                        _context.SaveChanges();
-                        LoadDeliveries();
-                        LoadProducts(); // Reload products als voorraad is gewijzigd
-                        LoadStockAdjustments(); // Reload adjustments
-                        LoadLowStockProducts(); // Reload alerts
+                        await _context.SaveChangesAsync();
+                        await LoadDeliveriesAsync();
+                        await LoadProductsAsync(); // Reload products als voorraad is gewijzigd
+                        await LoadStockAdjustmentsAsync(); // Reload adjustments
+                        await LoadLowStockProductsAsync(); // Reload alerts
                         MessageBox.Show("Levering succesvol gewijzigd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     catch (Exception ex)
@@ -844,7 +859,7 @@ namespace SuntoryManagementSystem
             }
         }
 
-        private void btnProcessDelivery_Click(object sender, RoutedEventArgs e)
+        private async void btnProcessDelivery_Click(object sender, RoutedEventArgs e)
         {
             if (dgDeliveries.SelectedItem is Delivery selectedDelivery)
             {
@@ -855,13 +870,13 @@ namespace SuntoryManagementSystem
                 }
 
                 // Check of levering geannuleerd is
-                if (selectedDelivery.Status == "Geannuleerd")
+                if (selectedDelivery.Status == DeliveryConstants.Status.Cancelled)
                 {
                     MessageBox.Show("Geannuleerde leveringen kunnen niet verwerkt worden!", "Fout", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
-                string actionText = selectedDelivery.DeliveryType == "Incoming" 
+                string actionText = selectedDelivery.DeliveryType == DeliveryConstants.Types.Incoming 
                     ? "voorraad verhogen" 
                     : "voorraad verlagen";
 
@@ -878,10 +893,10 @@ namespace SuntoryManagementSystem
                     try
                     {
                         // FIXED: Haal alle delivery items op MET Product relatie
-                        var deliveryItems = _context.DeliveryItems
+                        var deliveryItems = await _context.DeliveryItems
                             .Include(di => di.Product)
                             .Where(di => di.DeliveryId == selectedDelivery.DeliveryId && !di.IsDeleted)
-                            .ToList();
+                            .ToListAsync();
 
                         if (!deliveryItems.Any())
                         {
@@ -889,7 +904,7 @@ namespace SuntoryManagementSystem
                             return;
                         }
 
-                        bool isIncoming = selectedDelivery.DeliveryType == "Incoming";
+                        bool isIncoming = selectedDelivery.DeliveryType == DeliveryConstants.Types.Incoming;
 
                         // VALIDATIE VOOR OUTGOING LEVERINGEN
                         if (!isIncoming)
@@ -961,12 +976,12 @@ namespace SuntoryManagementSystem
                             var adjustment = new StockAdjustment
                             {
                                 ProductId = item.ProductId,
-                                AdjustmentType = isIncoming ? "Addition" : "Removal",
+                                AdjustmentType = isIncoming ? StockAdjustmentConstants.Types.Addition : StockAdjustmentConstants.Types.Removal,
                                 QuantityChange = quantityChange,
                                 PreviousQuantity = previousQty,
                                 NewQuantity = newQty,
                                 Reason = $"{selectedDelivery.DeliveryType} levering {selectedDelivery.ReferenceNumber} verwerkt",
-                                AdjustedBy = _currentUser.FullName,  // Gebruik ingelogde gebruiker
+                                AdjustedBy = _currentUser.FullName,
                                 AdjustmentDate = DateTime.Now
                             };
 
@@ -977,15 +992,15 @@ namespace SuntoryManagementSystem
 
                         // Update delivery status
                         selectedDelivery.IsProcessed = true;
-                        selectedDelivery.Status = "Delivered";
+                        selectedDelivery.Status = DeliveryConstants.Status.Delivered;
                         selectedDelivery.ActualDeliveryDate = DateTime.Now;
 
-                        _context.SaveChanges();
+                        await _context.SaveChangesAsync();
                         
-                        LoadDeliveries();
-                        LoadProducts();
-                        LoadStockAdjustments();
-                        LoadLowStockProducts();
+                        await LoadDeliveriesAsync();
+                        await LoadProductsAsync();
+                        await LoadStockAdjustmentsAsync();
+                        await LoadLowStockProductsAsync();
                         
                         processingDetails.AppendLine("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
                         processingDetails.AppendLine($"TOTAAL: {itemsProcessed} product(en) verwerkt");
@@ -1006,7 +1021,7 @@ namespace SuntoryManagementSystem
             }
         }
 
-        private void btnDeleteDelivery_Click(object sender, RoutedEventArgs e)
+        private async void btnDeleteDelivery_Click(object sender, RoutedEventArgs e)
         {
             if (dgDeliveries.SelectedItem is Delivery selectedDelivery)
             {
@@ -1024,8 +1039,8 @@ namespace SuntoryManagementSystem
                         selectedDelivery.IsDeleted = true;
                         selectedDelivery.DeletedDate = DateTime.Now;
                         _context.Deliveries.Update(selectedDelivery);
-                        _context.SaveChanges();
-                        LoadDeliveries();
+                        await _context.SaveChangesAsync();
+                        await LoadDeliveriesAsync();
                         MessageBox.Show("Levering succesvol verwijderd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     catch (Exception ex)
@@ -1042,19 +1057,19 @@ namespace SuntoryManagementSystem
             btnDeleteVehicle.IsEnabled = dgVehicles.SelectedItem != null;
         }
 
-        private void btnAddVehicle_Click(object sender, RoutedEventArgs e)
+        private async void btnAddVehicle_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new VehicleDialog();
             if (dialog.ShowDialog() == true)
             {
                 _context.Vehicles.Add(dialog.Vehicle);
-                _context.SaveChanges();
-                LoadVehicles();
+                await _context.SaveChangesAsync();
+                await LoadVehiclesAsync();
                 MessageBox.Show("Voertuig succesvol toegevoegd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
-        private void btnEditVehicle_Click(object sender, RoutedEventArgs e)
+        private async void btnEditVehicle_Click(object sender, RoutedEventArgs e)
         {
             if (dgVehicles.SelectedItem is Vehicle selectedVehicle)
             {
@@ -1062,14 +1077,14 @@ namespace SuntoryManagementSystem
                 if (dialog.ShowDialog() == true)
                 {
                     _context.Vehicles.Update(selectedVehicle);
-                    _context.SaveChanges();
-                    LoadVehicles();
+                    await _context.SaveChangesAsync();
+                    await LoadVehiclesAsync();
                     MessageBox.Show("Voertuig succesvol gewijzigd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
         }
 
-        private void btnDeleteVehicle_Click(object sender, RoutedEventArgs e)
+        private async void btnDeleteVehicle_Click(object sender, RoutedEventArgs e)
         {
             if (dgVehicles.SelectedItem is Vehicle selectedVehicle)
             {
@@ -1087,8 +1102,8 @@ namespace SuntoryManagementSystem
                         selectedVehicle.IsDeleted = true;
                         selectedVehicle.DeletedDate = DateTime.Now;
                         _context.Vehicles.Update(selectedVehicle);
-                        _context.SaveChanges();
-                        LoadVehicles();
+                        await _context.SaveChangesAsync();
+                        await LoadVehiclesAsync();
                         MessageBox.Show("Voertuig succesvol verwijderd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     catch (System.Exception ex)
@@ -1117,20 +1132,20 @@ namespace SuntoryManagementSystem
             btnResetPassword.IsEnabled = hasSelection;
         }
 
-        private void btnManageRoles_Click(object sender, RoutedEventArgs e)
+        private async void btnManageRoles_Click(object sender, RoutedEventArgs e)
         {
             if (dgUsers.SelectedItem is ApplicationUser selectedUser)
             {
                 var dialog = new UserRolesDialog(_context, selectedUser);
                 if (dialog.ShowDialog() == true)
                 {
-                    LoadUsers();
+                    await LoadUsersAsync();
                     MessageBox.Show($"Rollen voor {selectedUser.FullName} zijn bijgewerkt!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
         }
 
-        private void btnToggleActive_Click(object sender, RoutedEventArgs e)
+        private async void btnToggleActive_Click(object sender, RoutedEventArgs e)
         {
             if (dgUsers.SelectedItem is ApplicationUser selectedUser)
             {
@@ -1154,8 +1169,8 @@ namespace SuntoryManagementSystem
                     {
                         selectedUser.IsActive = !selectedUser.IsActive;
                         _context.Users.Update(selectedUser);
-                        _context.SaveChanges();
-                        LoadUsers();
+                        await _context.SaveChangesAsync();
+                        await LoadUsersAsync();
                         MessageBox.Show($"Account succesvol ge{action}d!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     catch (Exception ex)
@@ -1166,7 +1181,7 @@ namespace SuntoryManagementSystem
             }
         }
 
-        private void btnResetPassword_Click(object sender, RoutedEventArgs e)
+        private async void btnResetPassword_Click(object sender, RoutedEventArgs e)
         {
             if (dgUsers.SelectedItem is ApplicationUser selectedUser)
             {
@@ -1184,7 +1199,7 @@ namespace SuntoryManagementSystem
                         var passwordHasher = new PasswordHasher<ApplicationUser>();
                         selectedUser.PasswordHash = passwordHasher.HashPassword(selectedUser, "Reset@123");
                         _context.Users.Update(selectedUser);
-                        _context.SaveChanges();
+                        await _context.SaveChangesAsync();
 
                         MessageBox.Show(
                             $"Wachtwoord succesvol gereset!\n\n" +

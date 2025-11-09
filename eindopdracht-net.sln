@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuntoryManagementSystem_WPF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuntoryManagementSystem_Models", "SuntoryManagementSystem_Models\SuntoryManagementSystem_Models.csproj", "{00E9608A-2552-4532-98D8-D0DF810CB138}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuntoryManagementSystem_Cons", "SuntoryManagementSystem_Cons\SuntoryManagementSystem_Cons.csproj", "{B2AC5E43-DD76-4C48-A7A6-57AB7A86279D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{00E9608A-2552-4532-98D8-D0DF810CB138}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00E9608A-2552-4532-98D8-D0DF810CB138}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00E9608A-2552-4532-98D8-D0DF810CB138}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B2AC5E43-DD76-4C48-A7A6-57AB7A86279D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B2AC5E43-DD76-4C48-A7A6-57AB7A86279D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B2AC5E43-DD76-4C48-A7A6-57AB7A86279D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B2AC5E43-DD76-4C48-A7A6-57AB7A86279D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
