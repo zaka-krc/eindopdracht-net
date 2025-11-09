@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Images\logo.jpg" />
+    <Folder Include="Controls\" />
   </ItemGroup>
 
 </Project>

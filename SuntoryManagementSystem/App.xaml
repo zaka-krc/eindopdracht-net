@@ -294,5 +294,45 @@
             </Style.Triggers>
         </Style>
 
+        <!-- UserControl Specific Styles -->
+        
+        <!-- User Info Card Border Style -->
+        <Style x:Key="UserInfoCardBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="MinWidth" Value="200"/>
+        </Style>
+
+        <!-- User Info Card Title TextBlock -->
+        <Style x:Key="UserInfoCardTitleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        </Style>
+
+        <!-- User Info Card Subtitle TextBlock -->
+        <Style x:Key="UserInfoCardSubtitleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#B3E5FC"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
+
+        <!-- User Info Card Detail TextBlock -->
+        <Style x:Key="UserInfoCardDetailStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#B3E5FC"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        </Style>
+
+        <!-- User Info Card Label TextBlock -->
+        <Style x:Key="UserInfoCardLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
     </Application.Resources>
 </Application>

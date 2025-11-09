@@ -12,10 +12,9 @@ namespace SuntoryManagementSystem
 {
     public partial class MainWindow : Window
     {
-        private readonly SuntoryDbContext _context;
-        private readonly ApplicationUser _currentUser;
-        private readonly List<string> _userRoles;
-        private bool _isSwitchingWindows = false; // Nieuwe vlag om window switch te detecteren
+        private SuntoryDbContext _context;
+        private ApplicationUser _currentUser;
+        private List<string> _userRoles;
 
         // Constructor ZONDER parameters - Start in GUEST MODE
         public MainWindow() : this(null, new List<string>())
@@ -28,31 +27,51 @@ namespace SuntoryManagementSystem
             InitializeComponent();
             
             _context = new SuntoryDbContext();
-            _currentUser = currentUser ?? new ApplicationUser 
+            SetCurrentUser(currentUser, userRoles);
+
+            SuntoryDbContext.Seeder(_context);
+            
+            // Load data asynchronously
+            Loaded += async (s, e) => await LoadAllDataAsync();
+        }
+
+        private void SetCurrentUser(ApplicationUser? user, List<string>? roles)
+        {
+            _currentUser = user ?? new ApplicationUser 
             { 
                 FullName = "Gast", 
                 Email = "guest@suntory.com",
                 Id = "guest"
             };
-            _userRoles = userRoles ?? new List<string> { "Guest" };
+            _userRoles = roles ?? new List<string> { "Guest" };
 
+            UpdateUI();
+        }
+
+        private void UpdateUI()
+        {
             // Configure buttons and user info based on login status
-            bool isGuest = _userRoles.Contains("Guest") || _userRoles.Count == 0 || currentUser == null;
+            bool isGuest = _userRoles.Contains("Guest") || _userRoles.Count == 0 || _currentUser.Id == "guest";
             
             if (isGuest)
             {
                 // GUEST MODE: Hide user info, show login & register buttons
-                borderUserInfo.Visibility = Visibility.Collapsed;
+                btnUserInfo.Visibility = Visibility.Collapsed;
                 btnLogin.Visibility = Visibility.Visible;
                 btnRegister.Visibility = Visibility.Visible;
                 btnLogout.Visibility = Visibility.Collapsed;
             }
             else
             {
-                // LOGGED IN: Show user info and logout button, hide login & register
-                borderUserInfo.Visibility = Visibility.Visible;
-                txtUserName.Text = _currentUser.FullName;
-                txtUserRole.Text = string.Join(", ", _userRoles);
+                // LOGGED IN: Show compact user button and logout button
+                btnUserInfo.Visibility = Visibility.Visible;
+                txtUserNameCompact.Text = _currentUser.FullName;
+                txtUserRoleCompact.Text = string.Join(", ", _userRoles);
+                
+                // Set first letter of name as initial
+                txtUserInitial.Text = !string.IsNullOrEmpty(_currentUser.FullName) 
+                    ? _currentUser.FullName[0].ToString().ToUpper() 
+                    : "U";
 
                 btnLogin.Visibility = Visibility.Collapsed;
                 btnRegister.Visibility = Visibility.Collapsed;
@@ -61,37 +80,43 @@ namespace SuntoryManagementSystem
 
             // Configure menu based on roles
             ConfigureMenuForRoles();
-
-            SuntoryDbContext.Seeder(_context);
-            
-            // Load data asynchronously
-            Loaded += async (s, e) => await LoadAllDataAsync();
         }
 
-        private void btnRegister_Click(object sender, RoutedEventArgs e)
+        private void btnUserInfo_Click(object sender, RoutedEventArgs e)
+        {
+            // Show user info popup near the button
+            var popup = new UserInfoPopup(_currentUser, string.Join(", ", _userRoles));
+            popup.ShowNearElement(btnUserInfo);
+        }
+
+        private async void btnRegister_Click(object sender, RoutedEventArgs e)
         {
             // Open register window
             var registerWindow = new RegisterWindow();
             if (registerWindow.ShowDialog() == true && registerWindow.NewUser != null)
             {
+                // Haal de rollen op van de nieuwe gebruiker
+                var userRoles = (from ur in _context.UserRoles
+                                where ur.UserId == registerWindow.NewUser.Id
+                                join r in _context.Roles on ur.RoleId equals r.Id
+                                select r.Name).ToList();
+
                 MessageBox.Show(
                     $"Welkom, {registerWindow.NewUser.FullName}!\n\n" +
                     "Uw account is aangemaakt.\n" +
-                    "U heeft alleen-lezen rechten.\n\n" +
+                    $"Uw rol: {(userRoles.Any() ? string.Join(", ", userRoles) : "Geen rol")}.\n\n" +
                     "Neem contact op met een administrator voor extra rechten.",
                     "Registratie Succesvol",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
 
-                // FIXED: Open nieuw window EERST, dan sluit oude window
-                _isSwitchingWindows = true;
-                var mainWindow = new MainWindow(registerWindow.NewUser, new List<string> { "Guest" });
-                mainWindow.Show();
-                this.Close();
+                // FIXED: Update current window with correct roles
+                SetCurrentUser(registerWindow.NewUser, userRoles);
+                await LoadAllDataAsync();
             }
         }
 
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        private async void btnLogin_Click(object sender, RoutedEventArgs e)
         {
             // Open login window
             var loginWindow = new LoginWindow();
@@ -104,11 +129,32 @@ namespace SuntoryManagementSystem
                                 join r in _context.Roles on ur.RoleId equals r.Id
                                 select r.Name).ToList();
 
-                // FIXED: Open nieuw window EERST, dan sluit oude window
-                _isSwitchingWindows = true;
-                var mainWindow = new MainWindow(loginWindow.LoggedInUser, userRoles);
-                mainWindow.Show();
-                this.Close();
+                // FIXED: Update current window instead of creating new window
+                SetCurrentUser(loginWindow.LoggedInUser, userRoles);
+                await LoadAllDataAsync();
+            }
+        }
+
+        private async void btnLogout_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show(
+                $"Weet u zeker dat u wilt uitloggen, {_currentUser.FullName}?\n\n" +
+                "U keert terug naar de alleen-lezen modus.",
+                "Uitloggen",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                // FIXED: Reset to guest mode in current window
+                SetCurrentUser(null, new List<string> { "Guest" });
+                await LoadAllDataAsync();
+                
+                MessageBox.Show(
+                    "U bent uitgelogd.\n\nU kunt nu alleen-lezen gegevens bekijken.",
+                    "Uitgelogd",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
             }
         }
 
@@ -121,14 +167,37 @@ namespace SuntoryManagementSystem
 
             bool isManager = _userRoles.Contains("Manager");
             bool isEmployee = _userRoles.Contains("Employee");
-            bool isGuest = _userRoles.Contains("Guest") || _userRoles.Count == 0;
+            // Guest is alleen wanneer expliciet Guest rol OF geen enkele rol EN niet ingelogd
+            bool isGuest = (_userRoles.Contains("Guest") || _userRoles.Count == 0) && _currentUser.Id == "guest";
 
-            // GUEST MODE: Alleen-lezen toegang (alles zichtbaar, niks aanpasbaar)
-            if (isGuest)
+            // Reset all visibility first (toon alles standaard)
+            ResetAllButtonVisibility();
+
+            // ADMINISTRATOR: Volledige toegang + User Management
+            if (isAdmin)
             {
-                // Verberg alle wijzigingsknoppen
+                tabUserManagement.Visibility = Visibility.Visible;
+                // Admin heeft toegang tot ALLES
+                return;
+            }
+
+            // MANAGER: Volledige operationele toegang, GEEN User Management
+            // Manager kan alles behalve gebruikers beheren
+            if (isManager)
+            {
+                tabUserManagement.Visibility = Visibility.Collapsed;
+                // Manager heeft volledige toegang tot alle operationele functies
+                // Inclusief: toevoegen, wijzigen, verwijderen, rapporten genereren
+                return;
+            }
+
+            // EMPLOYEE: Alleen-lezen toegang + Rapporten genereren
+            // Employee kan ALLEEN data bekijken en rapporten maken
+            if (isEmployee)
+            {
                 tabUserManagement.Visibility = Visibility.Collapsed;
                 
+                // Verberg ALLE wijzigingsknoppen
                 // Suppliers
                 btnAddSupplier.Visibility = Visibility.Collapsed;
                 btnEditSupplier.Visibility = Visibility.Collapsed;
@@ -155,65 +224,125 @@ namespace SuntoryManagementSystem
                 btnEditVehicle.Visibility = Visibility.Collapsed;
                 btnDeleteVehicle.Visibility = Visibility.Collapsed;
                 
+                // Employee KAN WEL rapporten genereren
+                btnGenerateReports.IsEnabled = true;
+                btnGenerateReports.Opacity = 1.0;
+                btnGenerateReports.ToolTip = null;
+                
                 return;
             }
 
-            // ADMINISTRATOR: Volledige toegang + User Management
-            if (isAdmin)
+            // GUEST MODE: Alleen-lezen toegang (data zichtbaar, niks aanpasbaar, geen rapporten)
+            if (isGuest)
             {
-                tabUserManagement.Visibility = Visibility.Visible;
-                // Admin heeft toegang tot alles
-                return;
-            }
-
-            // MANAGER: Geen User Management, wel alles anders
-            if (isManager)
-            {
+                // Verberg user management
                 tabUserManagement.Visibility = Visibility.Collapsed;
-                // Manager heeft toegang tot alle operationele tabs
-                return;
-            }
-
-            // EMPLOYEE: Beperkte toegang (geen verwijderen, geen voertuigen)
-            if (isEmployee)
-            {
-                tabUserManagement.Visibility = Visibility.Collapsed;
-                tabVehicles.Visibility = Visibility.Collapsed;
-
-                // Verberg delete buttons voor employees
+                
+                // Verberg alle wijzigingsknoppen
+                // Suppliers
+                btnAddSupplier.Visibility = Visibility.Collapsed;
+                btnEditSupplier.Visibility = Visibility.Collapsed;
                 btnDeleteSupplier.Visibility = Visibility.Collapsed;
+                
+                // Customers
+                btnAddCustomer.Visibility = Visibility.Collapsed;
+                btnEditCustomer.Visibility = Visibility.Collapsed;
                 btnDeleteCustomer.Visibility = Visibility.Collapsed;
+                
+                // Products
+                btnAddProduct.Visibility = Visibility.Collapsed;
+                btnEditProduct.Visibility = Visibility.Collapsed;
                 btnDeleteProduct.Visibility = Visibility.Collapsed;
+                
+                // Deliveries
+                btnAddDelivery.Visibility = Visibility.Collapsed;
+                btnEditDelivery.Visibility = Visibility.Collapsed;
                 btnDeleteDelivery.Visibility = Visibility.Collapsed;
+                btnProcessDelivery.Visibility = Visibility.Collapsed;
+                
+                // Vehicles
+                btnAddVehicle.Visibility = Visibility.Collapsed;
+                btnEditVehicle.Visibility = Visibility.Collapsed;
+                btnDeleteVehicle.Visibility = Visibility.Collapsed;
+                
+                // GUEST MAG GEEN RAPPORTEN GENEREREN
+                btnGenerateReports.IsEnabled = false;
+                btnGenerateReports.Opacity = 0.5;
+                btnGenerateReports.ToolTip = "Rapporten genereren is alleen beschikbaar voor ingelogde gebruikers";
+                
+                return;
             }
+
+            // DEFAULT VOOR INGELOGDE GEBRUIKERS ZONDER ROL: Behandel als Employee (alleen-lezen + rapporten)
+            tabUserManagement.Visibility = Visibility.Collapsed;
+            
+            // Verberg ALLE wijzigingsknoppen
+            btnAddSupplier.Visibility = Visibility.Collapsed;
+            btnEditSupplier.Visibility = Visibility.Collapsed;
+            btnDeleteSupplier.Visibility = Visibility.Collapsed;
+            btnAddCustomer.Visibility = Visibility.Collapsed;
+            btnEditCustomer.Visibility = Visibility.Collapsed;
+            btnDeleteCustomer.Visibility = Visibility.Collapsed;
+            btnAddProduct.Visibility = Visibility.Collapsed;
+            btnEditProduct.Visibility = Visibility.Collapsed;
+            btnDeleteProduct.Visibility = Visibility.Collapsed;
+            btnAddDelivery.Visibility = Visibility.Collapsed;
+            btnEditDelivery.Visibility = Visibility.Collapsed;
+            btnDeleteDelivery.Visibility = Visibility.Collapsed;
+            btnProcessDelivery.Visibility = Visibility.Collapsed;
+            btnAddVehicle.Visibility = Visibility.Collapsed;
+            btnEditVehicle.Visibility = Visibility.Collapsed;
+            btnDeleteVehicle.Visibility = Visibility.Collapsed;
+            
+            // KAN WEL rapporten genereren
+            btnGenerateReports.IsEnabled = true;
+            btnGenerateReports.Opacity = 1.0;
+            btnGenerateReports.ToolTip = null;
         }
 
-        private void btnLogout_Click(object sender, RoutedEventArgs e)
+        private void ResetAllButtonVisibility()
         {
-            var result = MessageBox.Show(
-                $"Weet u zeker dat u wilt uitloggen, {_currentUser.FullName}?\n\n" +
-                "U keert terug naar de alleen-lezen modus.",
-                "Uitloggen",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (result == MessageBoxResult.Yes)
-            {
-                // FIXED: Open nieuw window EERST, dan sluit oude window
-                _isSwitchingWindows = true;
-                var guestWindow = new MainWindow();
-                guestWindow.Show();
-                this.Close();
-            }
+            // Reset alle buttons en tabs naar standaard (zichtbaar/enabled)
+            tabUserManagement.Visibility = Visibility.Visible;
+            tabVehicles.Visibility = Visibility.Visible;
+            
+            // Suppliers
+            btnAddSupplier.Visibility = Visibility.Visible;
+            btnEditSupplier.Visibility = Visibility.Visible;
+            btnDeleteSupplier.Visibility = Visibility.Visible;
+            
+            // Customers
+            btnAddCustomer.Visibility = Visibility.Visible;
+            btnEditCustomer.Visibility = Visibility.Visible;
+            btnDeleteCustomer.Visibility = Visibility.Visible;
+            
+            // Products
+            btnAddProduct.Visibility = Visibility.Visible;
+            btnEditProduct.Visibility = Visibility.Visible;
+            btnDeleteProduct.Visibility = Visibility.Visible;
+            
+            // Deliveries
+            btnAddDelivery.Visibility = Visibility.Visible;
+            btnEditDelivery.Visibility = Visibility.Visible;
+            btnDeleteDelivery.Visibility = Visibility.Visible;
+            btnProcessDelivery.Visibility = Visibility.Visible;
+            
+            // Vehicles
+            btnAddVehicle.Visibility = Visibility.Visible;
+            btnEditVehicle.Visibility = Visibility.Visible;
+            btnDeleteVehicle.Visibility = Visibility.Visible;
+            
+            // Reports
+            btnGenerateReports.IsEnabled = true;
+            btnGenerateReports.Opacity = 1.0;
+            btnGenerateReports.ToolTip = null;
         }
-
-        private void Window_Closed(object sender, EventArgs e)
+        
+        protected override void OnClosed(EventArgs e)
         {
-            // Sluit alleen de applicatie als we niet bezig zijn met een window switch
-            if (!_isSwitchingWindows)
-            {
-                Application.Current.Shutdown();
-            }
+            base.OnClosed(e);
+            _context?.Dispose();
+            Application.Current.Shutdown();
         }
 
         private async Task LoadSuppliersAsync()
@@ -1065,7 +1194,7 @@ namespace SuntoryManagementSystem
                 _context.Vehicles.Add(dialog.Vehicle);
                 await _context.SaveChangesAsync();
                 await LoadVehiclesAsync();
-                MessageBox.Show("Voertuig succesvol toegevoegd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Voertuig succesvolgevoegd!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -1112,12 +1241,6 @@ namespace SuntoryManagementSystem
                     }
                 }
             }
-        }
-
-        protected override void OnClosed(System.EventArgs e)
-        {
-            base.OnClosed(e);
-            _context?.Dispose();
         }
 
         // =====================================================================
