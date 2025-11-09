@@ -5,455 +5,663 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SuntoryManagementSystem"
         mc:Ignorable="d"
-        Title="Suntory Management System" Height="700" Width="1200">
-    
-    <Grid Margin="10">
-        <TabControl x:Name="tcMain" SelectionChanged="tcMain_SelectionChanged">
-            
-            <!-- Tab: Leveranciers -->
-            <TabItem Header="Leveranciers">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    
-                    <DataGrid x:Name="dgSuppliers" 
+        Title="Suntory Management System" Height="750" Width="1200"
+        Closed="Window_Closed">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header met gebruikersinfo -->
+        <Border Grid.Row="0" Padding="15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Logo/Title -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Text="SUNTORY MANAGEMENT SYSTEM" 
+                               FontSize="18" 
+                               FontWeight="Bold" 
+                               Foreground="Black"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- User Info & Buttons -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Border Background="{StaticResource PrimaryDarkBrush}" 
+                            CornerRadius="5" 
+                            Padding="10,5"
+                            Margin="0,0,10,0">
+                        <StackPanel>
+                            <TextBlock x:Name="txtUserName" 
+                                       Text="[Gebruiker]" 
+                                       Foreground="White" 
+                                       FontWeight="Bold"
+                                       FontSize="13"/>
+                            <TextBlock x:Name="txtUserRole" 
+                                       Text="[Rol]" 
+                                       Foreground="#B3E5FC" 
+                                       FontSize="11"/>
+                        </StackPanel>
+                    </Border>
+                    <Button x:Name="btnLogin"
+                            Content="INLOGGEN" 
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Click="btnLogin_Click"/>
+                    <Button x:Name="btnRegister"
+                            Content="REGISTREREN" 
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Click="btnRegister_Click"/>
+                    <Button x:Name="btnLogout"
+                            Content="UITLOGGEN" 
+                            Style="{StaticResource DangerButtonStyle}"
+                            Click="btnLogout_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1" Margin="10">
+            <TabControl x:Name="tcMain" SelectionChanged="tcMain_SelectionChanged">
+
+                <!-- Tab: Leveranciers -->
+                <TabItem Header="Leveranciers">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <DataGrid x:Name="dgSuppliers" 
                               Grid.Row="0"
                               AutoGenerateColumns="False" 
                               IsReadOnly="True"
                               CanUserAddRows="False"
                               SelectionChanged="dgSuppliers_SelectionChanged">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding SupplierId}" Width="50"/>
-                            <DataGridTextColumn Header="Leverancier" Binding="{Binding SupplierName}" Width="*"/>
-                            <DataGridTextColumn Header="Contactpersoon" Binding="{Binding ContactPerson}" Width="150"/>
-                            <DataGridTextColumn Header="Telefoon" Binding="{Binding PhoneNumber}" Width="120"/>
-                            <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="180"/>
-                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Status}" Value="Inactive">
-                                                <Setter Property="Foreground" Value="Red"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Status}" Value="Active">
-                                                <Setter Property="Foreground" Value="Green"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                        </DataGrid.Columns>
-                        <DataGrid.RowStyle>
-                            <Style TargetType="DataGridRow">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Status}" Value="Inactive">
-                                        <Setter Property="Background" Value="#FFEBEE"/>
-                                        <Setter Property="Opacity" Value="0.7"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGrid.RowStyle>
-                    </DataGrid>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding SupplierId}" Width="50"/>
+                                <DataGridTextColumn Header="Leverancier" Binding="{Binding SupplierName}" Width="*"/>
+                                <DataGridTextColumn Header="Contactpersoon" Binding="{Binding ContactPerson}" Width="150"/>
+                                <DataGridTextColumn Header="Telefoon" Binding="{Binding PhoneNumber}" Width="120"/>
+                                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="180"/>
+                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Status}" Value="Inactive">
+                                                    <Setter Property="Foreground" Value="Red"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="Active">
+                                                    <Setter Property="Foreground" Value="Green"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                            </DataGrid.Columns>
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Status}" Value="Inactive">
+                                            <Setter Property="Background" Value="#FFEBEE"/>
+                                            <Setter Property="Opacity" Value="0.7"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.RowStyle>
+                        </DataGrid>
 
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                        <Button x:Name="btnAddSupplier" Content="Toevoegen" Width="100" Margin="5" Click="btnAddSupplier_Click" Background="LimeGreen" FontWeight="Bold"/>
-                        <Button x:Name="btnEditSupplier" Content="Wijzigen" Width="100" Margin="5" IsEnabled="False" Click="btnEditSupplier_Click" Background="LightBlue" FontWeight="Bold"/>
-                        <Button x:Name="btnDeleteSupplier" Content="Verwijderen" Width="100" Margin="5" IsEnabled="False" Click="btnDeleteSupplier_Click" Background="Salmon" FontWeight="Bold"/>
-                    </StackPanel>
-                </Grid>
-            </TabItem>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                            <Button x:Name="btnAddSupplier" 
+                                Content="Toevoegen" 
+                                Width="100" 
+                                Style="{StaticResource SuccessButtonStyle}"
+                                Click="btnAddSupplier_Click"/>
+                            <Button x:Name="btnEditSupplier" 
+                                Content="Wijzigen" 
+                                Width="100" 
+                                IsEnabled="False" 
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Click="btnEditSupplier_Click"/>
+                            <Button x:Name="btnDeleteSupplier" 
+                                Content="Verwijderen" 
+                                Width="100" 
+                                IsEnabled="False" 
+                                Style="{StaticResource DangerButtonStyle}"
+                                Click="btnDeleteSupplier_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
 
-            <!-- Tab: Klanten -->
-            <TabItem Header="Klanten">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    
-                    <DataGrid x:Name="dgCustomers" 
+                <!-- Tab: Klanten -->
+                <TabItem Header="Klanten">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <DataGrid x:Name="dgCustomers" 
                               Grid.Row="0"
                               AutoGenerateColumns="False" 
                               IsReadOnly="True"
                               CanUserAddRows="False"
                               SelectionChanged="dgCustomers_SelectionChanged">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding CustomerId}" Width="50"/>
-                            <DataGridTextColumn Header="Klantnaam" Binding="{Binding CustomerName}" Width="*"/>
-                            <DataGridTextColumn Header="Type" Binding="{Binding CustomerType}" Width="100"/>
-                            <DataGridTextColumn Header="Contactpersoon" Binding="{Binding ContactPerson}" Width="150"/>
-                            <DataGridTextColumn Header="Telefoon" Binding="{Binding PhoneNumber}" Width="120"/>
-                            <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="180"/>
-                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Status}" Value="Inactive">
-                                                <Setter Property="Foreground" Value="Red"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Status}" Value="Active">
-                                                <Setter Property="Foreground" Value="Green"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                        </DataGrid.Columns>
-                        <DataGrid.RowStyle>
-                            <Style TargetType="DataGridRow">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Status}" Value="Inactive">
-                                        <Setter Property="Background" Value="#FFEBEE"/>
-                                        <Setter Property="Opacity" Value="0.7"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGrid.RowStyle>
-                    </DataGrid>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding CustomerId}" Width="50"/>
+                                <DataGridTextColumn Header="Klantnaam" Binding="{Binding CustomerName}" Width="*"/>
+                                <DataGridTextColumn Header="Type" Binding="{Binding CustomerType}" Width="100"/>
+                                <DataGridTextColumn Header="Contactpersoon" Binding="{Binding ContactPerson}" Width="150"/>
+                                <DataGridTextColumn Header="Telefoon" Binding="{Binding PhoneNumber}" Width="120"/>
+                                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="180"/>
+                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Status}" Value="Inactive">
+                                                    <Setter Property="Foreground" Value="Red"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="Active">
+                                                    <Setter Property="Foreground" Value="Green"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                            </DataGrid.Columns>
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Status}" Value="Inactive">
+                                            <Setter Property="Background" Value="#FFEBEE"/>
+                                            <Setter Property="Opacity" Value="0.7"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.RowStyle>
+                        </DataGrid>
 
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                        <Button x:Name="btnAddCustomer" Content="Toevoegen" Width="100" Margin="5" Click="btnAddCustomer_Click" Background="LimeGreen" FontWeight="Bold"/>
-                        <Button x:Name="btnEditCustomer" Content="Wijzigen" Width="100" Margin="5" IsEnabled="False" Click="btnEditCustomer_Click" Background="LightBlue" FontWeight="Bold"/>
-                        <Button x:Name="btnDeleteCustomer" Content="Verwijderen" Width="100" Margin="5" IsEnabled="False" Click="btnDeleteCustomer_Click" Background="Salmon" FontWeight="Bold"/>
-                    </StackPanel>
-                </Grid>
-            </TabItem>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                            <Button x:Name="btnAddCustomer" 
+                                Content="Toevoegen" 
+                                Width="100" 
+                                Style="{StaticResource SuccessButtonStyle}"
+                                Click="btnAddCustomer_Click"/>
+                            <Button x:Name="btnEditCustomer" 
+                                Content="Wijzigen" 
+                                Width="100" 
+                                IsEnabled="False" 
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Click="btnEditCustomer_Click"/>
+                            <Button x:Name="btnDeleteCustomer" 
+                                Content="Verwijderen" 
+                                Width="100" 
+                                IsEnabled="False" 
+                                Style="{StaticResource DangerButtonStyle}"
+                                Click="btnDeleteCustomer_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
 
-            <!-- Tab: Producten -->
-            <TabItem Header="Producten">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    
-                    <DataGrid x:Name="dgProducts" 
+                <!-- Tab: Producten -->
+                <TabItem Header="Producten">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <DataGrid x:Name="dgProducts" 
                               Grid.Row="0"
                               AutoGenerateColumns="False" 
                               IsReadOnly="True"
                               CanUserAddRows="False"
                               SelectionChanged="dgProducts_SelectionChanged">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding ProductId}" Width="50"/>
-                            <DataGridTextColumn Header="Product" Binding="{Binding ProductName}" Width="*"/>
-                            <DataGridTextColumn Header="Categorie" Binding="{Binding Category}" Width="120"/>
-                            <DataGridTextColumn Header="Voorraad" Binding="{Binding StockQuantity}" Width="80">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding StockQuantity}" Value="0">
-                                                <Setter Property="Foreground" Value="Red"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="Min. Voorraad" Binding="{Binding MinimumStock}" Width="100"/>
-                            <DataGridTextColumn Header="Verkoopprijs" Binding="{Binding SellingPrice, StringFormat=€{0:N2}}" Width="100"/>
-                            <DataGridCheckBoxColumn Header="Actief" Binding="{Binding IsActive}" Width="60"/>
-                        </DataGrid.Columns>
-                        <DataGrid.RowStyle>
-                            <Style TargetType="DataGridRow">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsActive}" Value="False">
-                                        <Setter Property="Background" Value="#FFEBEE"/>
-                                        <Setter Property="Opacity" Value="0.7"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGrid.RowStyle>
-                    </DataGrid>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding ProductId}" Width="50"/>
+                                <DataGridTextColumn Header="Product" Binding="{Binding ProductName}" Width="*"/>
+                                <DataGridTextColumn Header="Categorie" Binding="{Binding Category}" Width="120"/>
+                                <DataGridTextColumn Header="Voorraad" Binding="{Binding StockQuantity}" Width="80">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding StockQuantity}" Value="0">
+                                                    <Setter Property="Foreground" Value="Red"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Min. Voorraad" Binding="{Binding MinimumStock}" Width="100"/>
+                                <DataGridTextColumn Header="Verkoopprijs" Binding="{Binding SellingPrice, StringFormat=€{0:N2}}" Width="100"/>
+                                <DataGridCheckBoxColumn Header="Actief" Binding="{Binding IsActive}" Width="60"/>
+                            </DataGrid.Columns>
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                            <Setter Property="Background" Value="#FFEBEE"/>
+                                            <Setter Property="Opacity" Value="0.7"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.RowStyle>
+                        </DataGrid>
 
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                        <Button x:Name="btnAddProduct" Content="Toevoegen" Width="100" Margin="5" Click="btnAddProduct_Click" Background="LimeGreen" FontWeight="Bold"/>
-                        <Button x:Name="btnEditProduct" Content="Wijzigen" Width="100" Margin="5" IsEnabled="False" Click="btnEditProduct_Click" Background="LightBlue" FontWeight="Bold"/>
-                        <Button x:Name="btnDeleteProduct" Content="Verwijderen" Width="100" Margin="5" IsEnabled="False" Click="btnDeleteProduct_Click" Background="Salmon" FontWeight="Bold"/>
-                    </StackPanel>
-                </Grid>
-            </TabItem>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                            <Button x:Name="btnAddProduct" 
+                                Content="Toevoegen" 
+                                Width="100" 
+                                Style="{StaticResource SuccessButtonStyle}"
+                                Click="btnAddProduct_Click"/>
+                            <Button x:Name="btnEditProduct" 
+                                Content="Wijzigen" 
+                                Width="100" 
+                                IsEnabled="False" 
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Click="btnEditProduct_Click"/>
+                            <Button x:Name="btnDeleteProduct" 
+                                Content="Verwijderen" 
+                                Width="100" 
+                                IsEnabled="False" 
+                                Style="{StaticResource DangerButtonStyle}"
+                                Click="btnDeleteProduct_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
 
-            <!-- Tab: Leveringen -->
-            <TabItem Header="Leveringen">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    
-                    <DataGrid x:Name="dgDeliveries" 
+                <!-- Tab: Leveringen -->
+                <TabItem Header="Leveringen">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <DataGrid x:Name="dgDeliveries" 
                               Grid.Row="0"
                               AutoGenerateColumns="False" 
                               IsReadOnly="True"
                               CanUserAddRows="False"
                               SelectionChanged="dgDeliveries_SelectionChanged">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding DeliveryId}" Width="50"/>
-                            <DataGridTextColumn Header="Type" Binding="{Binding DeliveryType}" Width="80"/>
-                            <DataGridTextColumn Header="Referentie" Binding="{Binding ReferenceNumber}" Width="120"/>
-                            <DataGridTextColumn Header="Leverancier" Binding="{Binding Supplier.SupplierName}" Width="*"/>
-                            <DataGridTextColumn Header="Klant" Binding="{Binding Customer.CustomerName}" Width="*"/>
-                            <DataGridTextColumn Header="Verwacht" Binding="{Binding ExpectedDeliveryDate, StringFormat=dd-MM-yyyy}" Width="100"/>
-                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Status}" Value="Gepland">
-                                                <Setter Property="Foreground" Value="Orange"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Status}" Value="Delivered">
-                                                <Setter Property="Foreground" Value="Green"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Status}" Value="Geannuleerd">
-                                                <Setter Property="Foreground" Value="Red"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="Bedrag" Binding="{Binding TotalAmount, StringFormat=€{0:N2}}" Width="100"/>
-                        </DataGrid.Columns>
-                        <DataGrid.RowStyle>
-                            <Style TargetType="DataGridRow">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Status}" Value="Geannuleerd">
-                                        <Setter Property="Background" Value="#FFEBEE"/>
-                                        <Setter Property="Opacity" Value="0.7"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Status}" Value="Delivered">
-                                        <Setter Property="Background" Value="#E8F5E9"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGrid.RowStyle>
-                    </DataGrid>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding DeliveryId}" Width="50"/>
+                                <DataGridTextColumn Header="Type" Binding="{Binding DeliveryType}" Width="80"/>
+                                <DataGridTextColumn Header="Referentie" Binding="{Binding ReferenceNumber}" Width="120"/>
+                                <DataGridTextColumn Header="Leverancier" Binding="{Binding Supplier.SupplierName}" Width="*"/>
+                                <DataGridTextColumn Header="Klant" Binding="{Binding Customer.CustomerName}" Width="*"/>
+                                <DataGridTextColumn Header="Verwacht" Binding="{Binding ExpectedDeliveryDate, StringFormat=dd-MM-yyyy}" Width="100"/>
+                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Status}" Value="Gepland">
+                                                    <Setter Property="Foreground" Value="Orange"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="Delivered">
+                                                    <Setter Property="Foreground" Value="Green"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="Geannuleerd">
+                                                    <Setter Property="Foreground" Value="Red"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Bedrag" Binding="{Binding TotalAmount, StringFormat=€{0:N2}}" Width="100"/>
+                            </DataGrid.Columns>
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Status}" Value="Geannuleerd">
+                                            <Setter Property="Background" Value="#FFEBEE"/>
+                                            <Setter Property="Opacity" Value="0.7"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Status}" Value="Delivered">
+                                            <Setter Property="Background" Value="#E8F5E9"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.RowStyle>
+                        </DataGrid>
 
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                        <Button x:Name="btnAddDelivery" Content="Toevoegen" Width="100" Margin="5" Click="btnAddDelivery_Click" Background="LimeGreen" FontWeight="Bold"/>
-                        <Button x:Name="btnEditDelivery" Content="Wijzigen" Width="100" Margin="5" IsEnabled="False" Click="btnEditDelivery_Click" Background="LightBlue" FontWeight="Bold"/>
-                        <Button x:Name="btnProcessDelivery" Content="Verwerken" Width="100" Margin="5" IsEnabled="False" Click="btnProcessDelivery_Click" Background="Orange" FontWeight="Bold"/>
-                        <Button x:Name="btnDeleteDelivery" Content="Verwijderen" Width="100" Margin="5" IsEnabled="False" Click="btnDeleteDelivery_Click" Background="Salmon" FontWeight="Bold"/>
-                    </StackPanel>
-                </Grid>
-            </TabItem>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                            <Button x:Name="btnAddDelivery" 
+                                Content="Toevoegen" 
+                                Width="100" 
+                                Style="{StaticResource SuccessButtonStyle}"
+                                Click="btnAddDelivery_Click"/>
+                            <Button x:Name="btnEditDelivery" 
+                                Content="Wijzigen" 
+                                Width="100" 
+                                IsEnabled="False" 
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Click="btnEditDelivery_Click"/>
+                            <Button x:Name="btnProcessDelivery" 
+                                Content="Verwerken" 
+                                Width="100" 
+                                IsEnabled="False" 
+                                Style="{StaticResource WarningButtonStyle}"
+                                Click="btnProcessDelivery_Click"/>
+                            <Button x:Name="btnDeleteDelivery" 
+                                Content="Verwijderen" 
+                                Width="100" 
+                                IsEnabled="False" 
+                                Style="{StaticResource DangerButtonStyle}"
+                                Click="btnDeleteDelivery_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
 
-            <!-- Tab: Voertuigen -->
-            <TabItem Header="Voertuigen">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    
-                    <DataGrid x:Name="dgVehicles" 
+                <!-- Tab: Voertuigen -->
+                <TabItem Header="Voertuigen" x:Name="tabVehicles">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <DataGrid x:Name="dgVehicles" 
                               Grid.Row="0"
                               AutoGenerateColumns="False" 
                               IsReadOnly="True"
                               CanUserAddRows="False"
                               SelectionChanged="dgVehicles_SelectionChanged">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding VehicleId}" Width="50"/>
-                            <DataGridTextColumn Header="Kenteken" Binding="{Binding LicensePlate}" Width="120"/>
-                            <DataGridTextColumn Header="Merk" Binding="{Binding Brand}" Width="120"/>
-                            <DataGridTextColumn Header="Model" Binding="{Binding Model}" Width="*"/>
-                            <DataGridTextColumn Header="Capaciteit (kg)" Binding="{Binding Capacity}" Width="120"/>
-                            <DataGridCheckBoxColumn Header="Beschikbaar" Binding="{Binding IsAvailable}" Width="100"/>
-                        </DataGrid.Columns>
-                        <DataGrid.RowStyle>
-                            <Style TargetType="DataGridRow">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsAvailable}" Value="False">
-                                        <Setter Property="Background" Value="#FFF3E0"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGrid.RowStyle>
-                    </DataGrid>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding VehicleId}" Width="50"/>
+                                <DataGridTextColumn Header="Kenteken" Binding="{Binding LicensePlate}" Width="120"/>
+                                <DataGridTextColumn Header="Merk" Binding="{Binding Brand}" Width="120"/>
+                                <DataGridTextColumn Header="Model" Binding="{Binding Model}" Width="*"/>
+                                <DataGridTextColumn Header="Capaciteit (kg)" Binding="{Binding Capacity}" Width="120"/>
+                                <DataGridCheckBoxColumn Header="Beschikbaar" Binding="{Binding IsAvailable}" Width="100"/>
+                            </DataGrid.Columns>
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsAvailable}" Value="False">
+                                            <Setter Property="Background" Value="#FFF3E0"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.RowStyle>
+                        </DataGrid>
 
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                        <Button x:Name="btnAddVehicle" Content="Toevoegen" Width="100" Margin="5" Click="btnAddVehicle_Click" Background="LimeGreen" FontWeight="Bold"/>
-                        <Button x:Name="btnEditVehicle" Content="Wijzigen" Width="100" Margin="5" IsEnabled="False" Click="btnEditVehicle_Click" Background="LightBlue" FontWeight="Bold"/>
-                        <Button x:Name="btnDeleteVehicle" Content="Verwijderen" Width="100" Margin="5" IsEnabled="False" Click="btnDeleteVehicle_Click" Background="Red" FontWeight="Bold"/>
-                    </StackPanel>
-                </Grid>
-            </TabItem>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                            <Button x:Name="btnAddVehicle" 
+                                Content="Toevoegen" 
+                                Width="100" 
+                                Style="{StaticResource SuccessButtonStyle}"
+                                Click="btnAddVehicle_Click"/>
+                            <Button x:Name="btnEditVehicle" 
+                                Content="Wijzigen" 
+                                Width="100" 
+                                IsEnabled="False" 
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Click="btnEditVehicle_Click"/>
+                            <Button x:Name="btnDeleteVehicle" 
+                                Content="Verwijderen" 
+                                Width="100" 
+                                IsEnabled="False" 
+                                Style="{StaticResource DangerButtonStyle}"
+                                Click="btnDeleteVehicle_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
 
-            <!-- Tab: Voorraad Alerts -->
-            <TabItem Header="Voorraad Alerts">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    
-                    <!-- Info banner -->
-                    <Border Grid.Row="0" Background="#FFF3CD" BorderBrush="#FFC107" BorderThickness="1" 
+                <!-- Tab: Voorraad Alerts -->
+                <TabItem Header="Voorraad Alerts">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Info banner -->
+                        <Border Grid.Row="0" Background="#FFF3CD" BorderBrush="#FFC107" BorderThickness="1" 
                             Padding="10" Margin="0,0,0,10" CornerRadius="5">
-                        <StackPanel>
-                            <TextBlock FontWeight="Bold" FontSize="14" Foreground="#856404">
+                            <StackPanel>
+                                <TextBlock FontWeight="Bold" FontSize="14" Foreground="#856404">
                                 Producten met Lage Voorraad
-                            </TextBlock>
-                            <TextBlock Margin="0,5,0,0" Foreground="#856404">
+                                </TextBlock>
+                                <TextBlock Margin="0,5,0,0" Foreground="#856404">
                                 Deze producten hebben minder voorraad dan het ingestelde minimum. Plaats tijdig een nieuwe bestelling.
-                            </TextBlock>
-                        </StackPanel>
-                    </Border>
-                    
-                    <DataGrid x:Name="dgStockAlerts" 
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <DataGrid x:Name="dgStockAlerts" 
                               Grid.Row="1"
                               AutoGenerateColumns="False" 
                               IsReadOnly="True"
                               CanUserAddRows="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding ProductId}" Width="50"/>
-                            <DataGridTextColumn Header="Product" Binding="{Binding ProductName}" Width="*"/>
-                            <DataGridTextColumn Header="SKU" Binding="{Binding SKU}" Width="120"/>
-                            <DataGridTextColumn Header="Categorie" Binding="{Binding Category}" Width="120"/>
-                            <DataGridTextColumn Header="Leverancier" Binding="{Binding Supplier.SupplierName}" Width="150"/>
-                            <DataGridTextColumn Header="Huidige Voorraad" Binding="{Binding StockQuantity}" Width="120">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding StockQuantity}" Value="0">
-                                                <Setter Property="Foreground" Value="Red"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="Minimum" Binding="{Binding MinimumStock}" Width="80"/>
-                        </DataGrid.Columns>
-                        <DataGrid.RowStyle>
-                            <Style TargetType="DataGridRow">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding StockQuantity}" Value="0">
-                                        <Setter Property="Background" Value="#FFCDD2"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGrid.RowStyle>
-                    </DataGrid>
-                </Grid>
-            </TabItem>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding ProductId}" Width="50"/>
+                                <DataGridTextColumn Header="Product" Binding="{Binding ProductName}" Width="*"/>
+                                <DataGridTextColumn Header="SKU" Binding="{Binding SKU}" Width="120"/>
+                                <DataGridTextColumn Header="Categorie" Binding="{Binding Category}" Width="120"/>
+                                <DataGridTextColumn Header="Leverancier" Binding="{Binding Supplier.SupplierName}" Width="150"/>
+                                <DataGridTextColumn Header="Huidige Voorraad" Binding="{Binding StockQuantity}" Width="120">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding StockQuantity}" Value="0">
+                                                    <Setter Property="Foreground" Value="Red"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Minimum" Binding="{Binding MinimumStock}" Width="80"/>
+                            </DataGrid.Columns>
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding StockQuantity}" Value="0">
+                                            <Setter Property="Background" Value="#FFCDD2"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.RowStyle>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
 
-            <!-- Tab: Voorraad Aanpassingen -->
-            <TabItem Header="Voorraad Aanpassingen">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    
-                    <!-- Info banner -->
-                    <Border Grid.Row="0" Background="#E3F2FD" BorderBrush="#2196F3" BorderThickness="1" 
+                <!-- Tab: Voorraad Aanpassingen -->
+                <TabItem Header="Voorraad Aanpassingen">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Info banner -->
+                        <Border Grid.Row="0" Background="#E3F2FD" BorderBrush="{StaticResource PrimaryBrush}" BorderThickness="1" 
                             Padding="10" Margin="0,0,0,10" CornerRadius="5">
-                        <StackPanel>
-                            <TextBlock FontWeight="Bold" FontSize="14" Foreground="#1565C0">
+                            <StackPanel>
+                                <TextBlock FontWeight="Bold" FontSize="14" Foreground="#1565C0">
                                 Voorraad Aanpassingen Overzicht
-                            </TextBlock>
-                            <TextBlock Margin="0,5,0,0" Foreground="#1565C0">
+                                </TextBlock>
+                                <TextBlock Margin="0,5,0,0" Foreground="#1565C0">
                                 Alle voorraad wijzigingen (handmatig, leveringen verwerken, etc.) worden hier geregistreerd met datum en tijd.
-                            </TextBlock>
-                        </StackPanel>
-                    </Border>
-                    
-                    <DataGrid x:Name="dgStockAdjustments" 
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <DataGrid x:Name="dgStockAdjustments" 
                               Grid.Row="1"
                               AutoGenerateColumns="False" 
                               IsReadOnly="True"
                               CanUserAddRows="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding StockAdjustmentId}" Width="50"/>
-                            <DataGridTextColumn Header="Datum/Tijd" Binding="{Binding AdjustmentDate, StringFormat=dd-MM-yyyy HH:mm}" Width="140">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                        <Setter Property="Foreground" Value="#1565C0"/>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="Product" Binding="{Binding Product.ProductName}" Width="200"/>
-                            <DataGridTextColumn Header="SKU" Binding="{Binding Product.SKU}" Width="110"/>
-                            <DataGridTextColumn Header="Type" Binding="{Binding AdjustmentType}" Width="100">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding AdjustmentType}" Value="Addition">
-                                                <Setter Property="Foreground" Value="Green"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding AdjustmentType}" Value="Removal">
-                                                <Setter Property="Foreground" Value="Red"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding AdjustmentType}" Value="Damage">
-                                                <Setter Property="Foreground" Value="DarkOrange"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding AdjustmentType}" Value="Correction">
-                                                <Setter Property="Foreground" Value="DarkBlue"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="Vorig" Binding="{Binding PreviousQuantity}" Width="70">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="HorizontalAlignment" Value="Center"/>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="Wijziging" Binding="{Binding QuantityChange}" Width="90">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                        <Setter Property="HorizontalAlignment" Value="Center"/>
-                                        <Style.Triggers>
-                                            <Trigger Property="Text" Value="0">
-                                                <Setter Property="Foreground" Value="Gray"/>
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="Nieuw" Binding="{Binding NewQuantity}" Width="70">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                        <Setter Property="HorizontalAlignment" Value="Center"/>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="Reden" Binding="{Binding Reason}" Width="*" MinWidth="200"/>
-                            <DataGridTextColumn Header="Aangepast door" Binding="{Binding AdjustedBy}" Width="170"/>
-                        </DataGrid.Columns>
-                        <DataGrid.RowStyle>
-                            <Style TargetType="DataGridRow">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding AdjustmentType}" Value="Addition">
-                                        <Setter Property="Background" Value="#E8F5E9"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding AdjustmentType}" Value="Removal">
-                                        <Setter Property="Background" Value="#FFEBEE"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding AdjustmentType}" Value="Damage">
-                                        <Setter Property="Background" Value="#FFF3E0"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding AdjustmentType}" Value="Correction">
-                                        <Setter Property="Background" Value="#E3F2FD"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGrid.RowStyle>
-                    </DataGrid>
-                </Grid>
-            </TabItem>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding StockAdjustmentId}" Width="50"/>
+                                <DataGridTextColumn Header="Datum/Tijd" Binding="{Binding AdjustmentDate, StringFormat=dd-MM-yyyy HH:mm}" Width="140">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Setter Property="Foreground" Value="#1565C0"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Product" Binding="{Binding Product.ProductName}" Width="200"/>
+                                <DataGridTextColumn Header="SKU" Binding="{Binding Product.SKU}" Width="110"/>
+                                <DataGridTextColumn Header="Type" Binding="{Binding AdjustmentType}" Width="100">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding AdjustmentType}" Value="Addition">
+                                                    <Setter Property="Foreground" Value="Green"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding AdjustmentType}" Value="Removal">
+                                                    <Setter Property="Foreground" Value="Red"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding AdjustmentType}" Value="Damage">
+                                                    <Setter Property="Foreground" Value="DarkOrange"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding AdjustmentType}" Value="Correction">
+                                                    <Setter Property="Foreground" Value="DarkBlue"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Vorig" Binding="{Binding PreviousQuantity}" Width="70">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Wijziging" Binding="{Binding QuantityChange}" Width="90">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="Text" Value="0">
+                                                    <Setter Property="Foreground" Value="Gray"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Nieuw" Binding="{Binding NewQuantity}" Width="70">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Reden" Binding="{Binding Reason}" Width="*" MinWidth="200"/>
+                                <DataGridTextColumn Header="Aangepast door" Binding="{Binding AdjustedBy}" Width="170"/>
+                            </DataGrid.Columns>
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding AdjustmentType}" Value="Addition">
+                                            <Setter Property="Background" Value="#E8F5E9"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding AdjustmentType}" Value="Removal">
+                                            <Setter Property="Background" Value="#FFEBEE"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding AdjustmentType}" Value="Damage">
+                                            <Setter Property="Background" Value="#FFF3E0"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding AdjustmentType}" Value="Correction">
+                                            <Setter Property="Background" Value="#E3F2FD"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.RowStyle>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
 
-        </TabControl>
+                <!-- Tab: Gebruikersbeheer (Admin only) -->
+                <TabItem Header="Gebruikersbeheer" x:Name="tabUserManagement" Visibility="Collapsed">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Info banner -->
+                        <Border Grid.Row="0" Background="#FFEBEE" BorderBrush="#F44336" BorderThickness="1" 
+                            Padding="10" Margin="0,0,0,10" CornerRadius="5">
+                            <StackPanel>
+                                <TextBlock FontWeight="Bold" FontSize="14" Foreground="#C62828">
+                                🔒 Administrator - Gebruikersbeheer
+                                </TextBlock>
+                                <TextBlock Margin="0,5,0,0" Foreground="#C62828">
+                                Beheer gebruikers, rollen en accountstatussen. Alleen zichtbaar voor Administrators.
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <DataGrid x:Name="dgUsers" 
+                              Grid.Row="1"
+                              AutoGenerateColumns="False" 
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              SelectionChanged="dgUsers_SelectionChanged">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Volledige Naam" Binding="{Binding FullName}" Width="*"/>
+                                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="200"/>
+                                <DataGridTextColumn Header="Afdeling" Binding="{Binding Department}" Width="120"/>
+                                <DataGridTextColumn Header="Functie" Binding="{Binding JobTitle}" Width="150"/>
+                                <DataGridTextColumn Header="Aangemaakt" Binding="{Binding CreatedDate, StringFormat=dd-MM-yyyy}" Width="100"/>
+                                <DataGridTextColumn Header="Laatste Login" Binding="{Binding LastLoginDate, StringFormat=dd-MM-yyyy HH:mm}" Width="140"/>
+                                <DataGridCheckBoxColumn Header="Actief" Binding="{Binding IsActive}" Width="60"/>
+                            </DataGrid.Columns>
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                            <Setter Property="Background" Value="#FFEBEE"/>
+                                            <Setter Property="Opacity" Value="0.7"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.RowStyle>
+                        </DataGrid>
+
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                            <Button x:Name="btnManageRoles" 
+                                Content="Rollen Beheren" 
+                                Width="130" 
+                                IsEnabled="False" 
+                                Style="{StaticResource WarningButtonStyle}"
+                                Click="btnManageRoles_Click"/>
+                            <Button x:Name="btnToggleActive" 
+                                Content="Activeren/Deactiveren" 
+                                Width="160" 
+                                IsEnabled="False" 
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Click="btnToggleActive_Click"/>
+                            <Button x:Name="btnResetPassword" 
+                                Content="Wachtwoord Reset" 
+                                Width="140" 
+                                IsEnabled="False" 
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                Click="btnResetPassword_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+
+            </TabControl>
+        </Grid>
     </Grid>
 </Window>

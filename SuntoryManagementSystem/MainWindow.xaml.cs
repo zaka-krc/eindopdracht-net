@@ -1,33 +1,240 @@
-﻿using SuntoryManagementSystem.Models;
+using SuntoryManagementSystem.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace SuntoryManagementSystem
 {
     public partial class MainWindow : Window
     {
         private readonly SuntoryDbContext _context;
+        private readonly ApplicationUser _currentUser;
+        private readonly List<string> _userRoles;
+        private bool _isSwitchingWindows = false; // Nieuwe vlag om window switch te detecteren
 
-        public MainWindow()
+        // Constructor ZONDER parameters - Start in GUEST MODE
+        public MainWindow() : this(null, new List<string>())
+        {
+        }
+
+        // Nieuwe constructor MET ingelogde gebruiker en rollen
+        public MainWindow(ApplicationUser? currentUser, List<string> userRoles)
         {
             InitializeComponent();
+            
             _context = new SuntoryDbContext();
+            _currentUser = currentUser ?? new ApplicationUser 
+            { 
+                FullName = "Gast (Alleen-lezen)", 
+                Email = "guest@suntory.com",
+                Id = "guest"
+            };
+            _userRoles = userRoles ?? new List<string> { "Guest" };
+
+            // Set user info in header
+            txtUserName.Text = _currentUser.FullName;
+            txtUserRole.Text = string.Join(", ", _userRoles.Count == 1 && _userRoles[0] == "Guest" ? new[] { "Gast - Alleen Lezen" } : _userRoles);
+
+            // Configure buttons based on login status
+            bool isGuest = _userRoles.Contains("Guest") || _userRoles.Count == 0 || currentUser == null;
+            btnLogin.Visibility = isGuest ? Visibility.Visible : Visibility.Collapsed;
+            btnRegister.Visibility = isGuest ? Visibility.Visible : Visibility.Collapsed;
+            btnLogout.Visibility = isGuest ? Visibility.Collapsed : Visibility.Visible;
+
+            // Configure menu based on roles
+            ConfigureMenuForRoles();
+
             SuntoryDbContext.Seeder(_context);
             LoadAllData();
         }
 
+        private void btnRegister_Click(object sender, RoutedEventArgs e)
+        {
+            // Open register window
+            var registerWindow = new RegisterWindow();
+            if (registerWindow.ShowDialog() == true && registerWindow.NewUser != null)
+            {
+                MessageBox.Show(
+                    $"Welkom, {registerWindow.NewUser.FullName}!\n\n" +
+                    "Uw account is aangemaakt.\n" +
+                    "U heeft alleen-lezen rechten.\n\n" +
+                    "Neem contact op met een administrator voor extra rechten.",
+                    "Registratie Succesvol",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+
+                // FIXED: Open nieuw window EERST, dan sluit oude window
+                _isSwitchingWindows = true;
+                var mainWindow = new MainWindow(registerWindow.NewUser, new List<string> { "Guest" });
+                mainWindow.Show();
+                this.Close();
+            }
+        }
+
+        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        {
+            // Open login window
+            var loginWindow = new LoginWindow();
+            
+            if (loginWindow.ShowDialog() == true && loginWindow.LoggedInUser != null)
+            {
+                // Haal de rollen op van de ingelogde gebruiker
+                var userRoles = (from ur in _context.UserRoles
+                                where ur.UserId == loginWindow.LoggedInUser.Id
+                                join r in _context.Roles on ur.RoleId equals r.Id
+                                select r.Name).ToList();
+
+                // FIXED: Open nieuw window EERST, dan sluit oude window
+                _isSwitchingWindows = true;
+                var mainWindow = new MainWindow(loginWindow.LoggedInUser, userRoles);
+                mainWindow.Show();
+                this.Close();
+            }
+        }
+
+        private void ConfigureMenuForRoles()
+        {
+            // LINQ Query Syntax om te checken of gebruiker Administrator is
+            bool isAdmin = (from role in _userRoles
+                           where role == "Administrator"
+                           select role).Any();
+
+            bool isManager = _userRoles.Contains("Manager");
+            bool isEmployee = _userRoles.Contains("Employee");
+            bool isGuest = _userRoles.Contains("Guest") || _userRoles.Count == 0;
+
+            // GUEST MODE: Alleen-lezen toegang (alles zichtbaar, niets aanpasbaar)
+            if (isGuest)
+            {
+                // Verberg alle wijzigingsknoppen
+                tabUserManagement.Visibility = Visibility.Collapsed;
+                
+                // Suppliers
+                btnAddSupplier.Visibility = Visibility.Collapsed;
+                btnEditSupplier.Visibility = Visibility.Collapsed;
+                btnDeleteSupplier.Visibility = Visibility.Collapsed;
+                
+                // Customers
+                btnAddCustomer.Visibility = Visibility.Collapsed;
+                btnEditCustomer.Visibility = Visibility.Collapsed;
+                btnDeleteCustomer.Visibility = Visibility.Collapsed;
+                
+                // Products
+                btnAddProduct.Visibility = Visibility.Collapsed;
+                btnEditProduct.Visibility = Visibility.Collapsed;
+                btnDeleteProduct.Visibility = Visibility.Collapsed;
+                
+                // Deliveries
+                btnAddDelivery.Visibility = Visibility.Collapsed;
+                btnEditDelivery.Visibility = Visibility.Collapsed;
+                btnDeleteDelivery.Visibility = Visibility.Collapsed;
+                btnProcessDelivery.Visibility = Visibility.Collapsed;
+                
+                // Vehicles
+                btnAddVehicle.Visibility = Visibility.Collapsed;
+                btnEditVehicle.Visibility = Visibility.Collapsed;
+                btnDeleteVehicle.Visibility = Visibility.Collapsed;
+                
+                return;
+            }
+
+            // ADMINISTRATOR: Volledige toegang + User Management
+            if (isAdmin)
+            {
+                tabUserManagement.Visibility = Visibility.Visible;
+                // Admin heeft toegang tot alles
+                return;
+            }
+
+            // MANAGER: Geen User Management, wel alles anders
+            if (isManager)
+            {
+                tabUserManagement.Visibility = Visibility.Collapsed;
+                // Manager heeft toegang tot alle operationele tabs
+                return;
+            }
+
+            // EMPLOYEE: Beperkte toegang (geen verwijderen, geen voertuigen)
+            if (isEmployee)
+            {
+                tabUserManagement.Visibility = Visibility.Collapsed;
+                tabVehicles.Visibility = Visibility.Collapsed;
+
+                // Verberg delete buttons voor employees
+                btnDeleteSupplier.Visibility = Visibility.Collapsed;
+                btnDeleteCustomer.Visibility = Visibility.Collapsed;
+                btnDeleteProduct.Visibility = Visibility.Collapsed;
+                btnDeleteDelivery.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void btnLogout_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show(
+                $"Weet u zeker dat u wilt uitloggen, {_currentUser.FullName}?\n\n" +
+                "U keert terug naar de alleen-lezen modus.",
+                "Uitloggen",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                // FIXED: Open nieuw window EERST, dan sluit oude window
+                _isSwitchingWindows = true;
+                var guestWindow = new MainWindow();
+                guestWindow.Show();
+                this.Close();
+            }
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            // Sluit alleen de applicatie als we niet bezig zijn met een window switch
+            if (!_isSwitchingWindows)
+            {
+                Application.Current.Shutdown();
+            }
+        }
+
         private void LoadAllData()
         {
-            LoadSuppliers();
-            LoadCustomers();
-            LoadProducts();
-            LoadDeliveries();
-            LoadVehicles();
-            LoadLowStockProducts();
-            LoadStockAdjustments();
+            try
+            {
+                LoadSuppliers();
+                LoadCustomers();
+                LoadProducts();
+                LoadDeliveries();
+                LoadVehicles();
+                LoadLowStockProducts();
+                LoadStockAdjustments();
+                LoadUsers(); // NEW: Load users for admin panel
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fout bij laden van data: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // NEW: Load users voor User Management tab
+        private void LoadUsers()
+        {
+            try
+            {
+                // LINQ Query Syntax om alle gebruikers te laden
+                var users = (from u in _context.Users
+                            orderby u.IsActive descending, u.FullName
+                            select u).ToList();
+
+                dgUsers.ItemsSource = users;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fout bij laden van gebruikers: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void LoadSuppliers()
@@ -351,7 +558,7 @@ namespace SuntoryManagementSystem
                 PreviousQuantity = 0,
                 NewQuantity = initialStock,
                 Reason = $"Nieuw product aangemaakt met initiële voorraad van {initialStock} stuks",
-                AdjustedBy = "Systeem - Nieuw product",
+                AdjustedBy = _currentUser.FullName,  // Gebruik ingelogde gebruiker
                 AdjustmentDate = DateTime.Now
             };
 
@@ -400,7 +607,7 @@ namespace SuntoryManagementSystem
                 PreviousQuantity = previousQuantity,
                 NewQuantity = newQuantity,
                 Reason = reason,
-                AdjustedBy = "Systeem - Handmatige wijziging",
+                AdjustedBy = _currentUser.FullName,  // Gebruik ingelogde gebruiker
                 AdjustmentDate = DateTime.Now
             };
 
@@ -759,7 +966,7 @@ namespace SuntoryManagementSystem
                                 PreviousQuantity = previousQty,
                                 NewQuantity = newQty,
                                 Reason = $"{selectedDelivery.DeliveryType} levering {selectedDelivery.ReferenceNumber} verwerkt",
-                                AdjustedBy = "Systeem",
+                                AdjustedBy = _currentUser.FullName,  // Gebruik ingelogde gebruiker
                                 AdjustmentDate = DateTime.Now
                             };
 
@@ -896,6 +1103,103 @@ namespace SuntoryManagementSystem
         {
             base.OnClosed(e);
             _context?.Dispose();
+        }
+
+        // =====================================================================
+        // USER MANAGEMENT METHODS (Administrator only)
+        // =====================================================================
+
+        private void dgUsers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            bool hasSelection = dgUsers.SelectedItem != null;
+            btnManageRoles.IsEnabled = hasSelection;
+            btnToggleActive.IsEnabled = hasSelection;
+            btnResetPassword.IsEnabled = hasSelection;
+        }
+
+        private void btnManageRoles_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgUsers.SelectedItem is ApplicationUser selectedUser)
+            {
+                var dialog = new UserRolesDialog(_context, selectedUser);
+                if (dialog.ShowDialog() == true)
+                {
+                    LoadUsers();
+                    MessageBox.Show($"Rollen voor {selectedUser.FullName} zijn bijgewerkt!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+        }
+
+        private void btnToggleActive_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgUsers.SelectedItem is ApplicationUser selectedUser)
+            {
+                // Voorkom dat admin zichzelf deactiveren
+                if (selectedUser.Id == _currentUser.Id)
+                {
+                    MessageBox.Show("U kunt uw eigen account niet deactiveren!", "Waarschuwing", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                string action = selectedUser.IsActive ? "deactiveren" : "activeren";
+                var result = MessageBox.Show(
+                    $"Weet u zeker dat u het account van '{selectedUser.FullName}' wilt {action}?",
+                    $"Account {action}",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        selectedUser.IsActive = !selectedUser.IsActive;
+                        _context.Users.Update(selectedUser);
+                        _context.SaveChanges();
+                        LoadUsers();
+                        MessageBox.Show($"Account succesvol ge{action}d!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Fout bij {action}: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+        }
+
+        private void btnResetPassword_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgUsers.SelectedItem is ApplicationUser selectedUser)
+            {
+                var result = MessageBox.Show(
+                    $"Weet u zeker dat u het wachtwoord wilt resetten voor '{selectedUser.FullName}'?\n\n" +
+                    $"Het nieuwe wachtwoord wordt: Reset@123",
+                    "Wachtwoord Resetten",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        var passwordHasher = new PasswordHasher<ApplicationUser>();
+                        selectedUser.PasswordHash = passwordHasher.HashPassword(selectedUser, "Reset@123");
+                        _context.Users.Update(selectedUser);
+                        _context.SaveChanges();
+
+                        MessageBox.Show(
+                            $"Wachtwoord succesvol gereset!\n\n" +
+                            $"Nieuw wachtwoord: Reset@123\n\n" +
+                            $"De gebruiker wordt gevraagd dit te wijzigen bij volgende login.",
+                            "Succes",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Fout bij wachtwoord reset: {ex.Message}", "Fout", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
         }
     }
 }

@@ -90,7 +90,7 @@ namespace SuntoryManagementSystem.Models
                     PreviousQuantity = 200,
                     NewQuantity = 400,
                     Reason = "Incoming levering INC-2025-002 verwerkt",
-                    AdjustedBy = "Systeem",
+                    AdjustedBy = "Warehouse Manager",
                     AdjustmentDate = DateTime.Now.AddDays(-3).AddHours(2)
                 },
                 new StockAdjustment 
@@ -101,7 +101,7 @@ namespace SuntoryManagementSystem.Models
                     PreviousQuantity = 120,
                     NewQuantity = 270,
                     Reason = "Incoming levering INC-2025-002 verwerkt",
-                    AdjustedBy = "Systeem",
+                    AdjustedBy = "Warehouse Manager",
                     AdjustmentDate = DateTime.Now.AddDays(-3).AddHours(2).AddMinutes(1)
                 },
                 
@@ -114,7 +114,7 @@ namespace SuntoryManagementSystem.Models
                     PreviousQuantity = 400,
                     NewQuantity = 300,
                     Reason = "Outgoing levering OUT-2025-002 verwerkt",
-                    AdjustedBy = "Systeem",
+                    AdjustedBy = "Peter de Vries",
                     AdjustmentDate = DateTime.Now.AddDays(-2).AddHours(3)
                 },
                 new StockAdjustment 
@@ -125,7 +125,7 @@ namespace SuntoryManagementSystem.Models
                     PreviousQuantity = 180,
                     NewQuantity = 100,
                     Reason = "Outgoing levering OUT-2025-002 verwerkt",
-                    AdjustedBy = "Systeem",
+                    AdjustedBy = "Peter de Vries",
                     AdjustmentDate = DateTime.Now.AddDays(-2).AddHours(3).AddMinutes(1)
                 },
                 new StockAdjustment 
@@ -136,7 +136,7 @@ namespace SuntoryManagementSystem.Models
                     PreviousQuantity = 270,
                     NewQuantity = 220,
                     Reason = "Outgoing levering OUT-2025-002 verwerkt",
-                    AdjustedBy = "Systeem",
+                    AdjustedBy = "Peter de Vries",
                     AdjustmentDate = DateTime.Now.AddDays(-2).AddHours(3).AddMinutes(2)
                 },
                 
