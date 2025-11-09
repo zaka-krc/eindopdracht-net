@@ -2,6 +2,7 @@ using SuntoryManagementSystem.Models;
 using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace SuntoryManagementSystem
 {
@@ -59,7 +60,10 @@ namespace SuntoryManagementSystem
             txtSellingPrice.Text = Product.SellingPrice.ToString("F2");
             txtStockQuantity.Text = Product.StockQuantity.ToString();
             txtMinimumStock.Text = Product.MinimumStock.ToString();
-            chkIsActive.IsChecked = Product.IsActive;
+            
+            // Set actief status ComboBox
+            cmbIsActive.SelectedIndex = Product.IsActive ? 0 : 1;
+            
             txtDescription.Text = Product.Description;
         }
 
@@ -121,7 +125,11 @@ namespace SuntoryManagementSystem
             Product.PurchasePrice = purchasePrice;
             Product.SellingPrice = sellingPrice;
             Product.MinimumStock = minimumStock;
-            Product.IsActive = chkIsActive.IsChecked ?? true;
+            
+            // Get actief status van ComboBox
+            var selectedItem = (ComboBoxItem)cmbIsActive.SelectedItem;
+            Product.IsActive = bool.Parse(selectedItem.Tag.ToString()!);
+            
             Product.Description = txtDescription.Text.Trim();
 
             bool isNewProduct = !_isEditMode;

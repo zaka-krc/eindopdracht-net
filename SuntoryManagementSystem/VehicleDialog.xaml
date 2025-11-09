@@ -50,8 +50,11 @@
                 <Label Grid.Row="4" Grid.Column="0" Content="Capaciteit (kg):" Style="{StaticResource LabelStyle}"/>
                 <TextBox x:Name="txtCapacity" Grid.Row="4" Grid.Column="1" Style="{StaticResource TextBoxStyle}"/>
 
-                <Label Grid.Row="5" Grid.Column="0" Content="Beschikbaar:" Style="{StaticResource LabelStyle}"/>
-                <CheckBox x:Name="chkIsAvailable" Grid.Row="5" Grid.Column="1" Margin="0,10" VerticalAlignment="Center" IsChecked="True"/>
+                <Label Grid.Row="5" Grid.Column="0" Content="Beschikbaarheid:" Style="{StaticResource LabelStyle}"/>
+                <ComboBox x:Name="cmbAvailability" Grid.Row="5" Grid.Column="1" Style="{StaticResource ComboBoxStyle}">
+                    <ComboBoxItem Content="Beschikbaar" Tag="True" IsSelected="True"/>
+                    <ComboBoxItem Content="Niet Beschikbaar" Tag="False"/>
+                </ComboBox>
 
                 <Label Grid.Row="6" Grid.Column="0" Content="Opmerkingen:" Style="{StaticResource LabelStyle}" VerticalAlignment="Top"/>
                 <TextBox x:Name="txtNotes" Grid.Row="6" Grid.Column="1" 

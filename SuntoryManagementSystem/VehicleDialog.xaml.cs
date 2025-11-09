@@ -32,8 +32,10 @@ namespace SuntoryManagementSystem
             txtModel.Text = Vehicle.Model;
             cmbVehicleType.Text = Vehicle.VehicleType;
             txtCapacity.Text = Vehicle.Capacity.ToString();
-            chkIsAvailable.IsChecked = Vehicle.IsAvailable;
             txtNotes.Text = Vehicle.Notes;
+            
+            // Set beschikbaarheid ComboBox
+            cmbAvailability.SelectedIndex = Vehicle.IsAvailable ? 0 : 1;
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
@@ -71,7 +73,11 @@ namespace SuntoryManagementSystem
             Vehicle.Model = txtModel.Text.Trim();
             Vehicle.VehicleType = ((ComboBoxItem)cmbVehicleType.SelectedItem).Content.ToString()!;
             Vehicle.Capacity = capacity;
-            Vehicle.IsAvailable = chkIsAvailable.IsChecked ?? true;
+            
+            // Get beschikbaarheid van ComboBox
+            var selectedItem = (ComboBoxItem)cmbAvailability.SelectedItem;
+            Vehicle.IsAvailable = bool.Parse(selectedItem.Tag.ToString()!);
+            
             Vehicle.Notes = txtNotes.Text.Trim();
 
             DialogResult = true;

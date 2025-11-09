@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SuntoryManagementSystem"
+        xmlns:controls="clr-namespace:SuntoryManagementSystem.Controls"
         mc:Ignorable="d"
         Title="Suntory Management System" Height="750" Width="1200">
 
@@ -118,21 +119,15 @@
                             <DataGridTextColumn Header="Contactpersoon" Binding="{Binding ContactPerson}" Width="150"/>
                             <DataGridTextColumn Header="Telefoon" Binding="{Binding PhoneNumber}" Width="120"/>
                             <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="180"/>
-                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Status}" Value="Inactive">
-                                                <Setter Property="Foreground" Value="Red"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Status}" Value="Active">
-                                                <Setter Property="Foreground" Value="Green"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
+                            
+                            <!-- STATUS INDICATOR USERCONTROL -->
+                            <DataGridTemplateColumn Header="Status" Width="110">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <controls:StatusIndicator Status="{Binding Status}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow">
@@ -189,21 +184,15 @@
                             <DataGridTextColumn Header="Contactpersoon" Binding="{Binding ContactPerson}" Width="150"/>
                             <DataGridTextColumn Header="Telefoon" Binding="{Binding PhoneNumber}" Width="120"/>
                             <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="180"/>
-                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Status}" Value="Inactive">
-                                                <Setter Property="Foreground" Value="Red"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Status}" Value="Active">
-                                                <Setter Property="Foreground" Value="Green"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
+                            
+                            <!-- STATUS INDICATOR USERCONTROL -->
+                            <DataGridTemplateColumn Header="Status" Width="110">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <controls:StatusIndicator Status="{Binding Status}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow">
@@ -271,7 +260,15 @@
                             </DataGridTextColumn>
                             <DataGridTextColumn Header="Min. Voorraad" Binding="{Binding MinimumStock}" Width="100"/>
                             <DataGridTextColumn Header="Verkoopprijs" Binding="{Binding SellingPrice, StringFormat=€{0:N2}}" Width="100"/>
-                            <DataGridCheckBoxColumn Header="Actief" Binding="{Binding IsActive}" Width="60"/>
+                            
+                            <!-- ACTIEF/INACTIEF STATUS INDICATOR (zonder converter) -->
+                            <DataGridTemplateColumn Header="Status" Width="110">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <controls:StatusIndicator Status="{Binding IsActive, Converter={StaticResource BoolToStatusConverter}}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow">
@@ -327,24 +324,16 @@
                             <DataGridTextColumn Header="Referentie" Binding="{Binding ReferenceNumber}" Width="120"/>
                             <DataGridTextColumn Header="Partner" Binding="{Binding PartnerName}" Width="*"/>
                             <DataGridTextColumn Header="Verwacht" Binding="{Binding ExpectedDeliveryDate, StringFormat=dd-MM-yyyy}" Width="100"/>
-                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Status}" Value="Gepland">
-                                                <Setter Property="Foreground" Value="Orange"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Status}" Value="Delivered">
-                                                <Setter Property="Foreground" Value="Green"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Status}" Value="Geannuleerd">
-                                                <Setter Property="Foreground" Value="Red"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
+                            
+                            <!-- STATUS INDICATOR USERCONTROL -->
+                            <DataGridTemplateColumn Header="Status" Width="110">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <controls:StatusIndicator Status="{Binding Status}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            
                             <DataGridTextColumn Header="Bedrag" Binding="{Binding TotalAmount, StringFormat=€{0:N2}}" Width="100"/>
                         </DataGrid.Columns>
                         <DataGrid.RowStyle>
@@ -410,7 +399,15 @@
                             <DataGridTextColumn Header="Merk" Binding="{Binding Brand}" Width="120"/>
                             <DataGridTextColumn Header="Model" Binding="{Binding Model}" Width="*"/>
                             <DataGridTextColumn Header="Capaciteit (kg)" Binding="{Binding Capacity}" Width="120"/>
-                            <DataGridCheckBoxColumn Header="Beschikbaar" Binding="{Binding IsAvailable}" Width="100"/>
+                            
+                            <!-- BESCHIKBAAR/NIET BESCHIKBAAR STATUS INDICATOR -->
+                            <DataGridTemplateColumn Header="Beschikbaarheid" Width="140">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <controls:StatusIndicator Status="{Binding IsAvailable, Converter={StaticResource BoolToAvailabilityConverter}}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow">

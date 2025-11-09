@@ -9,6 +9,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controls\**" />
+    <Compile Remove="Converters\**" />
+    <EmbeddedResource Remove="Controls\**" />
+    <EmbeddedResource Remove="Converters\**" />
+    <None Remove="Controls\**" />
+    <None Remove="Converters\**" />
+    <Page Remove="Controls\**" />
+    <Page Remove="Converters\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Controls\StatusIndicator.xaml.cs" />
+    <Compile Include="Converters\BoolToStatusConverter.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
@@ -24,12 +40,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SuntoryManagementSystem_Models\SuntoryManagementSystem_Models.csproj" />
+    <Page Include="Controls\StatusIndicator.xaml" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controls\" />
-    <Folder Include="Converters\" />
+    <ProjectReference Include="..\SuntoryManagementSystem_Models\SuntoryManagementSystem_Models.csproj" />
   </ItemGroup>
 
 </Project>
