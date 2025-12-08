@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuntoryManagementSystem_WPF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuntoryManagementSystem_Models", "SuntoryManagementSystem_Models\SuntoryManagementSystem_Models.csproj", "{00E9608A-2552-4532-98D8-D0DF810CB138}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuntoryManagementSystem_App", "SuntoryManagementSystem_App\SuntoryManagementSystem_App.csproj", "{5C36DCF8-E718-4263-9D34-710EBD02B416}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuntoryManagementSystem_Web", "SuntoryManagementSystem_Web\SuntoryManagementSystem_Web.csproj", "{0444B006-AF30-437D-855D-776559ED099B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,15 @@ Global
 		{00E9608A-2552-4532-98D8-D0DF810CB138}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00E9608A-2552-4532-98D8-D0DF810CB138}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00E9608A-2552-4532-98D8-D0DF810CB138}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C36DCF8-E718-4263-9D34-710EBD02B416}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C36DCF8-E718-4263-9D34-710EBD02B416}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C36DCF8-E718-4263-9D34-710EBD02B416}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{5C36DCF8-E718-4263-9D34-710EBD02B416}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C36DCF8-E718-4263-9D34-710EBD02B416}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0444B006-AF30-437D-855D-776559ED099B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0444B006-AF30-437D-855D-776559ED099B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0444B006-AF30-437D-855D-776559ED099B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0444B006-AF30-437D-855D-776559ED099B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
