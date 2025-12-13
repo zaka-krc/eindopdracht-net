@@ -3,13 +3,45 @@
     x:Class="SuntoryManagementSystem_App.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:SuntoryManagementSystem_App"
     xmlns:pages="clr-namespace:SuntoryManagementSystem_App.Pages"
-    Title="SuntoryManagementSystem_App">
+    Title="Suntory Management System"
+    FlyoutBehavior="Disabled">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate pages:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        <!-- Dashboard Tab -->
+        <Tab Title="Dashboard">
+            <ShellContent 
+                ContentTemplate="{DataTemplate pages:MainPage}"
+                Route="Dashboard" />
+        </Tab>
+
+        <!-- Product Tab -->
+        <Tab Title="Producten">
+            <ShellContent 
+                ContentTemplate="{DataTemplate pages:ProductPage}"
+                Route="Product" />
+        </Tab>
+
+        <!-- Delivery Tab -->
+        <Tab Title="Leveringen">
+            <ShellContent 
+                ContentTemplate="{DataTemplate pages:DeliveryPage}"
+                Route="Delivery" />
+        </Tab>
+
+        <!-- Customer Tab -->
+        <Tab Title="Klanten">
+            <ShellContent 
+                ContentTemplate="{DataTemplate pages:CustomerPage}"
+                Route="Customer" />
+        </Tab>
+
+        <!-- Instellingen Tab -->
+        <Tab Title="Instellingen">
+            <ShellContent 
+                ContentTemplate="{DataTemplate pages:SettingsPage}"
+                Route="Settings" />
+        </Tab>
+    </TabBar>
 
 </Shell>

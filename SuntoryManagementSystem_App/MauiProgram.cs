@@ -18,6 +18,12 @@ namespace SuntoryManagementSystem_App
             // Registreer ViewModels en Pages voor Dependency Injection
             builder.Services.AddSingleton<ViewModels.MainViewModel>();
             builder.Services.AddSingleton<Pages.MainPage>();
+            
+            // Registreer nieuwe tab pages (namen gebaseerd op Models)
+            builder.Services.AddSingleton<Pages.ProductPage>();
+            builder.Services.AddSingleton<Pages.DeliveryPage>();
+            builder.Services.AddSingleton<Pages.CustomerPage>();
+            builder.Services.AddSingleton<Pages.SettingsPage>();
 
 #if DEBUG
     		builder.Logging.AddDebug();

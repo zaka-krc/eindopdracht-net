@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SuntoryManagementSystem_App.Pages.CustomerPage"
+             Title="Klanten"
+             BackgroundColor="White">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <!-- Header -->
+            <Label Text="Customer Beheer" 
+                   FontSize="28" 
+                   FontAttributes="Bold"
+                   TextColor="#212121"
+                   HorizontalOptions="Center" />
+            
+            <!-- Search Bar -->
+            <Border BackgroundColor="#F5F5F5" 
+                    StrokeThickness="0"
+                    Padding="10"
+                    Margin="0,10,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+                <SearchBar Placeholder="Zoek klanten op naam, email of stad..."
+                           BackgroundColor="Transparent" />
+            </Border>
+            
+            <!-- Customer Type Filter -->
+            <Border BackgroundColor="#F5F5F5" 
+                    StrokeThickness="0"
+                    Padding="15"
+                    Margin="0,10,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Filter op Type" 
+                           FontSize="16" 
+                           FontAttributes="Bold" />
+                    <Picker Title="Selecteer klant type">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Alle</x:String>
+                                <x:String>Retail</x:String>
+                                <x:String>Wholesale</x:String>
+                                <x:String>HoReCa</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </VerticalStackLayout>
+            </Border>
+            
+            <!-- Status Filter -->
+            <Border BackgroundColor="#F5F5F5" 
+                    StrokeThickness="0"
+                    Padding="15"
+                    Margin="0,10,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Filter op Status" 
+                           FontSize="16" 
+                           FontAttributes="Bold" />
+                    <Picker Title="Selecteer status">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Alle</x:String>
+                                <x:String>Active</x:String>
+                                <x:String>Inactive</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </VerticalStackLayout>
+            </Border>
+            
+            <!-- Quick Actions -->
+            <Button Text="+ Nieuwe Customer Toevoegen" 
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    BackgroundColor="#512BD4"
+                    TextColor="White"
+                    HeightRequest="50"
+                    CornerRadius="10"
+                    Margin="0,10,0,0" />
+            
+            <!-- Customers List Placeholder -->
+            <Border BackgroundColor="#F5F5F5" 
+                    StrokeThickness="0"
+                    Padding="20"
+                    Margin="0,20,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Customer Overzicht" 
+                           FontSize="18" 
+                           FontAttributes="Bold"
+                           TextColor="#212121" />
+                    <Label Text="Hier worden alle klanten weergegeven uit de Customer tabel." 
+                           FontSize="14" 
+                           TextColor="Gray" />
+                    <Label Text="Velden: CustomerId, CustomerName, CustomerType, City, Email, PhoneNumber" 
+                           FontSize="12" 
+                           TextColor="Gray"
+                           FontAttributes="Italic" />
+                    <Label Text="Coming soon..." 
+                           FontSize="14" 
+                           TextColor="#512BD4"
+                           FontAttributes="Italic"
+                           Margin="0,20,0,0" />
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

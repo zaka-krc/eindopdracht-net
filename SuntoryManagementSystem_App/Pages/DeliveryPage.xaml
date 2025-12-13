@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SuntoryManagementSystem_App.Pages.DeliveryPage"
+             Title="Leveringen"
+             BackgroundColor="White">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <!-- Header -->
+            <Label Text="Delivery Beheer" 
+                   FontSize="28" 
+                   FontAttributes="Bold"
+                   TextColor="#212121"
+                   HorizontalOptions="Center" />
+            
+            <!-- Delivery Type Filter -->
+            <Border BackgroundColor="#F5F5F5" 
+                    StrokeThickness="0"
+                    Padding="15"
+                    Margin="0,10,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Filter op Type" 
+                           FontSize="16" 
+                           FontAttributes="Bold" />
+                    <Picker Title="Selecteer type">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Alle</x:String>
+                                <x:String>Incoming (van Supplier)</x:String>
+                                <x:String>Outgoing (naar Customer)</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </VerticalStackLayout>
+            </Border>
+            
+            <!-- Status Filter -->
+            <Border BackgroundColor="#F5F5F5" 
+                    StrokeThickness="0"
+                    Padding="15"
+                    Margin="0,10,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Filter op Status" 
+                           FontSize="16" 
+                           FontAttributes="Bold" />
+                    <Picker Title="Selecteer status">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Alle</x:String>
+                                <x:String>Gepland</x:String>
+                                <x:String>Delivered</x:String>
+                                <x:String>Geannuleerd</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </VerticalStackLayout>
+            </Border>
+            
+            <!-- Quick Actions -->
+            <Button Text="+ Nieuwe Delivery Aanmaken" 
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    BackgroundColor="#512BD4"
+                    TextColor="White"
+                    HeightRequest="50"
+                    CornerRadius="10"
+                    Margin="0,10,0,0" />
+            
+            <!-- Deliveries List Placeholder -->
+            <Border BackgroundColor="#F5F5F5" 
+                    StrokeThickness="0"
+                    Padding="20"
+                    Margin="0,20,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Delivery Overzicht" 
+                           FontSize="18" 
+                           FontAttributes="Bold"
+                           TextColor="#212121" />
+                    <Label Text="Hier worden alle leveringen weergegeven uit de Delivery tabel." 
+                           FontSize="14" 
+                           TextColor="Gray" />
+                    <Label Text="Velden: DeliveryId, DeliveryType, ReferenceNumber, Status, ExpectedDeliveryDate" 
+                           FontSize="12" 
+                           TextColor="Gray"
+                           FontAttributes="Italic" />
+                    <Label Text="Relaties: Supplier (Incoming), Customer (Outgoing), Vehicle" 
+                           FontSize="12" 
+                           TextColor="Gray"
+                           FontAttributes="Italic" />
+                    <Label Text="Coming soon..." 
+                           FontSize="14" 
+                           TextColor="#512BD4"
+                           FontAttributes="Italic"
+                           Margin="0,20,0,0" />
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

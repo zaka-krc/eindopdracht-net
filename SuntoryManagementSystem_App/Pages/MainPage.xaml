@@ -33,12 +33,12 @@
                             </MultiBinding>
                         </Label.Text>
                     </Label>
-                    <Button Text="🔄" 
-                            FontSize="16"
+                    <Button Text="Refresh" 
+                            FontSize="14"
                             BackgroundColor="Transparent"
                             TextColor="#512BD4"
                             Padding="5"
-                            WidthRequest="40"
+                            WidthRequest="80"
                             HeightRequest="40"
                             Command="{Binding RefreshDataCommand}"
                             IsEnabled="{Binding IsSyncing, Converter={StaticResource InvertedBoolConverter}}" />
@@ -69,9 +69,6 @@
                         <RoundRectangle CornerRadius="10" />
                     </Border.StrokeShape>
                     <VerticalStackLayout Spacing="5">
-                        <Label Text="📦" 
-                               FontSize="32" 
-                               HorizontalOptions="Center" />
                         <Label Text="{Binding AantalProducten}" 
                                FontSize="24" 
                                FontAttributes="Bold" 
@@ -93,9 +90,6 @@
                         <RoundRectangle CornerRadius="10" />
                     </Border.StrokeShape>
                     <VerticalStackLayout Spacing="5">
-                        <Label Text="⚠️" 
-                               FontSize="32" 
-                               HorizontalOptions="Center" />
                         <Label Text="{Binding LageVoorraadCount}" 
                                FontSize="24" 
                                FontAttributes="Bold" 
@@ -117,9 +111,6 @@
                         <RoundRectangle CornerRadius="10" />
                     </Border.StrokeShape>
                     <VerticalStackLayout Spacing="5">
-                        <Label Text="🚚" 
-                               FontSize="32" 
-                               HorizontalOptions="Center" />
                         <Label Text="{Binding OpenstaandeLeveringen}" 
                                FontSize="24" 
                                FontAttributes="Bold" 
@@ -141,9 +132,6 @@
                         <RoundRectangle CornerRadius="10" />
                     </Border.StrokeShape>
                     <VerticalStackLayout Spacing="5">
-                        <Label Text="👥" 
-                               FontSize="32" 
-                               HorizontalOptions="Center" />
                         <Label Text="{Binding ActieveKlanten}" 
                                FontSize="24" 
                                FontAttributes="Bold" 
@@ -159,7 +147,7 @@
 
             <!-- Waarschuwingen Section -->
             <VerticalStackLayout Spacing="10" Margin="0,10,0,0">
-                <Label Text="⚠️ Lage Voorraad Waarschuwingen" 
+                <Label Text="Lage Voorraad Waarschuwingen" 
                        FontSize="18" 
                        FontAttributes="Bold"
                        TextColor="#212121" />
@@ -185,7 +173,7 @@
 
             <!-- Quick Actions -->
             <VerticalStackLayout Spacing="10" Margin="0,10,0,0">
-                <Button Text="➕ Nieuw Product" 
+                <Button Text="Nieuw Product" 
                         FontSize="16"
                         FontAttributes="Bold"
                         BackgroundColor="#512BD4"
@@ -193,7 +181,7 @@
                         HeightRequest="50"
                         CornerRadius="10"
                         Command="{Binding NieuwProductCommand}" />
-                <Button Text="📊 Rapporten" 
+                <Button Text="Rapporten" 
                         FontSize="16"
                         FontAttributes="Bold"
                         BackgroundColor="#512BD4"

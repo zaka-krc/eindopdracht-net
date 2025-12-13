@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SuntoryManagementSystem_App.Pages.ProductPage"
+             Title="Producten"
+             BackgroundColor="White">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <!-- Header -->
+            <Label Text="Product Beheer" 
+                   FontSize="28" 
+                   FontAttributes="Bold"
+                   TextColor="#212121"
+                   HorizontalOptions="Center" />
+            
+            <!-- Search Bar -->
+            <Border BackgroundColor="#F5F5F5" 
+                    StrokeThickness="0"
+                    Padding="10"
+                    Margin="0,10,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+                <SearchBar Placeholder="Zoek producten op naam, SKU of categorie..."
+                           BackgroundColor="Transparent" />
+            </Border>
+            
+            <!-- Category Filter -->
+            <Border BackgroundColor="#F5F5F5" 
+                    StrokeThickness="0"
+                    Padding="15"
+                    Margin="0,10,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Filter op Categorie" 
+                           FontSize="16" 
+                           FontAttributes="Bold" />
+                    <Picker Title="Selecteer categorie">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Alle</x:String>
+                                <x:String>Frisdrank</x:String>
+                                <x:String>Energiedrank</x:String>
+                                <x:String>Mixer</x:String>
+                                <x:String>Water</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </VerticalStackLayout>
+            </Border>
+            
+            <!-- Quick Actions -->
+            <Button Text="+ Nieuw Product Toevoegen" 
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    BackgroundColor="#512BD4"
+                    TextColor="White"
+                    HeightRequest="50"
+                    CornerRadius="10"
+                    Margin="0,10,0,0" />
+            
+            <!-- Products List Placeholder -->
+            <Border BackgroundColor="#F5F5F5" 
+                    StrokeThickness="0"
+                    Padding="20"
+                    Margin="0,20,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Product Overzicht" 
+                           FontSize="18" 
+                           FontAttributes="Bold"
+                           TextColor="#212121" />
+                    <Label Text="Hier worden alle producten weergegeven uit de Product tabel." 
+                           FontSize="14" 
+                           TextColor="Gray" />
+                    <Label Text="Velden: ProductId, ProductName, SKU, Category, StockQuantity, SellingPrice" 
+                           FontSize="12" 
+                           TextColor="Gray"
+                           FontAttributes="Italic" />
+                    <Label Text="Coming soon..." 
+                           FontSize="14" 
+                           TextColor="#512BD4"
+                           FontAttributes="Italic"
+                           Margin="0,20,0,0" />
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

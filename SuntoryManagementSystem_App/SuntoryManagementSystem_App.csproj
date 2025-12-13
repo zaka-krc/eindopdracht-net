@@ -67,5 +67,19 @@
 	<ItemGroup>
 		<ProjectReference Include="..\SuntoryManagementSystem_Models\SuntoryManagementSystem_Models.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <MauiXaml Update="Pages\CustomerPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\DeliveryPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\ProductPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\SettingsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
 
 </Project>
