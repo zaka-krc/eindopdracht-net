@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:SuntoryManagementSystem_App.ViewModels"
+             x:Class="SuntoryManagementSystem_App.Pages.MainPage"
+             x:DataType="viewmodel:MainViewModel"
+             BackgroundColor="White">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            
+            <!-- Header Section -->
+            <VerticalStackLayout Spacing="5">
+                <Label FontSize="28" 
+                       FontAttributes="Bold"
+                       TextColor="#212121">
+                    <Label.Text>
+                        <MultiBinding StringFormat="Welkom terug, {0}!">
+                            <Binding Path="GebruikersNaam" />
+                        </MultiBinding>
+                    </Label.Text>
+                </Label>
+                <Label Text="{Binding GebruikersRol}" 
+                       FontSize="16" 
+                       TextColor="Gray" />
+                <HorizontalStackLayout Spacing="10" Margin="0,5,0,0">
+                    <Label FontSize="12" 
+                           TextColor="Gray"
+                           VerticalOptions="Center">
+                        <Label.Text>
+                            <MultiBinding StringFormat="Laatste sync: {0}">
+                                <Binding Path="LaatsteSyncTijd" />
+                            </MultiBinding>
+                        </Label.Text>
+                    </Label>
+                    <Button Text="🔄" 
+                            FontSize="16"
+                            BackgroundColor="Transparent"
+                            TextColor="#512BD4"
+                            Padding="5"
+                            WidthRequest="40"
+                            HeightRequest="40"
+                            Command="{Binding RefreshDataCommand}"
+                            IsEnabled="{Binding IsSyncing, Converter={StaticResource InvertedBoolConverter}}" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+            <!-- Activity Indicator -->
+            <ActivityIndicator IsRunning="{Binding IsSyncing}" 
+                               IsVisible="{Binding IsSyncing}"
+                               Color="{StaticResource Primary}"
+                               HeightRequest="40"
+                               WidthRequest="40"
+                               HorizontalOptions="Center" />
+
+            <!-- Stats Grid -->
+            <Grid ColumnDefinitions="*,*" 
+                  RowDefinitions="Auto,Auto"
+                  ColumnSpacing="10"
+                  RowSpacing="10"
+                  Margin="0,10,0,0">
+                
+                <!-- Producten -->
+                <Border Grid.Row="0" Grid.Column="0"
+                        BackgroundColor="#F5F5F5"
+                        StrokeThickness="0"
+                        Padding="15">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="📦" 
+                               FontSize="32" 
+                               HorizontalOptions="Center" />
+                        <Label Text="{Binding AantalProducten}" 
+                               FontSize="24" 
+                               FontAttributes="Bold" 
+                               HorizontalOptions="Center"
+                               TextColor="#212121" />
+                        <Label Text="Producten" 
+                               FontSize="14" 
+                               TextColor="Gray" 
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Lage voorraad -->
+                <Border Grid.Row="0" Grid.Column="1"
+                        BackgroundColor="#F5F5F5"
+                        StrokeThickness="0"
+                        Padding="15">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="⚠️" 
+                               FontSize="32" 
+                               HorizontalOptions="Center" />
+                        <Label Text="{Binding LageVoorraadCount}" 
+                               FontSize="24" 
+                               FontAttributes="Bold" 
+                               HorizontalOptions="Center"
+                               TextColor="#212121" />
+                        <Label Text="Lage voorraad" 
+                               FontSize="14" 
+                               TextColor="Gray" 
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Leveringen -->
+                <Border Grid.Row="1" Grid.Column="0"
+                        BackgroundColor="#F5F5F5"
+                        StrokeThickness="0"
+                        Padding="15">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="🚚" 
+                               FontSize="32" 
+                               HorizontalOptions="Center" />
+                        <Label Text="{Binding OpenstaandeLeveringen}" 
+                               FontSize="24" 
+                               FontAttributes="Bold" 
+                               HorizontalOptions="Center"
+                               TextColor="#212121" />
+                        <Label Text="Leveringen" 
+                               FontSize="14" 
+                               TextColor="Gray" 
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Klanten -->
+                <Border Grid.Row="1" Grid.Column="1"
+                        BackgroundColor="#F5F5F5"
+                        StrokeThickness="0"
+                        Padding="15">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="👥" 
+                               FontSize="32" 
+                               HorizontalOptions="Center" />
+                        <Label Text="{Binding ActieveKlanten}" 
+                               FontSize="24" 
+                               FontAttributes="Bold" 
+                               HorizontalOptions="Center"
+                               TextColor="#212121" />
+                        <Label Text="Klanten" 
+                               FontSize="14" 
+                               TextColor="Gray" 
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <!-- Waarschuwingen Section -->
+            <VerticalStackLayout Spacing="10" Margin="0,10,0,0">
+                <Label Text="⚠️ Lage Voorraad Waarschuwingen" 
+                       FontSize="18" 
+                       FontAttributes="Bold"
+                       TextColor="#212121" />
+                
+                <CollectionView ItemsSource="{Binding VoorraadWaarschuwingen}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <Border BackgroundColor="#FFF3CD" 
+                                    StrokeThickness="0"
+                                    Padding="10" 
+                                    Margin="0,5">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="8" />
+                                </Border.StrokeShape>
+                                <Label Text="{Binding .}" 
+                                       TextColor="#856404"
+                                       FontSize="14" />
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- Quick Actions -->
+            <VerticalStackLayout Spacing="10" Margin="0,10,0,0">
+                <Button Text="➕ Nieuw Product" 
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        BackgroundColor="#512BD4"
+                        TextColor="White"
+                        HeightRequest="50"
+                        CornerRadius="10"
+                        Command="{Binding NieuwProductCommand}" />
+                <Button Text="📊 Rapporten" 
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        BackgroundColor="#512BD4"
+                        TextColor="White"
+                        HeightRequest="50"
+                        CornerRadius="10"
+                        Command="{Binding OpenRapportenCommand}" />
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

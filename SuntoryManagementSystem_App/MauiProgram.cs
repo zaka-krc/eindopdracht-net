@@ -15,6 +15,10 @@ namespace SuntoryManagementSystem_App
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            // Registreer ViewModels en Pages voor Dependency Injection
+            builder.Services.AddSingleton<ViewModels.MainViewModel>();
+            builder.Services.AddSingleton<Pages.MainPage>();
+
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
