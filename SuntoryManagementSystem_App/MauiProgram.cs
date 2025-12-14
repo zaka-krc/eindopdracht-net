@@ -15,9 +15,17 @@ namespace SuntoryManagementSystem_App
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            // Database
+            builder.Services.AddDbContext<Data.LocalDbContext>();
+            builder.Services.AddSingleton<Services.DatabaseService>();
+
             // Registreer ViewModels en Pages voor Dependency Injection
             builder.Services.AddSingleton<ViewModels.MainViewModel>();
             builder.Services.AddSingleton<Pages.MainPage>();
+            
+            // Registreer ProductenViewModel en Page
+            builder.Services.AddSingleton<ViewModels.ProductenViewModel>();
+            builder.Services.AddSingleton<Pages.ProductenPage>();
             
             // Registreer nieuwe tab pages (namen gebaseerd op Models)
             builder.Services.AddSingleton<Pages.ProductPage>();

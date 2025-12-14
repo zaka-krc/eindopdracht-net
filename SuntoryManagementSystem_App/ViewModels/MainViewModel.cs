@@ -1,11 +1,15 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using SuntoryManagementSystem_App.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace SuntoryManagementSystem_App.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {
+    private readonly LocalDbContext _context;
+    
     // User info
     [ObservableProperty]
     private string gebruikersNaam = "Admin";
@@ -35,20 +39,39 @@ public partial class MainViewModel : ObservableObject
     
     // Waarschuwingen lijst
     [ObservableProperty]
-    private ObservableCollection<string> voorraadWaarschuwingen;
+    private ObservableCollection<string> voorraadWaarschuwingen = new();
     
     // Constructor
-    public MainViewModel()
+    public MainViewModel(LocalDbContext context)
     {
-        // Dummy data voor nu
-        VoorraadWaarschuwingen = new ObservableCollection<string>
+        _context = context;
+        _ = LoadDataAsync();
+    }
+    
+    private async Task LoadDataAsync()
+    {
+        try
         {
-            "Coca-Cola 0.5L - 5 stuks resterend",
-            "Sprite 1L - 2 stuks resterend", 
-            "Fanta Orange - 8 stuks resterend"
-        };
-        
-        LoadDummyData();
+            // Haal ECHTE stats uit database
+            AantalProducten = await _context.Products.CountAsync(p => !p.IsDeleted);
+            LageVoorraadCount = await _context.StockAlerts.CountAsync(a => a.Status == "Active");
+            OpenstaandeLeveringen = await _context.Deliveries.CountAsync(d => !d.IsDeleted && d.Status == "Gepland");
+            ActieveKlanten = await _context.Customers.CountAsync(c => c.Status == "Active");
+            
+            // Haal low stock producten op
+            var lowStockProducts = await _context.Products
+                .Where(p => !p.IsDeleted && p.StockQuantity < p.MinimumStock)
+                .OrderBy(p => p.StockQuantity)
+                .Take(5)
+                .Select(p => $"{p.ProductName} - {p.StockQuantity} stuks resterend")
+                .ToListAsync();
+            
+            VoorraadWaarschuwingen = new ObservableCollection<string>(lowStockProducts);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error loading dashboard: {ex.Message}");
+        }
     }
     
     // Commands
@@ -56,13 +79,8 @@ public partial class MainViewModel : ObservableObject
     private async Task RefreshData()
     {
         IsSyncing = true;
-        
-        // TODO: Later vervangen door echte synchronisatie
-        await Task.Delay(1000); // Simuleer API call
-        
+        await LoadDataAsync();
         LaatsteSyncTijd = DateTime.Now.ToString("HH:mm");
-        LoadDummyData();
-        
         IsSyncing = false;
     }
     
@@ -78,15 +96,5 @@ public partial class MainViewModel : ObservableObject
     {
         // TODO: Navigeer naar RapportenPage
         await Shell.Current.DisplayAlert("Info", "Rapporten - Coming soon!", "OK");
-    }
-    
-    // Helper methods
-    private void LoadDummyData()
-    {
-        // Dummy stats
-        AantalProducten = 47;
-        LageVoorraadCount = 3;
-        OpenstaandeLeveringen = 5;
-        ActieveKlanten = 12;
     }
 }

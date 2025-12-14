@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:SuntoryManagementSystem_App.ViewModels"
+             xmlns:converters="clr-namespace:SuntoryManagementSystem_App.Converters"
+             xmlns:models="clr-namespace:SuntoryManagementSystem.Models;assembly=SuntoryManagementSystem_Models"
+             x:Class="SuntoryManagementSystem_App.Pages.ProductenPage"
+             x:DataType="viewmodels:ProductenViewModel"
+             Title="Producten"
+             BackgroundColor="White">
+
+    <ContentPage.Resources>
+        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        <converters:StockColorConverter x:Key="StockColorConverter" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*" Padding="20">
+        
+        <!-- HEADER SECTIE -->
+        <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,20">
+            
+            <!-- Zoekbalk -->
+            <Border Grid.Column="0"
+                    BackgroundColor="#F5F5F5"
+                    Stroke="#E0E0E0"
+                    StrokeThickness="1"
+                    Padding="15,10"
+                    Margin="0,0,10,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8"/>
+                </Border.StrokeShape>
+                
+                <Grid ColumnDefinitions="*,Auto">
+                    <Entry Grid.Column="0"
+                           Placeholder="Zoek producten..."
+                           Text="{Binding ZoekTekst}"
+                           BackgroundColor="Transparent"
+                           VerticalOptions="Center"/>
+                    
+                    <Button Grid.Column="1"
+                            Text="X"
+                            FontSize="16"
+                            BackgroundColor="Transparent"
+                            TextColor="Gray"
+                            Padding="5"
+                            IsVisible="{Binding ZoekTekst, Converter={StaticResource InvertedBoolConverter}}"
+                            Command="{Binding RefreshCommand}"/>
+                </Grid>
+            </Border>
+            
+            <!-- Refresh Button -->
+            <Button Grid.Column="1"
+                    Text="Refresh"
+                    FontSize="14"
+                    BackgroundColor="#512BD4"
+                    TextColor="White"
+                    Padding="15,10"
+                    CornerRadius="8"
+                    Margin="0,0,10,0"
+                    Command="{Binding RefreshCommand}"/>
+            
+            <!-- Nieuw Product Button -->
+            <Button Grid.Column="2"
+                    Text="+ Nieuw"
+                    FontSize="14"
+                    BackgroundColor="#16A34A"
+                    TextColor="White"
+                    Padding="15,10"
+                    CornerRadius="8"
+                    Command="{Binding VoegProductToeCommand}"/>
+        </Grid>
+
+        <!-- PRODUCTEN LIJST -->
+        <Border Grid.Row="1"
+                BackgroundColor="#F5F5F5"
+                Stroke="#E0E0E0"
+                StrokeThickness="1">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="12"/>
+            </Border.StrokeShape>
+            
+            <Grid>
+                <!-- Loading Indicator -->
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                 IsVisible="{Binding IsLoading}"
+                                 Color="#512BD4"
+                                 VerticalOptions="Center"
+                                 HorizontalOptions="Center"/>
+                
+                <!-- Producten CollectionView -->
+                <CollectionView ItemsSource="{Binding GefilterdProducten}"
+                              IsVisible="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}"
+                              SelectionMode="None">
+                    
+                    <CollectionView.EmptyView>
+                        <StackLayout Padding="40"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center">
+                            <Label Text="Geen producten gevonden"
+                                 FontSize="18"
+                                 FontAttributes="Bold"
+                                 HorizontalTextAlignment="Center"
+                                 TextColor="Gray"/>
+                            <Label Text="Voeg een product toe of pas je zoekfilter aan"
+                                 FontSize="14"
+                                 HorizontalTextAlignment="Center"
+                                 TextColor="Gray"
+                                 Margin="0,5,0,0"/>
+                        </StackLayout>
+                    </CollectionView.EmptyView>
+                    
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Product">
+                            <SwipeView>
+                                <!-- Swipe Actions -->
+                                <SwipeView.RightItems>
+                                    <SwipeItems>
+                                        <SwipeItem Text="Bewerk"
+                                                 BackgroundColor="#512BD4"
+                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ProductenViewModel}}, Path=BewerkProductCommand}"
+                                                 CommandParameter="{Binding .}"/>
+                                        
+                                        <SwipeItem Text="Verwijder"
+                                                 BackgroundColor="#DC2626"
+                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ProductenViewModel}}, Path=VerwijderProductCommand}"
+                                                 CommandParameter="{Binding .}"/>
+                                    </SwipeItems>
+                                </SwipeView.RightItems>
+                                
+                                <!-- Product Card -->
+                                <Border Margin="15,10"
+                                      BackgroundColor="White"
+                                      Stroke="#E0E0E0"
+                                      StrokeThickness="1"
+                                      Padding="15">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="8"/>
+                                    </Border.StrokeShape>
+                                    
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ProductenViewModel}}, Path=BewerkProductCommand}"
+                                                            CommandParameter="{Binding .}"/>
+                                    </Border.GestureRecognizers>
+                                    
+                                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+                                        
+                                        <!-- Product Naam & SKU -->
+                                        <VerticalStackLayout Grid.Row="0" Grid.Column="0">
+                                            <Label Text="{Binding ProductName}"
+                                                 FontSize="18"
+                                                 FontAttributes="Bold"
+                                                 TextColor="#212121"/>
+                                            <Label Text="{Binding SKU, StringFormat='SKU: {0}'}"
+                                                 FontSize="12"
+                                                 TextColor="Gray"
+                                                 Margin="0,2,0,0"/>
+                                        </VerticalStackLayout>
+                                        
+                                        <!-- Voorraad Badge -->
+                                        <Border Grid.Row="0" Grid.Column="1"
+                                              Padding="10,5"
+                                              VerticalOptions="Start"
+                                              HorizontalOptions="End">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="12"/>
+                                            </Border.StrokeShape>
+                                            <Border.BackgroundColor>
+                                                <MultiBinding Converter="{StaticResource StockColorConverter}">
+                                                    <Binding Path="StockQuantity"/>
+                                                    <Binding Path="MinimumStock"/>
+                                                </MultiBinding>
+                                            </Border.BackgroundColor>
+                                            
+                                            <Label FontSize="14" FontAttributes="Bold" TextColor="White">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="{Binding StockQuantity}"/>
+                                                        <Span Text=" stuks"/>
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+                                        </Border>
+                                        
+                                        <!-- Product Details -->
+                                        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                            ColumnDefinitions="*,*,*"
+                                            Margin="0,10,0,0">
+                                            
+                                            <VerticalStackLayout Grid.Column="0">
+                                                <Label Text="Categorie"
+                                                     FontSize="11"
+                                                     TextColor="Gray"/>
+                                                <Label Text="{Binding Category}"
+                                                     FontSize="14"
+                                                     FontAttributes="Bold"
+                                                     TextColor="#424242"/>
+                                            </VerticalStackLayout>
+                                            
+                                            <VerticalStackLayout Grid.Column="1">
+                                                <Label Text="Verkoopprijs"
+                                                     FontSize="11"
+                                                     TextColor="Gray"/>
+                                                <Label Text="{Binding SellingPrice, StringFormat='EUR {0:F2}'}"
+                                                     FontSize="14"
+                                                     FontAttributes="Bold"
+                                                     TextColor="#16A34A"/>
+                                            </VerticalStackLayout>
+                                            
+                                            <VerticalStackLayout Grid.Column="2">
+                                                <Label Text="Min. voorraad"
+                                                     FontSize="11"
+                                                     TextColor="Gray"/>
+                                                <Label Text="{Binding MinimumStock}"
+                                                     FontSize="14"
+                                                     FontAttributes="Bold"
+                                                     TextColor="#424242"/>
+                                            </VerticalStackLayout>
+                                        </Grid>
+                                        
+                                        <!-- Leverancier & Actie Buttons -->
+                                        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                            ColumnDefinitions="*,Auto"
+                                            Margin="0,10,0,0">
+                                            
+                                            <HorizontalStackLayout Grid.Column="0" Spacing="5">
+                                                <Label Text="Leverancier:"
+                                                     FontSize="12"
+                                                     TextColor="Gray"
+                                                     VerticalOptions="Center"/>
+                                                <Label Text="{Binding Supplier.SupplierName}"
+                                                     FontSize="12"
+                                                     FontAttributes="Bold"
+                                                     TextColor="#424242"
+                                                     VerticalOptions="Center"/>
+                                            </HorizontalStackLayout>
+                                            
+                                            <Button Grid.Column="1"
+                                                  Text="Voorraad"
+                                                  FontSize="12"
+                                                  Padding="10,5"
+                                                  BackgroundColor="#512BD4"
+                                                  TextColor="White"
+                                                  CornerRadius="6"
+                                                  Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ProductenViewModel}}, Path=VoorraadAanpassenCommand}"
+                                                  CommandParameter="{Binding .}"/>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </SwipeView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </Border>
+    </Grid>
+</ContentPage>

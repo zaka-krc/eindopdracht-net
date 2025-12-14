@@ -18,7 +18,7 @@
         <!-- Product Tab -->
         <Tab Title="Producten">
             <ShellContent 
-                ContentTemplate="{DataTemplate pages:ProductPage}"
+                ContentTemplate="{DataTemplate pages:ProductenPage}"
                 Route="Product" />
         </Tab>
 

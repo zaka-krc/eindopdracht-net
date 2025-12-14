@@ -13,6 +13,7 @@
             
             <!-- Converters -->
             <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <converters:StockColorConverter x:Key="StockColorConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
