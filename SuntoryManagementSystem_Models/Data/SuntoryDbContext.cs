@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System;
 using System.Linq;
+using SuntoryManagementSystem.Models;
 
-namespace SuntoryManagementSystem.Models
+namespace SuntoryManagementSystem_Models.Data
 {
     public class SuntoryDbContext : IdentityDbContext<ApplicationUser>
     {

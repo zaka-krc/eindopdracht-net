@@ -18,8 +18,7 @@ public class DatabaseService
         try
         {
             // Zorg dat database bestaat
-            await _context.Database.EnsureCreatedAsync();
-            
+            await _context.Database.MigrateAsync();
             // Seed data ALLEEN als database leeg is
             if (!_context.Products.Any())
             {

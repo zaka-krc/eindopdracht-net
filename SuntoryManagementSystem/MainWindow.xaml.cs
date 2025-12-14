@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using SuntoryManagementSystem_Models.Data;
 
 namespace SuntoryManagementSystem
 {

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
+using SuntoryManagementSystem_Models.Data;
 
 namespace SuntoryManagementSystem
 {
