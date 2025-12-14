@@ -46,6 +46,8 @@ public partial class ProductenViewModel : ObservableObject
         {
             var filtered = Producten.Where(p => 
                 p.ProductName.Contains(ZoekTekst, StringComparison.OrdinalIgnoreCase) ||
+                p.SKU.Contains(ZoekTekst, StringComparison.OrdinalIgnoreCase) ||
+                p.Category.Contains(ZoekTekst, StringComparison.OrdinalIgnoreCase) ||
                 (!string.IsNullOrEmpty(p.Description) && p.Description.Contains(ZoekTekst, StringComparison.OrdinalIgnoreCase))
             ).ToList();
             
@@ -72,11 +74,6 @@ public partial class ProductenViewModel : ObservableObject
             
             Debug.WriteLine($"LoadProductenAsync: Loaded {producten.Count} products from database");
             
-            foreach (var product in producten)
-            {
-                Debug.WriteLine($"  - {product.ProductName} (SKU: {product.SKU}, Stock: {product.StockQuantity}, Supplier: {product.Supplier?.SupplierName ?? "NULL"})");
-            }
-            
             Producten = new ObservableCollection<Product>(producten);
             FilterProducten();
             
@@ -99,15 +96,50 @@ public partial class ProductenViewModel : ObservableObject
     [RelayCommand]
     private async Task VoegProductToe()
     {
-        await Shell.Current.DisplayAlert("Info", "Nieuw Product - Coming soon!", "OK");
+        try
+        {
+            Debug.WriteLine("VoegProductToe: Navigating to ProductDetailPage");
+            await Shell.Current.GoToAsync(nameof(Pages.ProductDetailPage));
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"VoegProductToe ERROR: {ex.Message}");
+            await Shell.Current.DisplayAlert("Error", $"Kan niet navigeren: {ex.Message}", "OK");
+        }
+    }
+    
+    [RelayCommand]
+    private async Task BekijkProduct(Product product)
+    {
+        if (product == null) return;
+        
+        try
+        {
+            Debug.WriteLine($"BekijkProduct: Navigating with ProductId={product.ProductId} in View mode");
+            await Shell.Current.GoToAsync($"{nameof(Pages.ProductDetailPage)}?ProductId={product.ProductId}&ViewMode=true");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"BekijkProduct ERROR: {ex.Message}");
+            await Shell.Current.DisplayAlert("Error", $"Kan niet navigeren: {ex.Message}", "OK");
+        }
     }
     
     [RelayCommand]
     private async Task BewerkProduct(Product product)
     {
         if (product == null) return;
-        Debug.WriteLine($"BewerkProduct: {product.ProductName}");
-        await Shell.Current.DisplayAlert("Bewerken", $"Bewerk: {product.ProductName}", "OK");
+        
+        try
+        {
+            Debug.WriteLine($"BewerkProduct: Navigating with ProductId={product.ProductId} in Edit mode");
+            await Shell.Current.GoToAsync($"{nameof(Pages.ProductDetailPage)}?ProductId={product.ProductId}&ViewMode=false");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"BewerkProduct ERROR: {ex.Message}");
+            await Shell.Current.DisplayAlert("Error", $"Kan niet navigeren: {ex.Message}", "OK");
+        }
     }
     
     [RelayCommand]
@@ -136,9 +168,12 @@ public partial class ProductenViewModel : ObservableObject
                 FilterProducten();
                 
                 await Shell.Current.DisplayAlert("Succes", "Product verwijderd!", "OK");
+                
+                Debug.WriteLine($"VerwijderProduct: Product {product.ProductName} deleted");
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"VerwijderProduct ERROR: {ex.Message}");
                 await Shell.Current.DisplayAlert("Error", $"Fout bij verwijderen: {ex.Message}", "OK");
             }
         }
@@ -148,7 +183,17 @@ public partial class ProductenViewModel : ObservableObject
     private async Task VoorraadAanpassen(Product product)
     {
         if (product == null) return;
-        await Shell.Current.DisplayAlert("Voorraad", $"{product.ProductName}\nHuidige voorraad: {product.StockQuantity}", "OK");
+        
+        try
+        {
+            Debug.WriteLine($"VoorraadAanpassen: Navigating with ProductId={product.ProductId} for stock adjustment");
+            await Shell.Current.GoToAsync($"{nameof(Pages.ProductDetailPage)}?ProductId={product.ProductId}&StockAdjustmentMode=true");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"VoorraadAanpassen ERROR: {ex.Message}");
+            await Shell.Current.DisplayAlert("Error", $"Kan niet navigeren: {ex.Message}", "OK");
+        }
     }
     
     [RelayCommand]

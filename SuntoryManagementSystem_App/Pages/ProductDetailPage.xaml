@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SuntoryManagementSystem_App.Pages.ProductDetailPage"
+             Title="Product Details"
+             BackgroundColor="White">
+    
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            
+            <!-- Product Naam -->
+            <Label Text="Productnaam *"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="#424242"/>
+            <Entry x:Name="ProductNameEntry"
+                   Placeholder="Bijv. Orangina Original 330ml"
+                   BackgroundColor="#F5F5F5"/>
+            
+            <!-- SKU -->
+            <Label Text="SKU *"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="#424242"/>
+            <Entry x:Name="SKUEntry"
+                   Placeholder="Bijv. ORG-330"
+                   BackgroundColor="#F5F5F5"/>
+            
+            <!-- Categorie -->
+            <Label Text="Categorie *"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="#424242"/>
+            <Picker x:Name="CategoryPicker"
+                    BackgroundColor="#F5F5F5">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Frisdranken</x:String>
+                        <x:String>Energiedranken</x:String>
+                        <x:String>Water</x:String>
+                        <x:String>Mixers</x:String>
+                        <x:String>Sappen</x:String>
+                        <x:String>Anders</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+            
+            <!-- Leverancier -->
+            <Label Text="Leverancier *"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="#424242"/>
+            <Picker x:Name="SupplierPicker"
+                    BackgroundColor="#F5F5F5"
+                    ItemDisplayBinding="{Binding SupplierName}"/>
+            
+            <!-- Prijzen Grid -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <VerticalStackLayout Grid.Column="0">
+                    <Label Text="Inkoopprijs *"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#424242"/>
+                    <Entry x:Name="PurchasePriceEntry"
+                           Placeholder="0.00"
+                           Keyboard="Numeric"
+                           BackgroundColor="#F5F5F5"/>
+                </VerticalStackLayout>
+                
+                <VerticalStackLayout Grid.Column="1">
+                    <Label Text="Verkoopprijs *"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#424242"/>
+                    <Entry x:Name="SellingPriceEntry"
+                           Placeholder="0.00"
+                           Keyboard="Numeric"
+                           BackgroundColor="#F5F5F5"/>
+                </VerticalStackLayout>
+            </Grid>
+            
+            <!-- Voorraad Grid -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <VerticalStackLayout Grid.Column="0">
+                    <Label Text="Huidige voorraad *"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#424242"/>
+                    <Entry x:Name="StockQuantityEntry"
+                           Placeholder="0"
+                           Keyboard="Numeric"
+                           BackgroundColor="#F5F5F5"
+                           TextChanged="OnStockQuantityChanged"/>
+                </VerticalStackLayout>
+                
+                <VerticalStackLayout Grid.Column="1">
+                    <Label Text="Minimum voorraad *"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#424242"/>
+                    <Entry x:Name="MinimumStockEntry"
+                           Placeholder="0"
+                           Keyboard="Numeric"
+                           BackgroundColor="#F5F5F5"/>
+                </VerticalStackLayout>
+            </Grid>
+            
+            <!-- Stock Adjustment Warning (alleen bij edit en voorraad wijzigt) -->
+            <Border x:Name="StockChangeWarning"
+                    IsVisible="False"
+                    BackgroundColor="#FEF3C7"
+                    Stroke="#F59E0B"
+                    StrokeThickness="2"
+                    Padding="15"
+                    Margin="0,5,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8"/>
+                </Border.StrokeShape>
+                
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="⚠️ Voorraad Aanpassing"
+                         FontSize="14"
+                         FontAttributes="Bold"
+                         TextColor="#92400E"/>
+                    <Label x:Name="StockChangeLabel"
+                         FontSize="12"
+                         TextColor="#92400E"/>
+                </VerticalStackLayout>
+            </Border>
+            
+            <!-- Voorraad Aanpassing Type (alleen zichtbaar bij negatieve wijziging) -->
+            <VerticalStackLayout x:Name="AdjustmentTypeContainer"
+                               IsVisible="False"
+                               Spacing="5">
+                <Label Text="Reden voor voorraad vermindering *"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       TextColor="#424242"/>
+                <Picker x:Name="AdjustmentTypePicker"
+                        BackgroundColor="#F5F5F5">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Removal - Handmatige verwijdering</x:String>
+                            <x:String>Damage - Beschadigd</x:String>
+                            <x:String>Theft - Diefstal/Vermist</x:String>
+                            <x:String>Correction - Correctie na inventarisatie</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+            </VerticalStackLayout>
+            
+            <!-- Voorraad Aanpassing Type (alleen zichtbaar bij positieve wijziging) -->
+            <VerticalStackLayout x:Name="AdditionTypeContainer"
+                               IsVisible="False"
+                               Spacing="5">
+                <Label Text="Reden voor voorraad toevoeging *"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       TextColor="#424242"/>
+                <Picker x:Name="AdditionTypePicker"
+                        BackgroundColor="#F5F5F5">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Addition - Handmatige toevoeging</x:String>
+                            <x:String>Correction - Correctie na inventarisatie</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+            </VerticalStackLayout>
+            
+            <!-- Status -->
+            <Label Text="Status"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="#424242"/>
+            <Picker x:Name="IsActivePicker"
+                    BackgroundColor="#F5F5F5">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Actief</x:String>
+                        <x:String>Inactief</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+            
+            <!-- Omschrijving -->
+            <Label Text="Omschrijving"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="#424242"/>
+            <Editor x:Name="DescriptionEditor"
+                    HeightRequest="100"
+                    BackgroundColor="#F5F5F5"
+                    Placeholder="Voer productomschrijving in..."/>
+            
+            <!-- Action Buttons -->
+            <Grid ColumnDefinitions="*,*"
+                  ColumnSpacing="10"
+                  Margin="0,20,0,0">
+                <Button Grid.Column="0"
+                      Text="Annuleren"
+                      FontSize="14"
+                      BackgroundColor="#6B7280"
+                      TextColor="White"
+                      Padding="15,12"
+                      CornerRadius="8"
+                      Clicked="OnCancelClicked"/>
+                <Button x:Name="SaveButton"
+                      Grid.Column="1"
+                      Text="Opslaan"
+                      FontSize="14"
+                      BackgroundColor="#512BD4"
+                      TextColor="White"
+                      Padding="15,12"
+                      CornerRadius="8"
+                      Clicked="OnSaveClicked"/>
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

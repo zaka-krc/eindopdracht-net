@@ -2,8 +2,9 @@ namespace SuntoryManagementSystem_App.Pages;
 
 public partial class DeliveryPage : ContentPage
 {
-    public DeliveryPage()
+    public DeliveryPage(ViewModels.DeliveryViewModel viewModel)
     {
         InitializeComponent();
+        BindingContext = viewModel;
     }
 }

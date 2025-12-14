@@ -1,43 +1,41 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:SuntoryManagementSystem_App.ViewModels"
+             xmlns:models="clr-namespace:SuntoryManagementSystem.Models;assembly=SuntoryManagementSystem_Models"
              x:Class="SuntoryManagementSystem_App.Pages.CustomerPage"
+             x:DataType="viewmodel:CustomerViewModel"
              Title="Klanten"
              BackgroundColor="White">
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
-            <!-- Header -->
-            <Label Text="Customer Beheer" 
-                   FontSize="28" 
-                   FontAttributes="Bold"
-                   TextColor="#212121"
-                   HorizontalOptions="Center" />
+    
+    <Grid RowDefinitions="Auto,*" Padding="20">
+        
+        <!-- Header Section met Filters -->
+        <VerticalStackLayout Grid.Row="0" Spacing="15">
             
             <!-- Search Bar -->
             <Border BackgroundColor="#F5F5F5" 
-                    StrokeThickness="0"
-                    Padding="10"
-                    Margin="0,10,0,0">
+                    StrokeThickness="0">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="10" />
                 </Border.StrokeShape>
-                <SearchBar Placeholder="Zoek klanten op naam, email of stad..."
+                <SearchBar Placeholder="Zoek klanten op naam, email, stad..."
+                           Text="{Binding SearchText}"
                            BackgroundColor="Transparent" />
             </Border>
             
-            <!-- Customer Type Filter -->
-            <Border BackgroundColor="#F5F5F5" 
-                    StrokeThickness="0"
-                    Padding="15"
-                    Margin="0,10,0,0">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="10" />
-                </Border.StrokeShape>
-                <VerticalStackLayout Spacing="10">
-                    <Label Text="Filter op Type" 
-                           FontSize="16" 
-                           FontAttributes="Bold" />
-                    <Picker Title="Selecteer klant type">
+            <!-- Filters Grid -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <!-- Type Filter -->
+                <Border Grid.Column="0"
+                        BackgroundColor="#F5F5F5" 
+                        StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+                    <Picker Title="Type"
+                            SelectedItem="{Binding SelectedTypeFilter}"
+                            BackgroundColor="Transparent">
                         <Picker.ItemsSource>
                             <x:Array Type="{x:Type x:String}">
                                 <x:String>Alle</x:String>
@@ -47,22 +45,18 @@
                             </x:Array>
                         </Picker.ItemsSource>
                     </Picker>
-                </VerticalStackLayout>
-            </Border>
-            
-            <!-- Status Filter -->
-            <Border BackgroundColor="#F5F5F5" 
-                    StrokeThickness="0"
-                    Padding="15"
-                    Margin="0,10,0,0">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="10" />
-                </Border.StrokeShape>
-                <VerticalStackLayout Spacing="10">
-                    <Label Text="Filter op Status" 
-                           FontSize="16" 
-                           FontAttributes="Bold" />
-                    <Picker Title="Selecteer status">
+                </Border>
+                
+                <!-- Status Filter -->
+                <Border Grid.Column="1"
+                        BackgroundColor="#F5F5F5" 
+                        StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+                    <Picker Title="Status"
+                            SelectedItem="{Binding SelectedStatusFilter}"
+                            BackgroundColor="Transparent">
                         <Picker.ItemsSource>
                             <x:Array Type="{x:Type x:String}">
                                 <x:String>Alle</x:String>
@@ -71,46 +65,190 @@
                             </x:Array>
                         </Picker.ItemsSource>
                     </Picker>
-                </VerticalStackLayout>
-            </Border>
+                </Border>
+            </Grid>
             
-            <!-- Quick Actions -->
-            <Button Text="+ Nieuwe Customer Toevoegen" 
-                    FontSize="16"
-                    FontAttributes="Bold"
-                    BackgroundColor="#512BD4"
-                    TextColor="White"
-                    HeightRequest="50"
-                    CornerRadius="10"
-                    Margin="0,10,0,0" />
-            
-            <!-- Customers List Placeholder -->
-            <Border BackgroundColor="#F5F5F5" 
-                    StrokeThickness="0"
-                    Padding="20"
-                    Margin="0,20,0,0">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="10" />
-                </Border.StrokeShape>
-                <VerticalStackLayout Spacing="10">
-                    <Label Text="Customer Overzicht" 
-                           FontSize="18" 
-                           FontAttributes="Bold"
-                           TextColor="#212121" />
-                    <Label Text="Hier worden alle klanten weergegeven uit de Customer tabel." 
-                           FontSize="14" 
-                           TextColor="Gray" />
-                    <Label Text="Velden: CustomerId, CustomerName, CustomerType, City, Email, PhoneNumber" 
-                           FontSize="12" 
-                           TextColor="Gray"
-                           FontAttributes="Italic" />
-                    <Label Text="Coming soon..." 
-                           FontSize="14" 
-                           TextColor="#512BD4"
-                           FontAttributes="Italic"
-                           Margin="0,20,0,0" />
-                </VerticalStackLayout>
-            </Border>
+            <!-- Action Buttons -->
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                <Button Grid.Column="0"
+                        Text="+ Nieuwe Klant"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        BackgroundColor="#28a745"
+                        TextColor="White"
+                        HeightRequest="50"
+                        CornerRadius="10"
+                        Command="{Binding AddCustomerCommand}" />
+                
+                <Button Grid.Column="1"
+                        Text="Vernieuwen"
+                        FontSize="14"
+                        BackgroundColor="#512BD4"
+                        TextColor="White"
+                        WidthRequest="110"
+                        HeightRequest="50"
+                        CornerRadius="10"
+                        Command="{Binding RefreshCustomersCommand}" />
+            </Grid>
         </VerticalStackLayout>
-    </ScrollView>
+        
+        <!-- Customers List -->
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCustomersCommand}">
+            <CollectionView ItemsSource="{Binding FilteredCustomers}"
+                            SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="20"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Center">
+                        <Label Text="Geen klanten gevonden"
+                               FontSize="18"
+                               TextColor="Gray"
+                               HorizontalOptions="Center" />
+                        <Label Text="Voeg een nieuwe klant toe of pas je filters aan"
+                               FontSize="14"
+                               TextColor="Gray"
+                               HorizontalOptions="Center"
+                               Margin="0,10,0,0" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Customer"
+                                  xmlns:models="clr-namespace:SuntoryManagementSystem.Models;assembly=SuntoryManagementSystem_Models">
+                        <Border Padding="15"
+                                Margin="0,5"
+                                BackgroundColor="#F8F9FA"
+                                StrokeThickness="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="10" />
+                            </Border.StrokeShape>
+                            
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer 
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CustomerViewModel}}, Path=ViewCustomerCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+                            
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
+                                
+                                <!-- Customer Name -->
+                                <Label Grid.Row="0" Grid.Column="0"
+                                       Text="{Binding CustomerName}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="#212121" />
+                                
+                                <!-- Type Badge -->
+                                <Border Grid.Row="0" Grid.Column="1"
+                                        BackgroundColor="#512BD4"
+                                        Padding="8,4"
+                                        StrokeThickness="0">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="12" />
+                                    </Border.StrokeShape>
+                                    <Label Text="{Binding CustomerType}"
+                                           TextColor="White"
+                                           FontSize="12"
+                                           FontAttributes="Bold" />
+                                </Border>
+                                
+                                <!-- Contact Person -->
+                                <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                                     Spacing="5"
+                                                     Margin="0,5,0,0">
+                                    <Label Text="Contactpersoon:"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="#666" />
+                                    <Label Text="{Binding ContactPerson}"
+                                           FontSize="14"
+                                           TextColor="#666" />
+                                </HorizontalStackLayout>
+                                
+                                <!-- Location -->
+                                <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                                     Spacing="5"
+                                                     Margin="0,2,0,0">
+                                    <Label Text="Locatie:"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="#666" />
+                                    <Label FontSize="14"
+                                           TextColor="#666">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}{0}, {1}">
+                                                <Binding Path="City" />
+                                                <Binding Path="PostalCode" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+                                </HorizontalStackLayout>
+                                
+                                <!-- Contact Info & Actions -->
+                                <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                                      ColumnDefinitions="*,Auto,Auto"
+                                      Margin="0,10,0,0">
+                                    
+                                    <!-- Email/Phone -->
+                                    <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                        <Label Text="{Binding Email}"
+                                               FontSize="12"
+                                               TextColor="#0066CC" />
+                                        <Label Text="{Binding PhoneNumber}"
+                                               FontSize="12"
+                                               TextColor="#666" />
+                                    </VerticalStackLayout>
+                                    
+                                    <!-- Edit Button -->
+                                    <Button Grid.Column="1"
+                                            Text="Bewerken"
+                                            FontSize="14"
+                                            BackgroundColor="#ffc107"
+                                            TextColor="White"
+                                            WidthRequest="90"
+                                            HeightRequest="40"
+                                            CornerRadius="8"
+                                            Padding="0"
+                                            Margin="5,0"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CustomerViewModel}}, Path=EditCustomerCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    
+                                    <!-- Delete Button -->
+                                    <Button Grid.Column="2"
+                                            Text="Verwijderen"
+                                            FontSize="14"
+                                            BackgroundColor="#dc3545"
+                                            TextColor="White"
+                                            WidthRequest="100"
+                                            HeightRequest="40"
+                                            CornerRadius="8"
+                                            Padding="0"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CustomerViewModel}}, Path=DeleteCustomerCommand}"
+                                            CommandParameter="{Binding .}" />
+                                </Grid>
+                                
+                                <!-- Status Indicator -->
+                                <BoxView Grid.Row="0" Grid.RowSpan="4" Grid.Column="0"
+                                        WidthRequest="4"
+                                        HorizontalOptions="Start"
+                                        Color="{Binding Status, Converter={StaticResource StatusColorConverter}}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+        
+        <!-- Loading Indicator -->
+        <ActivityIndicator Grid.Row="1"
+                          IsRunning="{Binding IsLoading}"
+                          IsVisible="{Binding IsLoading}"
+                          Color="{StaticResource Primary}"
+                          WidthRequest="50"
+                          HeightRequest="50"
+                          HorizontalOptions="Center"
+                          VerticalOptions="Center" />
+    </Grid>
 </ContentPage>

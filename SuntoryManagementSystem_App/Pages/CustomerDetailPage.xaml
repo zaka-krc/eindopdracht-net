@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SuntoryManagementSystem_App.Pages.CustomerDetailPage"
+             Title="Klant Details"
+             BackgroundColor="White">
+    
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            
+            <!-- Customer Name -->
+            <Label Text="Bedrijfsnaam *"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="#424242"/>
+            <Entry x:Name="CustomerNameEntry"
+                   Placeholder="Bijv. Albert Heijn Brussel"
+                   BackgroundColor="#F5F5F5"/>
+            
+            <!-- Contact Person -->
+            <Label Text="Contactpersoon"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="#424242"/>
+            <Entry x:Name="ContactPersonEntry"
+                   Placeholder="Bijv. Jan Janssen"
+                   BackgroundColor="#F5F5F5"/>
+            
+            <!-- Customer Type -->
+            <Label Text="Type *"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="#424242"/>
+            <Picker x:Name="CustomerTypePicker"
+                    BackgroundColor="#F5F5F5">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Retail</x:String>
+                        <x:String>Wholesale</x:String>
+                        <x:String>HoReCa</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+            
+            <!-- Address -->
+            <Label Text="Adres"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="#424242"/>
+            <Entry x:Name="AddressEntry"
+                   Placeholder="Straatnaam en huisnummer"
+                   BackgroundColor="#F5F5F5"/>
+            
+            <!-- Postal Code & City -->
+            <Grid ColumnDefinitions="*,2*" ColumnSpacing="10">
+                <VerticalStackLayout Grid.Column="0">
+                    <Label Text="Postcode"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#424242"/>
+                    <Entry x:Name="PostalCodeEntry"
+                           Placeholder="1000"
+                           BackgroundColor="#F5F5F5"/>
+                </VerticalStackLayout>
+                
+                <VerticalStackLayout Grid.Column="1">
+                    <Label Text="Stad"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#424242"/>
+                    <Entry x:Name="CityEntry"
+                           Placeholder="Brussel"
+                           BackgroundColor="#F5F5F5"/>
+                </VerticalStackLayout>
+            </Grid>
+            
+            <!-- Phone & Email -->
+            <Label Text="Telefoonnummer"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="#424242"/>
+            <Entry x:Name="PhoneNumberEntry"
+                   Placeholder="02-1234567"
+                   Keyboard="Telephone"
+                   BackgroundColor="#F5F5F5"/>
+            
+            <Label Text="Email"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="#424242"/>
+            <Entry x:Name="EmailEntry"
+                   Placeholder="contact@bedrijf.be"
+                   Keyboard="Email"
+                   BackgroundColor="#F5F5F5"/>
+            
+            <!-- Status -->
+            <Label Text="Status"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="#424242"/>
+            <Picker x:Name="StatusPicker"
+                    BackgroundColor="#F5F5F5">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Active</x:String>
+                        <x:String>Inactive</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+            
+            <!-- Notes -->
+            <Label Text="Opmerkingen"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="#424242"/>
+            <Editor x:Name="NotesEditor"
+                    HeightRequest="100"
+                    BackgroundColor="#F5F5F5"
+                    Placeholder="Voer opmerkingen in..."/>
+            
+            <!-- Action Buttons -->
+            <Grid ColumnDefinitions="*,*"
+                  ColumnSpacing="10"
+                  Margin="0,20,0,0">
+                <Button Grid.Column="0"
+                      Text="Annuleren"
+                      FontSize="14"
+                      BackgroundColor="#6B7280"
+                      TextColor="White"
+                      Padding="15,12"
+                      CornerRadius="8"
+                      Clicked="OnCancelClicked"/>
+                <Button x:Name="SaveButton"
+                      Grid.Column="1"
+                      Text="Opslaan"
+                      FontSize="14"
+                      BackgroundColor="#512BD4"
+                      TextColor="White"
+                      Padding="15,12"
+                      CornerRadius="8"
+                      Clicked="OnSaveClicked"/>
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

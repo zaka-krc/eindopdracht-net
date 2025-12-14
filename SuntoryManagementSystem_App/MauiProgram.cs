@@ -23,14 +23,23 @@ namespace SuntoryManagementSystem_App
             builder.Services.AddSingleton<ViewModels.MainViewModel>();
             builder.Services.AddSingleton<Pages.MainPage>();
             
-            // Registreer ProductenViewModel en Page
+            // Registreer ProductenViewModel en Pages
             builder.Services.AddSingleton<ViewModels.ProductenViewModel>();
             builder.Services.AddSingleton<Pages.ProductenPage>();
+            builder.Services.AddTransient<Pages.ProductDetailPage>();
             
-            // Registreer nieuwe tab pages (namen gebaseerd op Models)
-            builder.Services.AddSingleton<Pages.ProductPage>();
+            // Registreer DeliveryViewModel en Pages
+            builder.Services.AddSingleton<ViewModels.DeliveryViewModel>();
             builder.Services.AddSingleton<Pages.DeliveryPage>();
+            builder.Services.AddTransient<Pages.DeliveryDetailPage>();
+            
+            // Registreer CustomerViewModel en Pages
+            builder.Services.AddSingleton<ViewModels.CustomerViewModel>();
             builder.Services.AddSingleton<Pages.CustomerPage>();
+            builder.Services.AddTransient<Pages.CustomerDetailPage>();
+            
+            // Registreer andere tab pages
+            builder.Services.AddSingleton<Pages.ProductPage>();
             builder.Services.AddSingleton<Pages.SettingsPage>();
 
 #if DEBUG

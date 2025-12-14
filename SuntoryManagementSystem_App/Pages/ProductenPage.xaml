@@ -30,22 +30,10 @@
                     <RoundRectangle CornerRadius="8"/>
                 </Border.StrokeShape>
                 
-                <Grid ColumnDefinitions="*,Auto">
-                    <Entry Grid.Column="0"
-                           Placeholder="Zoek producten..."
-                           Text="{Binding ZoekTekst}"
-                           BackgroundColor="Transparent"
-                           VerticalOptions="Center"/>
-                    
-                    <Button Grid.Column="1"
-                            Text="X"
-                            FontSize="16"
-                            BackgroundColor="Transparent"
-                            TextColor="Gray"
-                            Padding="5"
-                            IsVisible="{Binding ZoekTekst, Converter={StaticResource InvertedBoolConverter}}"
-                            Command="{Binding RefreshCommand}"/>
-                </Grid>
+                <Entry Placeholder="Zoek producten..."
+                       Text="{Binding ZoekTekst}"
+                       BackgroundColor="Transparent"
+                       VerticalOptions="Center"/>
             </Border>
             
             <!-- Refresh Button -->
@@ -138,7 +126,7 @@
                                     </Border.StrokeShape>
                                     
                                     <Border.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ProductenViewModel}}, Path=BewerkProductCommand}"
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ProductenViewModel}}, Path=BekijkProductCommand}"
                                                             CommandParameter="{Binding .}"/>
                                     </Border.GestureRecognizers>
                                     
@@ -219,7 +207,7 @@
                                         
                                         <!-- Leverancier & Actie Buttons -->
                                         <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                                            ColumnDefinitions="*,Auto"
+                                            ColumnDefinitions="*,Auto,Auto"
                                             Margin="0,10,0,0">
                                             
                                             <HorizontalStackLayout Grid.Column="0" Spacing="5">
@@ -235,10 +223,21 @@
                                             </HorizontalStackLayout>
                                             
                                             <Button Grid.Column="1"
-                                                  Text="Voorraad"
+                                                  Text="Bewerk"
                                                   FontSize="12"
                                                   Padding="10,5"
                                                   BackgroundColor="#512BD4"
+                                                  TextColor="White"
+                                                  CornerRadius="6"
+                                                  Margin="0,0,5,0"
+                                                  Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ProductenViewModel}}, Path=BewerkProductCommand}"
+                                                  CommandParameter="{Binding .}"/>
+                                            
+                                            <Button Grid.Column="2"
+                                                  Text="Voorraad"
+                                                  FontSize="12"
+                                                  Padding="10,5"
+                                                  BackgroundColor="#F59E0B"
                                                   TextColor="White"
                                                   CornerRadius="6"
                                                   Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ProductenViewModel}}, Path=VoorraadAanpassenCommand}"
