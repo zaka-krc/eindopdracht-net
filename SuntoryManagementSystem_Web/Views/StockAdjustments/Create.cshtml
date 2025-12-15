@@ -1,0 +1,77 @@
+﻿@model SuntoryManagementSystem.Models.StockAdjustment
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>StockAdjustment</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ProductId" class="control-label"></label>
+                <select asp-for="ProductId" class ="form-control" asp-items="ViewBag.ProductId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="AdjustmentType" class="control-label"></label>
+                <input asp-for="AdjustmentType" class="form-control" />
+                <span asp-validation-for="AdjustmentType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QuantityChange" class="control-label"></label>
+                <input asp-for="QuantityChange" class="form-control" />
+                <span asp-validation-for="QuantityChange" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PreviousQuantity" class="control-label"></label>
+                <input asp-for="PreviousQuantity" class="form-control" />
+                <span asp-validation-for="PreviousQuantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewQuantity" class="control-label"></label>
+                <input asp-for="NewQuantity" class="form-control" />
+                <span asp-validation-for="NewQuantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Reason" class="control-label"></label>
+                <textarea asp-for="Reason" class="form-control"></textarea>
+                <span asp-validation-for="Reason" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AdjustmentDate" class="control-label"></label>
+                <input asp-for="AdjustmentDate" class="form-control" />
+                <span asp-validation-for="AdjustmentDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AdjustedBy" class="control-label"></label>
+                <input asp-for="AdjustedBy" class="form-control" />
+                <span asp-validation-for="AdjustedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="DeletedDate" class="control-label"></label>
+                <input asp-for="DeletedDate" class="form-control" />
+                <span asp-validation-for="DeletedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

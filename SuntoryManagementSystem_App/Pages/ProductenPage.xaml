@@ -38,7 +38,7 @@
             
             <!-- Refresh Button -->
             <Button Grid.Column="1"
-                    Text="Refresh"
+                    Text="Vernieuwen"
                     FontSize="14"
                     BackgroundColor="#512BD4"
                     TextColor="White"

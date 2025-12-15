@@ -39,7 +39,7 @@ namespace SuntoryManagementSystem_App
             builder.Services.AddTransient<Pages.CustomerDetailPage>();
             
             // Registreer andere tab pages
-            builder.Services.AddSingleton<Pages.ProductPage>();
+            builder.Services.AddSingleton<Pages.ProductenPage>();
             builder.Services.AddSingleton<Pages.SettingsPage>();
 
 #if DEBUG

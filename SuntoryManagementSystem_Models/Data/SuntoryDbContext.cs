@@ -9,6 +9,17 @@ namespace SuntoryManagementSystem_Models.Data
 {
     public class SuntoryDbContext : IdentityDbContext<ApplicationUser>
     {
+        // Constructor voor ASP.NET Core dependency injection
+        public SuntoryDbContext(DbContextOptions<SuntoryDbContext> options) 
+            : base(options)
+        {
+        }
+        
+        // Parameterless constructor voor WPF en MAUI
+        public SuntoryDbContext() : base()
+        {
+        }
+
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -20,10 +31,14 @@ namespace SuntoryManagementSystem_Models.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //string connectionString = "Server=localhost;Database=SuntoryManagementDb;User Id=sa;Password=Your_password123;MultipleActiveResultSets=true";
-            string connectionString = "Server=(localdb)\\mssqllocaldb;Database=SuntoryManagementDb;Trusted_Connection=true;MultipleActiveResultSets=true";
-            
-            optionsBuilder.UseSqlServer(connectionString);
+            // Alleen configureren als nog niet geconfigureerd (voor WPF en MAUI gebruik)
+            if (!optionsBuilder.IsConfigured)
+            {
+                //string connectionString = "Server=localhost;Database=SuntoryManagementDb;User Id=sa;Password=Your_password123;MultipleActiveResultSets=true";
+                string connectionString = "Server=(localdb)\\mssqllocaldb;Database=SuntoryManagementDb;Trusted_Connection=true;MultipleActiveResultSets=true";
+                
+                optionsBuilder.UseSqlServer(connectionString);
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,0 +1,71 @@
+﻿@model IEnumerable<SuntoryManagementSystem.Models.DeliveryItem>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Delivery)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UnitPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsProcessed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsDeleted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DeletedDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Delivery.DeliveryType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.Category)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UnitPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsProcessed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsDeleted)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeletedDate)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.DeliveryItemId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.DeliveryItemId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.DeliveryItemId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

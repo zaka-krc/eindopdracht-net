@@ -1,0 +1,113 @@
+﻿@model IEnumerable<SuntoryManagementSystem.Models.Delivery>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DeliveryType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Supplier)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Customer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Vehicle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReferenceNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExpectedDeliveryDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ActualDeliveryDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsProcessed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Notes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsDeleted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DeletedDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeliveryType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Supplier.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Customer.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Vehicle.Brand)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReferenceNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpectedDeliveryDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActualDeliveryDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsProcessed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Notes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsDeleted)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeletedDate)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.DeliveryId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.DeliveryId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.DeliveryId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
