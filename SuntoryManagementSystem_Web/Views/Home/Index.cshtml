@@ -1,8 +1,296 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- TempData Berichten -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>@TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="container-fluid px-4 py-5">
+    <!-- Header -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h1 class="display-4 fw-bold text-primary">
+                <i class="bi bi-speedometer2 me-3"></i>Suntory Management Dashboard
+            </h1>
+            <p class="lead text-muted">Welkom bij het Suntory beverage management systeem</p>
+            <hr class="my-4">
+        </div>
+    </div>
+
+    <!-- Quick Stats (optioneel - kan later met echte data gevuld worden) -->
+    <div class="row mb-5 g-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 bg-primary bg-gradient text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 text-uppercase mb-2">Actieve Klanten</h6>
+                            <h2 class="mb-0 fw-bold">--</h2>
+                        </div>
+                        <i class="bi bi-people-fill fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 bg-success bg-gradient text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 text-uppercase mb-2">Producten</h6>
+                            <h2 class="mb-0 fw-bold">--</h2>
+                        </div>
+                        <i class="bi bi-box-seam-fill fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 bg-warning bg-gradient text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 text-uppercase mb-2">Leveringen</h6>
+                            <h2 class="mb-0 fw-bold">--</h2>
+                        </div>
+                        <i class="bi bi-truck-fill fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 bg-info bg-gradient text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 text-uppercase mb-2">Stock Alerts</h6>
+                            <h2 class="mb-0 fw-bold">--</h2>
+                        </div>
+                        <i class="bi bi-exclamation-triangle-fill fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Module Navigatie -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h3 class="fw-bold mb-4">
+                <i class="bi bi-grid-3x3-gap-fill me-2"></i>Modules
+            </h3>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Klanten Module -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-lift">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box bg-primary bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-people-fill fs-2 text-primary"></i>
+                        </div>
+                        <h4 class="card-title mb-0 fw-bold">Klanten</h4>
+                    </div>
+                    <p class="card-text text-muted mb-4">
+                        Beheer klantgegevens, contactpersonen en leveradressen.
+                    </p>
+                    <a asp-controller="Customers" asp-action="Index" class="btn btn-primary">
+                        <i class="bi bi-arrow-right-circle me-2"></i>Naar Klanten
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Producten Module -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-lift">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box bg-success bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-box-seam-fill fs-2 text-success"></i>
+                        </div>
+                        <h4 class="card-title mb-0 fw-bold">Producten</h4>
+                    </div>
+                    <p class="card-text text-muted mb-4">
+                        Overzicht van alle Suntory dranken met voorraad en prijzen.
+                    </p>
+                    <a asp-controller="Products" asp-action="Index" class="btn btn-success">
+                        <i class="bi bi-arrow-right-circle me-2"></i>Naar Producten
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leveranciers Module -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-lift">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box bg-info bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-building-fill fs-2 text-info"></i>
+                        </div>
+                        <h4 class="card-title mb-0 fw-bold">Leveranciers</h4>
+                    </div>
+                    <p class="card-text text-muted mb-4">
+                        Beheer leveranciers en hun contactgegevens.
+                    </p>
+                    <a asp-controller="Suppliers" asp-action="Index" class="btn btn-info text-white">
+                        <i class="bi bi-arrow-right-circle me-2"></i>Naar Leveranciers
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leveringen Module -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-lift">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box bg-warning bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-truck-fill fs-2 text-warning"></i>
+                        </div>
+                        <h4 class="card-title mb-0 fw-bold">Leveringen</h4>
+                    </div>
+                    <p class="card-text text-muted mb-4">
+                        Plan en volg leveringen naar klanten met status tracking.
+                    </p>
+                    <a asp-controller="Deliveries" asp-action="Index" class="btn btn-warning text-white">
+                        <i class="bi bi-arrow-right-circle me-2"></i>Naar Leveringen
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Voertuigen Module -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-lift">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box bg-danger bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-truck-front-fill fs-2 text-danger"></i>
+                        </div>
+                        <h4 class="card-title mb-0 fw-bold">Voertuigen</h4>
+                    </div>
+                    <p class="card-text text-muted mb-4">
+                        Beheer de vloot: registratienummers, capaciteit en status.
+                    </p>
+                    <a asp-controller="Vehicles" asp-action="Index" class="btn btn-danger">
+                        <i class="bi bi-arrow-right-circle me-2"></i>Naar Voertuigen
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Voorraad Aanpassingen Module -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-lift">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box bg-secondary bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-clipboard-check-fill fs-2 text-secondary"></i>
+                        </div>
+                        <h4 class="card-title mb-0 fw-bold">Voorraad Aanpassingen</h4>
+                    </div>
+                    <p class="card-text text-muted mb-4">
+                        Log voorraadwijzigingen: inkomend, uitgaand en correcties.
+                    </p>
+                    <a asp-controller="StockAdjustments" asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-right-circle me-2"></i>Naar Aanpassingen
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock Alerts Module -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-lift border-warning border-2">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box bg-warning bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-exclamation-triangle-fill fs-2 text-warning"></i>
+                        </div>
+                        <h4 class="card-title mb-0 fw-bold">Stock Alerts</h4>
+                    </div>
+                    <p class="card-text text-muted mb-4">
+                        Waarschuwingen voor lage voorraad en kritieke niveaus.
+                    </p>
+                    <a asp-controller="StockAlerts" asp-action="Index" class="btn btn-outline-warning">
+                        <i class="bi bi-bell-fill me-2"></i>Bekijk Alerts
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Levering Items Module -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-lift">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-box bg-dark bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-list-check fs-2 text-dark"></i>
+                        </div>
+                        <h4 class="card-title mb-0 fw-bold">Levering Items</h4>
+                    </div>
+                    <p class="card-text text-muted mb-4">
+                        Detailregels van leveringen: producten en hoeveelheden.
+                    </p>
+                    <a asp-controller="DeliveryItems" asp-action="Index" class="btn btn-dark">
+                        <i class="bi bi-arrow-right-circle me-2"></i>Naar Items
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Snelle Acties (voor Admin/Manager) -->
+    @if (User.IsInRole("Administrator") || User.IsInRole("Manager"))
+    {
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="fw-bold mb-4">
+                    <i class="bi bi-lightning-charge-fill me-2"></i>Snelle Acties
+                </h3>
+            </div>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-3">
+                <a asp-controller="Customers" asp-action="Create" class="btn btn-outline-primary w-100 py-3">
+                    <i class="bi bi-plus-circle-fill me-2"></i>Nieuwe Klant
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a asp-controller="Products" asp-action="Create" class="btn btn-outline-success w-100 py-3">
+                    <i class="bi bi-plus-circle-fill me-2"></i>Nieuw Product
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a asp-controller="Deliveries" asp-action="Create" class="btn btn-outline-warning w-100 py-3">
+                    <i class="bi bi-plus-circle-fill me-2"></i>Nieuwe Levering
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a asp-controller="Suppliers" asp-action="Create" class="btn btn-outline-info w-100 py-3">
+                    <i class="bi bi-plus-circle-fill me-2"></i>Nieuwe Leverancier
+                </a>
+            </div>
+        </div>
+    }
 </div>

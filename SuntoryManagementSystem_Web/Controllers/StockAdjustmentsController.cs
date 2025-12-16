@@ -8,25 +8,25 @@ using Microsoft.EntityFrameworkCore;
 using SuntoryManagementSystem.Models;
 using SuntoryManagementSystem_Models.Data;
 
-namespace SuntoryManagementSystem_Web
+namespace SuntoryManagementSystem_Web.Controllers
 {
-    public class ProductsController : Controller
+    public class StockAdjustmentsController : Controller
     {
         private readonly SuntoryDbContext _context;
 
-        public ProductsController(SuntoryDbContext context)
+        public StockAdjustmentsController(SuntoryDbContext context)
         {
             _context = context;
         }
 
-        // GET: Products
+        // GET: StockAdjustments
         public async Task<IActionResult> Index()
         {
-            var suntoryDbContext = _context.Products.Include(p => p.Supplier);
+            var suntoryDbContext = _context.StockAdjustments.Include(s => s.Product);
             return View(await suntoryDbContext.ToListAsync());
         }
 
-        // GET: Products/Details/5
+        // GET: StockAdjustments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,42 +34,42 @@ namespace SuntoryManagementSystem_Web
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .Include(p => p.Supplier)
-                .FirstOrDefaultAsync(m => m.ProductId == id);
-            if (product == null)
+            var stockAdjustment = await _context.StockAdjustments
+                .Include(s => s.Product)
+                .FirstOrDefaultAsync(m => m.StockAdjustmentId == id);
+            if (stockAdjustment == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            return View(stockAdjustment);
         }
 
-        // GET: Products/Create
+        // GET: StockAdjustments/Create
         public IActionResult Create()
         {
-            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "Address");
+            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "Category");
             return View();
         }
 
-        // POST: Products/Create
+        // POST: StockAdjustments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,SupplierId,ProductName,Description,SKU,Category,PurchasePrice,SellingPrice,StockQuantity,MinimumStock,IsActive,CreatedDate,IsDeleted,DeletedDate")] Product product)
+        public async Task<IActionResult> Create([Bind("StockAdjustmentId,ProductId,AdjustmentType,QuantityChange,PreviousQuantity,NewQuantity,Reason,AdjustmentDate,AdjustedBy,IsDeleted,DeletedDate")] StockAdjustment stockAdjustment)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(product);
+                _context.Add(stockAdjustment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "Address", product.SupplierId);
-            return View(product);
+            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "Category", stockAdjustment.ProductId);
+            return View(stockAdjustment);
         }
 
-        // GET: Products/Edit/5
+        // GET: StockAdjustments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -77,23 +77,23 @@ namespace SuntoryManagementSystem_Web
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
+            var stockAdjustment = await _context.StockAdjustments.FindAsync(id);
+            if (stockAdjustment == null)
             {
                 return NotFound();
             }
-            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "Address", product.SupplierId);
-            return View(product);
+            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "Category", stockAdjustment.ProductId);
+            return View(stockAdjustment);
         }
 
-        // POST: Products/Edit/5
+        // POST: StockAdjustments/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,SupplierId,ProductName,Description,SKU,Category,PurchasePrice,SellingPrice,StockQuantity,MinimumStock,IsActive,CreatedDate,IsDeleted,DeletedDate")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("StockAdjustmentId,ProductId,AdjustmentType,QuantityChange,PreviousQuantity,NewQuantity,Reason,AdjustmentDate,AdjustedBy,IsDeleted,DeletedDate")] StockAdjustment stockAdjustment)
         {
-            if (id != product.ProductId)
+            if (id != stockAdjustment.StockAdjustmentId)
             {
                 return NotFound();
             }
@@ -102,12 +102,12 @@ namespace SuntoryManagementSystem_Web
             {
                 try
                 {
-                    _context.Update(product);
+                    _context.Update(stockAdjustment);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(product.ProductId))
+                    if (!StockAdjustmentExists(stockAdjustment.StockAdjustmentId))
                     {
                         return NotFound();
                     }
@@ -118,11 +118,11 @@ namespace SuntoryManagementSystem_Web
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "Address", product.SupplierId);
-            return View(product);
+            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "Category", stockAdjustment.ProductId);
+            return View(stockAdjustment);
         }
 
-        // GET: Products/Delete/5
+        // GET: StockAdjustments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,35 +130,35 @@ namespace SuntoryManagementSystem_Web
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .Include(p => p.Supplier)
-                .FirstOrDefaultAsync(m => m.ProductId == id);
-            if (product == null)
+            var stockAdjustment = await _context.StockAdjustments
+                .Include(s => s.Product)
+                .FirstOrDefaultAsync(m => m.StockAdjustmentId == id);
+            if (stockAdjustment == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            return View(stockAdjustment);
         }
 
-        // POST: Products/Delete/5
+        // POST: StockAdjustments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product != null)
+            var stockAdjustment = await _context.StockAdjustments.FindAsync(id);
+            if (stockAdjustment != null)
             {
-                _context.Products.Remove(product);
+                _context.StockAdjustments.Remove(stockAdjustment);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProductExists(int id)
+        private bool StockAdjustmentExists(int id)
         {
-            return _context.Products.Any(e => e.ProductId == id);
+            return _context.StockAdjustments.Any(e => e.StockAdjustmentId == id);
         }
     }
 }

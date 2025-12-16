@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using SuntoryManagementSystem.Models;
 using SuntoryManagementSystem_Models.Data;
 
-namespace SuntoryManagementSystem_Web
+namespace SuntoryManagementSystem_Web.Controllers
 {
     public class DeliveryItemsController : Controller
     {

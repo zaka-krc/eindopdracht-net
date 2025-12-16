@@ -8,24 +8,25 @@ using Microsoft.EntityFrameworkCore;
 using SuntoryManagementSystem.Models;
 using SuntoryManagementSystem_Models.Data;
 
-namespace SuntoryManagementSystem_Web
+namespace SuntoryManagementSystem_Web.Controllers
 {
-    public class VehiclesController : Controller
+    public class ProductsController : Controller
     {
         private readonly SuntoryDbContext _context;
 
-        public VehiclesController(SuntoryDbContext context)
+        public ProductsController(SuntoryDbContext context)
         {
             _context = context;
         }
 
-        // GET: Vehicles
+        // GET: Products
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Vehicles.ToListAsync());
+            var suntoryDbContext = _context.Products.Include(p => p.Supplier);
+            return View(await suntoryDbContext.ToListAsync());
         }
 
-        // GET: Vehicles/Details/5
+        // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +34,42 @@ namespace SuntoryManagementSystem_Web
                 return NotFound();
             }
 
-            var vehicle = await _context.Vehicles
-                .FirstOrDefaultAsync(m => m.VehicleId == id);
-            if (vehicle == null)
+            var product = await _context.Products
+                .Include(p => p.Supplier)
+                .FirstOrDefaultAsync(m => m.ProductId == id);
+            if (product == null)
             {
                 return NotFound();
             }
 
-            return View(vehicle);
+            return View(product);
         }
 
-        // GET: Vehicles/Create
+        // GET: Products/Create
         public IActionResult Create()
         {
+            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "Address");
             return View();
         }
 
-        // POST: Vehicles/Create
+        // POST: Products/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("VehicleId,LicensePlate,Brand,Model,VehicleType,Capacity,IsAvailable,LastMaintenanceDate,CreatedDate,Notes,IsDeleted,DeletedDate")] Vehicle vehicle)
+        public async Task<IActionResult> Create([Bind("ProductId,SupplierId,ProductName,Description,SKU,Category,PurchasePrice,SellingPrice,StockQuantity,MinimumStock,IsActive,CreatedDate,IsDeleted,DeletedDate")] Product product)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(vehicle);
+                _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(vehicle);
+            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "Address", product.SupplierId);
+            return View(product);
         }
 
-        // GET: Vehicles/Edit/5
+        // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +77,23 @@ namespace SuntoryManagementSystem_Web
                 return NotFound();
             }
 
-            var vehicle = await _context.Vehicles.FindAsync(id);
-            if (vehicle == null)
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
             {
                 return NotFound();
             }
-            return View(vehicle);
+            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "Address", product.SupplierId);
+            return View(product);
         }
 
-        // POST: Vehicles/Edit/5
+        // POST: Products/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("VehicleId,LicensePlate,Brand,Model,VehicleType,Capacity,IsAvailable,LastMaintenanceDate,CreatedDate,Notes,IsDeleted,DeletedDate")] Vehicle vehicle)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,SupplierId,ProductName,Description,SKU,Category,PurchasePrice,SellingPrice,StockQuantity,MinimumStock,IsActive,CreatedDate,IsDeleted,DeletedDate")] Product product)
         {
-            if (id != vehicle.VehicleId)
+            if (id != product.ProductId)
             {
                 return NotFound();
             }
@@ -97,12 +102,12 @@ namespace SuntoryManagementSystem_Web
             {
                 try
                 {
-                    _context.Update(vehicle);
+                    _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!VehicleExists(vehicle.VehicleId))
+                    if (!ProductExists(product.ProductId))
                     {
                         return NotFound();
                     }
@@ -113,10 +118,11 @@ namespace SuntoryManagementSystem_Web
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(vehicle);
+            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "Address", product.SupplierId);
+            return View(product);
         }
 
-        // GET: Vehicles/Delete/5
+        // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,34 +130,35 @@ namespace SuntoryManagementSystem_Web
                 return NotFound();
             }
 
-            var vehicle = await _context.Vehicles
-                .FirstOrDefaultAsync(m => m.VehicleId == id);
-            if (vehicle == null)
+            var product = await _context.Products
+                .Include(p => p.Supplier)
+                .FirstOrDefaultAsync(m => m.ProductId == id);
+            if (product == null)
             {
                 return NotFound();
             }
 
-            return View(vehicle);
+            return View(product);
         }
 
-        // POST: Vehicles/Delete/5
+        // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var vehicle = await _context.Vehicles.FindAsync(id);
-            if (vehicle != null)
+            var product = await _context.Products.FindAsync(id);
+            if (product != null)
             {
-                _context.Vehicles.Remove(vehicle);
+                _context.Products.Remove(product);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool VehicleExists(int id)
+        private bool ProductExists(int id)
         {
-            return _context.Vehicles.Any(e => e.VehicleId == id);
+            return _context.Products.Any(e => e.ProductId == id);
         }
     }
 }

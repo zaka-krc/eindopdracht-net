@@ -8,10 +8,11 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Connection string
-var connectionString = "Server=(localdb)\\mssqllocaldb;Database=SuntoryManagementDb;Trusted_Connection=true;MultipleActiveResultSets=true";
+var connectionString = builder.Configuration.GetConnectionString("SuntoryDbContextConnection") ?? throw new InvalidOperationException("Connection string 'SuntoryDbContextConnection' not found.");
 
 // Database Context
-builder.Services.AddDbContext<SuntoryDbContext>();
+builder.Services.AddDbContext<SuntoryDbContext>(options =>
+    options.UseSqlServer(connectionString));
 
 // Identity
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
