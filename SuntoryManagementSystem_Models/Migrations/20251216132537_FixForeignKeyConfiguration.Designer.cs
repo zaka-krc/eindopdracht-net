@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SuntoryManagementSystem_Models.Data;
 
 #nullable disable
 
-namespace SuntoryManagementSystem_Models.Migrations
+namespace SuntoryManagementSystem_Models.Migrations.SuntoryDb
 {
     [DbContext(typeof(SuntoryDbContext))]
-    partial class SuntoryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251216132537_FixForeignKeyConfiguration")]
+    partial class FixForeignKeyConfiguration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
