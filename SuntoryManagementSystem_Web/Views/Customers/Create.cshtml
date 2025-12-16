@@ -1,91 +1,163 @@
 ﻿@model SuntoryManagementSystem.Models.Customer
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Nieuwe Klant";
 }
 
-<h1>Create</h1>
-
-<h4>Customer</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="CustomerName" class="control-label"></label>
-                <input asp-for="CustomerName" class="form-control" />
-                <span asp-validation-for="CustomerName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PostalCode" class="control-label"></label>
-                <input asp-for="PostalCode" class="form-control" />
-                <span asp-validation-for="PostalCode" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="City" class="control-label"></label>
-                <input asp-for="City" class="form-control" />
-                <span asp-validation-for="City" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PhoneNumber" class="control-label"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ContactPerson" class="control-label"></label>
-                <input asp-for="ContactPerson" class="form-control" />
-                <span asp-validation-for="ContactPerson" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CustomerType" class="control-label"></label>
-                <input asp-for="CustomerType" class="form-control" />
-                <span asp-validation-for="CustomerType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedDate" class="control-label"></label>
-                <input asp-for="CreatedDate" class="form-control" />
-                <span asp-validation-for="CreatedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Notes" class="control-label"></label>
-                <textarea asp-for="Notes" class="form-control"></textarea>
-                <span asp-validation-for="Notes" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="DeletedDate" class="control-label"></label>
-                <input asp-for="DeletedDate" class="form-control" />
-                <span asp-validation-for="DeletedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header page-header-primary shadow-soft mb-4">
+        <div class="container-fluid px-4">
+            <h1 class="display-5 fw-bold mb-2">
+                <i class="bi bi-person-plus-fill me-3"></i>Nieuwe Klant Toevoegen
+            </h1>
+            <p class="mb-0 opacity-75">Voeg een nieuwe klant toe aan het systeem</p>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="form-modern">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-custom" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    </div>
+
+                    <!-- Basic Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-info-circle me-2"></i>Basis Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="CustomerName" class="form-label">
+                                    <i class="bi bi-person-badge me-1"></i>Klantnaam
+                                </label>
+                                <input asp-for="CustomerName" class="form-control" placeholder="Bijv. ABC Bedrijf BV" />
+                                <span asp-validation-for="CustomerName" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="CustomerType" class="form-label">
+                                    <i class="bi bi-tag me-1"></i>Klant Type
+                                </label>
+                                <select asp-for="CustomerType" class="form-select">
+                                    <option value="">-- Selecteer Type --</option>
+                                    <option value="Retail">Retail</option>
+                                    <option value="Wholesale">Groothandel</option>
+                                    <option value="Horeca">Horeca</option>
+                                    <option value="Corporate">Corporate</option>
+                                </select>
+                                <span asp-validation-for="CustomerType" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-person-vcard me-2"></i>Contact Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="ContactPerson" class="form-label">
+                                    <i class="bi bi-person me-1"></i>Contactpersoon
+                                </label>
+                                <input asp-for="ContactPerson" class="form-control" placeholder="Bijv. Jan Janssen" />
+                                <span asp-validation-for="ContactPerson" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="PhoneNumber" class="form-label">
+                                    <i class="bi bi-telephone me-1"></i>Telefoonnummer
+                                </label>
+                                <input asp-for="PhoneNumber" class="form-control" placeholder="+31 6 12345678" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                            </div>
+                            <div class="col-12">
+                                <label asp-for="Email" class="form-label">
+                                    <i class="bi bi-envelope me-1"></i>Email
+                                </label>
+                                <input asp-for="Email" class="form-control" type="email" placeholder="voorbeeld@bedrijf.nl" />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Address Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-geo-alt me-2"></i>Adres Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label asp-for="Address" class="form-label">
+                                    <i class="bi bi-house me-1"></i>Adres
+                                </label>
+                                <input asp-for="Address" class="form-control" placeholder="Straatnaam 123" />
+                                <span asp-validation-for="Address" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="PostalCode" class="form-label">
+                                    <i class="bi bi-mailbox me-1"></i>Postcode
+                                </label>
+                                <input asp-for="PostalCode" class="form-control" placeholder="1234 AB" />
+                                <span asp-validation-for="PostalCode" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-8">
+                                <label asp-for="City" class="form-label">
+                                    <i class="bi bi-building me-1"></i>Stad
+                                </label>
+                                <input asp-for="City" class="form-control" placeholder="Amsterdam" />
+                                <span asp-validation-for="City" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-clipboard-check me-2"></i>Aanvullende Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="Status" class="form-label">
+                                    <i class="bi bi-circle-fill me-1"></i>Status
+                                </label>
+                                <select asp-for="Status" class="form-select">
+                                    <option value="Active">Actief</option>
+                                    <option value="Inactive">Inactief</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="CreatedDate" class="form-label">
+                                    <i class="bi bi-calendar me-1"></i>Aanmaakdatum
+                                </label>
+                                <input asp-for="CreatedDate" class="form-control" type="date" />
+                                <span asp-validation-for="CreatedDate" class="text-danger small"></span>
+                            </div>
+                            <div class="col-12">
+                                <label asp-for="Notes" class="form-label">
+                                    <i class="bi bi-sticky me-1"></i>Notities
+                                </label>
+                                <textarea asp-for="Notes" class="form-control" rows="4" placeholder="Eventuele notities over de klant..."></textarea>
+                                <span asp-validation-for="Notes" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex gap-3 justify-content-end border-top pt-4 mt-4">
+                        <a asp-action="Index" class="btn btn-lg btn-secondary">
+                            <i class="bi bi-x-circle me-2"></i>Annuleren
+                        </a>
+                        <button type="submit" class="btn btn-lg btn-primary">
+                            <i class="bi bi-check-circle-fill me-2"></i>Klant Toevoegen
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

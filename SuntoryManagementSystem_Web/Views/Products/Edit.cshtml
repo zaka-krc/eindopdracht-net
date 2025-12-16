@@ -1,92 +1,144 @@
 ﻿@model SuntoryManagementSystem.Models.Product
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Product Bewerken";
 }
 
-<h1>Edit</h1>
-
-<h4>Product</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ProductId" />
-            <div class="form-group">
-                <label asp-for="SupplierId" class="control-label"></label>
-                <select asp-for="SupplierId" class="form-control" asp-items="ViewBag.SupplierId"></select>
-                <span asp-validation-for="SupplierId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ProductName" class="control-label"></label>
-                <input asp-for="ProductName" class="form-control" />
-                <span asp-validation-for="ProductName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SKU" class="control-label"></label>
-                <input asp-for="SKU" class="form-control" />
-                <span asp-validation-for="SKU" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Category" class="control-label"></label>
-                <input asp-for="Category" class="form-control" />
-                <span asp-validation-for="Category" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PurchasePrice" class="control-label"></label>
-                <input asp-for="PurchasePrice" class="form-control" />
-                <span asp-validation-for="PurchasePrice" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SellingPrice" class="control-label"></label>
-                <input asp-for="SellingPrice" class="form-control" />
-                <span asp-validation-for="SellingPrice" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StockQuantity" class="control-label"></label>
-                <input asp-for="StockQuantity" class="form-control" />
-                <span asp-validation-for="StockQuantity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MinimumStock" class="control-label"></label>
-                <input asp-for="MinimumStock" class="form-control" />
-                <span asp-validation-for="MinimumStock" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedDate" class="control-label"></label>
-                <input asp-for="CreatedDate" class="form-control" />
-                <span asp-validation-for="CreatedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="DeletedDate" class="control-label"></label>
-                <input asp-for="DeletedDate" class="form-control" />
-                <span asp-validation-for="DeletedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="container-fluid px-4">
+    <div class="page-header page-header-warning shadow-soft mb-4">
+        <div class="container-fluid px-4">
+            <h1 class="display-5 fw-bold mb-2">
+                <i class="bi bi-pencil-square me-3"></i>Product Bewerken
+            </h1>
+            <p class="mb-0 opacity-75">Wijzig de gegevens van @Model.ProductName</p>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="form-modern">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-custom" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    </div>
+                    <input type="hidden" asp-for="ProductId" />
+
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-info-circle me-2"></i>Product Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="ProductName" class="form-label">
+                                    <i class="bi bi-box me-1"></i>Productnaam
+                                </label>
+                                <input asp-for="ProductName" class="form-control" />
+                                <span asp-validation-for="ProductName" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="SKU" class="form-label">
+                                    <i class="bi bi-upc me-1"></i>SKU
+                                </label>
+                                <input asp-for="SKU" class="form-control" />
+                                <span asp-validation-for="SKU" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Category" class="form-label">
+                                    <i class="bi bi-tag me-1"></i>Categorie
+                                </label>
+                                <select asp-for="Category" class="form-select">
+                                    <option value="Frisdrank">Frisdrank</option>
+                                    <option value="Energiedrank">Energiedrank</option>
+                                    <option value="Mixer">Mixer</option>
+                                    <option value="Water">Water</option>
+                                </select>
+                                <span asp-validation-for="Category" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="SupplierId" class="form-label">
+                                    <i class="bi bi-building me-1"></i>Leverancier
+                                </label>
+                                <select asp-for="SupplierId" class="form-select" asp-items="ViewBag.SupplierId"></select>
+                                <span asp-validation-for="SupplierId" class="text-danger small"></span>
+                            </div>
+                            <div class="col-12">
+                                <label asp-for="Description" class="form-label">
+                                    <i class="bi bi-journal-text me-1"></i>Beschrijving
+                                </label>
+                                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                                <span asp-validation-for="Description" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-cash-stack me-2"></i>Prijs Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="PurchasePrice" class="form-label">
+                                    <i class="bi bi-cash me-1"></i>Inkoopprijs (€)
+                                </label>
+                                <input asp-for="PurchasePrice" class="form-control" type="number" step="0.01" />
+                                <span asp-validation-for="PurchasePrice" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="SellingPrice" class="form-label">
+                                    <i class="bi bi-currency-euro me-1"></i>Verkoopprijs (€)
+                                </label>
+                                <input asp-for="SellingPrice" class="form-control" type="number" step="0.01" />
+                                <span asp-validation-for="SellingPrice" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-boxes me-2"></i>Voorraad Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="StockQuantity" class="form-label">
+                                    <i class="bi bi-box2 me-1"></i>Huidige Voorraad
+                                </label>
+                                <input asp-for="StockQuantity" class="form-control" type="number" />
+                                <span asp-validation-for="StockQuantity" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="MinimumStock" class="form-label">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>Minimum Voorraad
+                                </label>
+                                <input asp-for="MinimumStock" class="form-control" type="number" />
+                                <span asp-validation-for="MinimumStock" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-gear me-2"></i>Status
+                        </h4>
+                        <div class="form-check form-switch">
+                            <input asp-for="IsActive" class="form-check-input" type="checkbox" role="switch" />
+                            <label asp-for="IsActive" class="form-check-label">
+                                <i class="bi bi-circle-fill me-1"></i>Product is actief
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 justify-content-end border-top pt-4 mt-4">
+                        <a asp-action="Index" class="btn btn-lg btn-secondary">
+                            <i class="bi bi-x-circle me-2"></i>Annuleren
+                        </a>
+                        <button type="submit" class="btn btn-lg btn-warning text-white">
+                            <i class="bi bi-check-circle-fill me-2"></i>Wijzigingen Opslaan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

@@ -1,93 +1,191 @@
 ﻿@model SuntoryManagementSystem.Models.Delivery
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Nieuwe Levering";
 }
 
-<h1>Create</h1>
-
-<h4>Delivery</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="DeliveryType" class="control-label"></label>
-                <input asp-for="DeliveryType" class="form-control" />
-                <span asp-validation-for="DeliveryType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SupplierId" class="control-label"></label>
-                <select asp-for="SupplierId" class ="form-control" asp-items="ViewBag.SupplierId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="CustomerId" class="control-label"></label>
-                <select asp-for="CustomerId" class ="form-control" asp-items="ViewBag.CustomerId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="VehicleId" class="control-label"></label>
-                <select asp-for="VehicleId" class ="form-control" asp-items="ViewBag.VehicleId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="ReferenceNumber" class="control-label"></label>
-                <input asp-for="ReferenceNumber" class="form-control" />
-                <span asp-validation-for="ReferenceNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ExpectedDeliveryDate" class="control-label"></label>
-                <input asp-for="ExpectedDeliveryDate" class="form-control" />
-                <span asp-validation-for="ExpectedDeliveryDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ActualDeliveryDate" class="control-label"></label>
-                <input asp-for="ActualDeliveryDate" class="form-control" />
-                <span asp-validation-for="ActualDeliveryDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalAmount" class="control-label"></label>
-                <input asp-for="TotalAmount" class="form-control" />
-                <span asp-validation-for="TotalAmount" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsProcessed" /> @Html.DisplayNameFor(model => model.IsProcessed)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedDate" class="control-label"></label>
-                <input asp-for="CreatedDate" class="form-control" />
-                <span asp-validation-for="CreatedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Notes" class="control-label"></label>
-                <textarea asp-for="Notes" class="form-control"></textarea>
-                <span asp-validation-for="Notes" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="DeletedDate" class="control-label"></label>
-                <input asp-for="DeletedDate" class="form-control" />
-                <span asp-validation-for="DeletedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header page-header-warning shadow-soft mb-4">
+        <div class="container-fluid px-4">
+            <h1 class="display-5 fw-bold mb-2">
+                <i class="bi bi-truck me-3"></i>Nieuwe Levering Toevoegen
+            </h1>
+            <p class="mb-0 opacity-75">Voeg een nieuwe levering toe aan het systeem</p>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="form-modern">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-custom" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    </div>
+
+                    <!-- Basic Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-info-circle me-2"></i>Basis Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="ReferenceNumber" class="form-label">
+                                    <i class="bi bi-tag me-1"></i>Referentienummer
+                                </label>
+                                <input asp-for="ReferenceNumber" class="form-control" placeholder="Bijv. DEL-2024-001" />
+                                <span asp-validation-for="ReferenceNumber" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="DeliveryType" class="form-label">
+                                    <i class="bi bi-box-seam me-1"></i>Levering Type
+                                </label>
+                                <select asp-for="DeliveryType" class="form-select">
+                                    <option value="">-- Selecteer Type --</option>
+                                    <option value="Inbound">Inkomend</option>
+                                    <option value="Outbound">Uitgaand</option>
+                                    <option value="Transfer">Transfer</option>
+                                    <option value="Return">Retour</option>
+                                </select>
+                                <span asp-validation-for="DeliveryType" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Party Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-people me-2"></i>Partijen
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label asp-for="SupplierId" class="form-label">
+                                    <i class="bi bi-shop me-1"></i>Leverancier
+                                </label>
+                                <select asp-for="SupplierId" class="form-select" asp-items="ViewBag.SupplierId">
+                                    <option value="">-- Selecteer Leverancier --</option>
+                                </select>
+                                <span asp-validation-for="SupplierId" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="CustomerId" class="form-label">
+                                    <i class="bi bi-person me-1"></i>Klant
+                                </label>
+                                <select asp-for="CustomerId" class="form-select" asp-items="ViewBag.CustomerId">
+                                    <option value="">-- Selecteer Klant --</option>
+                                </select>
+                                <span asp-validation-for="CustomerId" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="VehicleId" class="form-label">
+                                    <i class="bi bi-car-front me-1"></i>Voertuig
+                                </label>
+                                <select asp-for="VehicleId" class="form-select" asp-items="ViewBag.VehicleId">
+                                    <option value="">-- Selecteer Voertuig --</option>
+                                </select>
+                                <span asp-validation-for="VehicleId" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Details -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-calendar-check me-2"></i>Levering Details
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label asp-for="ExpectedDeliveryDate" class="form-label">
+                                    <i class="bi bi-calendar me-1"></i>Verwachte Leverdatum
+                                </label>
+                                <input asp-for="ExpectedDeliveryDate" class="form-control" type="date" />
+                                <span asp-validation-for="ExpectedDeliveryDate" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="ActualDeliveryDate" class="form-label">
+                                    <i class="bi bi-calendar-event me-1"></i>Werkelijke Leverdatum
+                                </label>
+                                <input asp-for="ActualDeliveryDate" class="form-control" type="date" />
+                                <span asp-validation-for="ActualDeliveryDate" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="CreatedDate" class="form-label">
+                                    <i class="bi bi-calendar-plus me-1"></i>Aanmaakdatum
+                                </label>
+                                <input asp-for="CreatedDate" class="form-control" type="date" />
+                                <span asp-validation-for="CreatedDate" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status & Financial -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-clipboard-check me-2"></i>Status & Financieel
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label asp-for="Status" class="form-label">
+                                    <i class="bi bi-circle-fill me-1"></i>Status
+                                </label>
+                                <select asp-for="Status" class="form-select">
+                                    <option value="Pending">In Afwachting</option>
+                                    <option value="InTransit">Onderweg</option>
+                                    <option value="Delivered">Geleverd</option>
+                                    <option value="Cancelled">Geannuleerd</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="TotalAmount" class="form-label">
+                                    <i class="bi bi-currency-euro me-1"></i>Totaalbedrag
+                                </label>
+                                <input asp-for="TotalAmount" class="form-control" type="number" step="0.01" placeholder="0.00" />
+                                <span asp-validation-for="TotalAmount" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <i class="bi bi-check-square me-1"></i>Opties
+                                </label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" asp-for="IsProcessed" />
+                                    <label class="form-check-label" asp-for="IsProcessed">
+                                        Verwerkt
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-sticky me-2"></i>Aanvullende Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label asp-for="Notes" class="form-label">
+                                    <i class="bi bi-sticky me-1"></i>Notities
+                                </label>
+                                <textarea asp-for="Notes" class="form-control" rows="4" placeholder="Eventuele notities over de levering..."></textarea>
+                                <span asp-validation-for="Notes" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex gap-3 justify-content-end border-top pt-4 mt-4">
+                        <a asp-action="Index" class="btn btn-lg btn-secondary">
+                            <i class="bi bi-x-circle me-2"></i>Annuleren
+                        </a>
+                        <button type="submit" class="btn btn-lg btn-warning text-white">
+                            <i class="bi bi-check-circle-fill me-2"></i>Levering Toevoegen
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

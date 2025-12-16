@@ -1,90 +1,138 @@
 ﻿@model SuntoryManagementSystem.Models.Supplier
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Leverancier Details";
 }
 
-<h1>Details</h1>
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header page-header-info shadow-soft mb-4">
+        <div class="container-fluid px-4">
+            <h1 class="display-5 fw-bold mb-2">
+                <i class="bi bi-eye-fill me-3"></i>Leverancier Details
+            </h1>
+            <p class="mb-0 opacity-75">Volledige informatie van @Model.SupplierName</p>
+        </div>
+    </div>
 
-<div>
-    <h4>Supplier</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SupplierName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SupplierName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Address)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PostalCode)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PostalCode)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.City)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.City)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ContactPerson)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ContactPerson)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Notes)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Notes)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsDeleted)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsDeleted)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DeletedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DeletedDate)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.SupplierId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <!-- Basic Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-info-circle me-2"></i>Basis Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-shop me-1"></i>Leverancier Naam
+                                </label>
+                                <p class="fs-5 fw-bold text-info">@Html.DisplayFor(model => model.SupplierName)</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-person me-1"></i>Contactpersoon
+                                </label>
+                                <p class="fs-5 fw-bold">@Html.DisplayFor(model => model.ContactPerson)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-person-vcard me-2"></i>Contact Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-telephone me-1"></i>Telefoonnummer
+                                </label>
+                                <p class="fs-5"><a href="tel:@Model.PhoneNumber" class="text-decoration-none">@Html.DisplayFor(model => model.PhoneNumber)</a></p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-envelope me-1"></i>Email
+                                </label>
+                                <p class="fs-5"><a href="mailto:@Model.Email" class="text-decoration-none">@Html.DisplayFor(model => model.Email)</a></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Address Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-geo-alt me-2"></i>Adres Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-house me-1"></i>Adres
+                                </label>
+                                <p class="fs-5">@Html.DisplayFor(model => model.Address)</p>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-mailbox me-1"></i>Postcode
+                                </label>
+                                <p class="fs-5">@Html.DisplayFor(model => model.PostalCode)</p>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-building me-1"></i>Stad
+                                </label>
+                                <p class="fs-5">@Html.DisplayFor(model => model.City)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-clipboard-check me-2"></i>Aanvullende Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-circle-fill me-1"></i>Status
+                                </label>
+                                @if (Model.Status == "Active")
+                                {
+                                    <span class="badge bg-success badge-modern badge-lg"><i class="bi bi-check-circle me-1"></i>Actief</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary badge-modern badge-lg"><i class="bi bi-dash-circle me-1"></i>Inactief</span>
+                                }
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-calendar me-1"></i>Aanmaakdatum
+                                </label>
+                                <p class="fs-5">@Html.DisplayFor(model => model.CreatedDate)</p>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-sticky me-1"></i>Notities
+                                </label>
+                                <p class="fs-5">@Html.DisplayFor(model => model.Notes)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex gap-3 justify-content-end border-top pt-4 mt-4">
+                        <a asp-action="Index" class="btn btn-lg btn-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Terug naar Lijst
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@Model?.SupplierId" class="btn btn-lg btn-warning text-white">
+                            <i class="bi bi-pencil-fill me-2"></i>Bewerken
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

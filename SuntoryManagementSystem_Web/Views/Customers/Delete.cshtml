@@ -1,99 +1,86 @@
 ﻿@model SuntoryManagementSystem.Models.Customer
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Klant Verwijderen";
 }
 
-<h1>Delete</h1>
+<div class="container-fluid px-4">
+    <div class="page-header page-header-danger shadow-soft mb-4">
+        <div class="container-fluid px-4">
+            <h1 class="display-5 fw-bold mb-2">
+                <i class="bi bi-exclamation-triangle-fill me-3"></i>Klant Verwijderen
+            </h1>
+            <p class="mb-0 opacity-75">Let op: deze actie kan niet ongedaan worden gemaakt</p>
+        </div>
+    </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Customer</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CustomerName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CustomerName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Address)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PostalCode)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PostalCode)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.City)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.City)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ContactPerson)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ContactPerson)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CustomerType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CustomerType)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Notes)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Notes)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsDeleted)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsDeleted)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DeletedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DeletedDate)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="CustomerId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-danger shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0"><i class="bi bi-exclamation-diamond-fill me-2"></i>Weet u zeker dat u deze klant wilt verwijderen?</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-warning" role="alert">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        <strong>Let op!</strong> Deze actie zal de klant permanent verwijderen uit het systeem.
+                    </div>
+
+                    <div class="detail-card border-0">
+                        <div class="detail-body">
+                            <div class="detail-row">
+                                <div class="detail-label"><i class="bi bi-person-badge me-2"></i>Klantnaam</div>
+                                <div class="detail-value fw-bold">@Model.CustomerName</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label"><i class="bi bi-tag me-2"></i>Type</div>
+                                <div class="detail-value">@Model.CustomerType</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label"><i class="bi bi-person me-2"></i>Contactpersoon</div>
+                                <div class="detail-value">@Model.ContactPerson</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label"><i class="bi bi-telephone me-2"></i>Telefoon</div>
+                                <div class="detail-value">@Model.PhoneNumber</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label"><i class="bi bi-envelope me-2"></i>Email</div>
+                                <div class="detail-value">@Model.Email</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label"><i class="bi bi-house me-2"></i>Adres</div>
+                                <div class="detail-value">@Model.Address, @Model.PostalCode @Model.City</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label"><i class="bi bi-circle-fill me-2"></i>Status</div>
+                                <div class="detail-value">
+                                    @if (Model.Status == "Active")
+                                    {
+                                        <span class="badge bg-success badge-modern">Actief</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary badge-modern">Inactief</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete" class="mt-4">
+                        <input type="hidden" asp-for="CustomerId" />
+                        <div class="d-flex gap-3 justify-content-end border-top pt-4">
+                            <a asp-action="Index" class="btn btn-lg btn-secondary">
+                                <i class="bi bi-x-circle me-2"></i>Annuleren
+                            </a>
+                            <button type="submit" class="btn btn-lg btn-danger">
+                                <i class="bi bi-trash-fill me-2"></i>Definitief Verwijderen
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

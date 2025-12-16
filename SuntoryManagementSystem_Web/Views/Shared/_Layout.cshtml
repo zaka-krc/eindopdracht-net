@@ -14,7 +14,12 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SuntoryManagementSystem_Web</a>
+                <a class="navbar-brand fw-bold d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <div class="icon-box bg-warning bg-opacity-100 rounded-3 p-2 me-3" style="min-width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-cup-hot fs-5" style="color: white;"></i>
+                    </div>
+                    <span style="color: #333; font-size: 1.25rem;">Suntory</span>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -22,10 +27,48 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house me-1"></i>Home
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-dark dropdown-toggle" href="#" id="navbarManagement" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-gear me-1"></i>Beheer
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarManagement">
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Products" asp-action="Index">
+                                        <i class="bi bi-box-seam me-2"></i>Producten
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Suppliers" asp-action="Index">
+                                        <i class="bi bi-shop me-2"></i>Leveranciers
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Customers" asp-action="Index">
+                                        <i class="bi bi-people me-2"></i>Klanten
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Deliveries" asp-action="Index">
+                                        <i class="bi bi-box-seam-fill me-2"></i>Leveringen
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Vehicles" asp-action="Index">
+                                        <i class="bi bi-car-front me-2"></i>Voertuigen
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="StockAlerts" asp-action="Index">
+                                        <i class="bi bi-exclamation-triangle me-2"></i>Voorraad Alerts
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />

@@ -1,101 +1,114 @@
 ﻿@model IEnumerable<SuntoryManagementSystem.Models.Supplier>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Leveranciers";
 }
 
-<h1>Index</h1>
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header page-header-info shadow-soft mb-4">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-5 fw-bold mb-2">
+                        <i class="bi bi-shop-fill me-3"></i>Leveranciers Beheer
+                    </h1>
+                    <p class="mb-0 opacity-75">Overzicht van alle leveranciers en hun gegevens</p>
+                </div>
+                <a asp-action="Create" class="btn btn-light btn-lg shadow-sm">
+                    <i class="bi bi-plus-circle-fill me-2"></i>Nieuwe Leverancier
+                </a>
+            </div>
+        </div>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.SupplierName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PostalCode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.City)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ContactPerson)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Notes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeletedDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.SupplierName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PostalCode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ContactPerson)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Notes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeletedDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.SupplierId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.SupplierId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.SupplierId">Delete</a>
-            </td>
-        </tr>
+    <!-- Search Box -->
+    <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input type="text" id="searchInput" class="form-control form-control-lg shadow-sm" placeholder="Zoek op naam, email, stad of telefoonnummer...">
+    </div>
+
+    <!-- Table Card -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-modern table-hover mb-0" id="suppliersTable">
+                    <thead>
+                        <tr>
+                            <th><i class="bi bi-shop me-2"></i>Naam</th>
+                            <th><i class="bi bi-geo-alt me-2"></i>Adres</th>
+                            <th><i class="bi bi-mailbox me-2"></i>Postcode</th>
+                            <th><i class="bi bi-building me-2"></i>Stad</th>
+                            <th><i class="bi bi-telephone me-2"></i>Telefoon</th>
+                            <th><i class="bi bi-envelope me-2"></i>Email</th>
+                            <th><i class="bi bi-person-vcard me-2"></i>Contactpersoon</th>
+                            <th><i class="bi bi-circle-fill me-2"></i>Status</th>
+                            <th class="text-center"><i class="bi bi-gear me-2"></i>Acties</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+@foreach (var item in Model.Where(s => !s.IsDeleted)) {
+                        <tr>
+                            <td class="fw-bold text-info">@Html.DisplayFor(modelItem => item.SupplierName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Address)</td>
+                            <td>@Html.DisplayFor(modelItem => item.PostalCode)</td>
+                            <td>@Html.DisplayFor(modelItem => item.City)</td>
+                            <td><a href="tel:@item.PhoneNumber" class="text-decoration-none">@Html.DisplayFor(modelItem => item.PhoneNumber)</a></td>
+                            <td><a href="mailto:@item.Email" class="text-decoration-none">@Html.DisplayFor(modelItem => item.Email)</a></td>
+                            <td>@Html.DisplayFor(modelItem => item.ContactPerson)</td>
+                            <td>
+                                @if (item.Status == "Active")
+                                {
+                                    <span class="badge bg-success badge-modern"><i class="bi bi-check-circle me-1"></i>Actief</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary badge-modern"><i class="bi bi-dash-circle me-1"></i>Inactief</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="action-buttons justify-content-center">
+                                    <a asp-action="Details" asp-route-id="@item.SupplierId" class="btn btn-sm btn-info btn-action text-white" title="Details">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.SupplierId" class="btn btn-sm btn-warning btn-action text-white" title="Bewerken">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.SupplierId" class="btn btn-sm btn-danger btn-action" title="Verwijderen">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
 }
-    </tbody>
-</table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Any(s => !s.IsDeleted))
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+            <p class="lead text-muted mt-3">Geen leveranciers gevonden</p>
+            <a asp-action="Create" class="btn btn-info btn-lg mt-3">
+                <i class="bi bi-plus-circle-fill me-2"></i>Eerste Leverancier Toevoegen
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            var searchValue = this.value.toLowerCase();
+            var tableRows = document.querySelectorAll('#suppliersTable tbody tr');
+            
+            tableRows.forEach(function(row) {
+                var text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchValue) ? '' : 'none';
+            });
+        });
+    </script>
+}
