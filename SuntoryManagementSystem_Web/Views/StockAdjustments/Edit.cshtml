@@ -1,79 +1,126 @@
 ﻿@model SuntoryManagementSystem.Models.StockAdjustment
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Voorraad Aanpassing Bewerken";
 }
 
-<h1>Edit</h1>
-
-<h4>StockAdjustment</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="StockAdjustmentId" />
-            <div class="form-group">
-                <label asp-for="ProductId" class="control-label"></label>
-                <select asp-for="ProductId" class="form-control" asp-items="ViewBag.ProductId"></select>
-                <span asp-validation-for="ProductId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AdjustmentType" class="control-label"></label>
-                <input asp-for="AdjustmentType" class="form-control" />
-                <span asp-validation-for="AdjustmentType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="QuantityChange" class="control-label"></label>
-                <input asp-for="QuantityChange" class="form-control" />
-                <span asp-validation-for="QuantityChange" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PreviousQuantity" class="control-label"></label>
-                <input asp-for="PreviousQuantity" class="form-control" />
-                <span asp-validation-for="PreviousQuantity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NewQuantity" class="control-label"></label>
-                <input asp-for="NewQuantity" class="form-control" />
-                <span asp-validation-for="NewQuantity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Reason" class="control-label"></label>
-                <textarea asp-for="Reason" class="form-control"></textarea>
-                <span asp-validation-for="Reason" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AdjustmentDate" class="control-label"></label>
-                <input asp-for="AdjustmentDate" class="form-control" />
-                <span asp-validation-for="AdjustmentDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AdjustedBy" class="control-label"></label>
-                <input asp-for="AdjustedBy" class="form-control" />
-                <span asp-validation-for="AdjustedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="DeletedDate" class="control-label"></label>
-                <input asp-for="DeletedDate" class="form-control" />
-                <span asp-validation-for="DeletedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header page-header-secondary shadow-soft mb-4">
+        <div class="container-fluid px-4">
+            <h1 class="display-5 fw-bold mb-2">
+                <i class="bi bi-pencil-square me-3"></i>Voorraad Aanpassing Bewerken
+            </h1>
+            <p class="mb-0 opacity-75">Wijzig de gegevens van deze aanpassing</p>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="form-modern">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-custom" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    </div>
+                    <input type="hidden" asp-for="StockAdjustmentId" />
+
+                    <!-- Basic Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-info-circle me-2"></i>Basis Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="ProductId" class="form-label">
+                                    <i class="bi bi-box me-1"></i>Product
+                                </label>
+                                <select asp-for="ProductId" class="form-select" asp-items="ViewBag.ProductId"></select>
+                                <span asp-validation-for="ProductId" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="AdjustmentType" class="form-label">
+                                    <i class="bi bi-arrow-left-right me-1"></i>Type Bijstelling
+                                </label>
+                                <input asp-for="AdjustmentType" class="form-control" />
+                                <span asp-validation-for="AdjustmentType" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quantity Details -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-archive me-2"></i>Hoeveelheid Details
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="QuantityChange" class="form-label">
+                                    <i class="bi bi-percent me-1"></i>Hoeveelheid Wijziging
+                                </label>
+                                <input asp-for="QuantityChange" type="number" class="form-control" />
+                                <span asp-validation-for="QuantityChange" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-info-circle me-1"></i>Vorige Hoeveelheid
+                                </label>
+                                <input asp-for="PreviousQuantity" type="number" class="form-control" readonly />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-info-circle me-1"></i>Nieuwe Hoeveelheid
+                                </label>
+                                <input asp-for="NewQuantity" type="number" class="form-control" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-clipboard-check me-2"></i>Aanvullende Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="AdjustmentDate" class="form-label">
+                                    <i class="bi bi-calendar me-1"></i>Bijstellingsdatum
+                                </label>
+                                <input asp-for="AdjustmentDate" type="date" class="form-control" readonly />
+                                <span asp-validation-for="AdjustmentDate" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="AdjustedBy" class="form-label">
+                                    <i class="bi bi-person me-1"></i>Bijgesteld door
+                                </label>
+                                <input asp-for="AdjustedBy" class="form-control" />
+                                <span asp-validation-for="AdjustedBy" class="text-danger small"></span>
+                            </div>
+                            <div class="col-12">
+                                <label asp-for="Reason" class="form-label">
+                                    <i class="bi bi-sticky me-1"></i>Reden
+                                </label>
+                                <textarea asp-for="Reason" class="form-control" rows="4"></textarea>
+                                <span asp-validation-for="Reason" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex gap-3 justify-content-end border-top pt-4 mt-4">
+                        <a asp-action="Index" class="btn btn-lg btn-secondary">
+                            <i class="bi bi-x-circle me-2"></i>Annuleren
+                        </a>
+                        <button type="submit" class="btn btn-lg btn-secondary">
+                            <i class="bi bi-check-circle-fill me-2"></i>Wijzigingen Opslaan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+

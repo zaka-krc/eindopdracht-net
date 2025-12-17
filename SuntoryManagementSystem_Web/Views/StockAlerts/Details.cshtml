@@ -1,66 +1,127 @@
 ﻿@model SuntoryManagementSystem.Models.StockAlert
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Waarschuwing Details";
 }
 
-<h1>Details</h1>
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header page-header-custom shadow-soft mb-4">
+        <div class="container-fluid px-4">
+            <h1 class="display-5 fw-bold mb-2">
+                <i class="bi bi-eye-fill me-3"></i>Waarschuwing Details
+            </h1>
+            <p class="mb-0 opacity-75">Volledige informatie van deze waarschuwing</p>
+        </div>
+    </div>
 
-<div>
-    <h4>StockAlert</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Product)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Product.Category)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AlertType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AlertType)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ResolvedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ResolvedDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Notes)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Notes)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsDeleted)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsDeleted)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DeletedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DeletedDate)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.StockAlertId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <!-- Basic Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-info-circle me-2"></i>Basis Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-box me-1"></i>Product
+                                </label>
+                                <p class="fs-5 fw-bold" style="color: #ff8c42;">@Html.DisplayFor(model => model.Product.ProductName)</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>Type Waarschuwing
+                                </label>
+                                <p class="fs-5 fw-bold">@Html.DisplayFor(model => model.AlertType)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alert Details -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-exclamation-lg me-2"></i>Waarschuwing Details
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-circle-fill me-1"></i>Status
+                                </label>
+                                @if (Model.Status == "Active")
+                                {
+                                    <span class="badge bg-danger badge-modern badge-lg"><i class="bi bi-exclamation-circle me-1"></i>Actief</span>
+                                }
+                                else if (Model.Status == "Resolved")
+                                {
+                                    <span class="badge bg-success badge-modern badge-lg"><i class="bi bi-check-circle me-1"></i>Opgelost</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary badge-modern badge-lg"><i class="bi bi-dash-circle me-1"></i>@Model.Status</span>
+                                }
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-calendar me-1"></i>Aanmaakdatum
+                                </label>
+                                <p class="fs-5">@Html.DisplayFor(model => model.CreatedDate)</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-calendar-check me-1"></i>Opgelost Datum
+                                </label>
+                                <p class="fs-5">
+                                    @if (Model.ResolvedDate.HasValue)
+                                    {
+                                        <span>@Html.DisplayFor(model => model.ResolvedDate)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-clipboard-check me-2"></i>Aanvullende Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-sticky me-1"></i>Opmerkingen
+                                </label>
+                                <p class="fs-5">
+                                    @if (!string.IsNullOrEmpty(Model.Notes))
+                                    {
+                                        <span>@Html.DisplayFor(model => model.Notes)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex gap-3 justify-content-end border-top pt-4 mt-4">
+                        <a asp-action="Index" class="btn btn-lg btn-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Terug naar Lijst
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@Model?.StockAlertId" class="btn btn-lg btn-custom-orange">
+                            <i class="bi bi-pencil-fill me-2"></i>Bewerken
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

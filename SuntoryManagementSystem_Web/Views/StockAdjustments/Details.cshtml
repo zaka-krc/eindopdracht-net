@@ -1,78 +1,128 @@
 ﻿@model SuntoryManagementSystem.Models.StockAdjustment
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Voorraad Aanpassing Details";
 }
 
-<h1>Details</h1>
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header page-header-secondary shadow-soft mb-4">
+        <div class="container-fluid px-4">
+            <h1 class="display-5 fw-bold mb-2">
+                <i class="bi bi-eye-fill me-3"></i>Voorraad Aanpassing Details
+            </h1>
+            <p class="mb-0 opacity-75">Volledige informatie van deze aanpassing</p>
+        </div>
+    </div>
 
-<div>
-    <h4>StockAdjustment</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Product)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Product.Category)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AdjustmentType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AdjustmentType)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.QuantityChange)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.QuantityChange)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PreviousQuantity)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PreviousQuantity)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NewQuantity)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NewQuantity)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Reason)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Reason)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AdjustmentDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AdjustmentDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AdjustedBy)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AdjustedBy)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsDeleted)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsDeleted)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DeletedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DeletedDate)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.StockAdjustmentId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <!-- Basic Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-info-circle me-2"></i>Basis Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-box me-1"></i>Product
+                                </label>
+                                <p class="fs-5 fw-bold text-secondary">@Html.DisplayFor(model => model.Product.ProductName)</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-arrow-left-right me-1"></i>Type Bijstelling
+                                </label>
+                                <p class="fs-5">@Html.DisplayFor(model => model.AdjustmentType)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quantity Details -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-archive me-2"></i>Hoeveelheid Details
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-percent me-1"></i>Hoeveelheid Wijziging
+                                </label>
+                                <p class="fs-5">
+                                    @if (Model.QuantityChange > 0)
+                                    {
+                                        <span class="badge bg-success"><i class="bi bi-plus-circle me-1"></i>+@Model.QuantityChange</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger"><i class="bi bi-dash-circle me-1"></i>@Model.QuantityChange</span>
+                                    }
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-archive me-1"></i>Vorige Hoeveelheid
+                                </label>
+                                <p class="fs-5">@Html.DisplayFor(model => model.PreviousQuantity)</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-archive-fill me-1"></i>Nieuwe Hoeveelheid
+                                </label>
+                                <p class="fs-5">@Html.DisplayFor(model => model.NewQuantity)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-clipboard-check me-2"></i>Aanvullende Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-calendar me-1"></i>Bijstellingsdatum
+                                </label>
+                                <p class="fs-5">@Html.DisplayFor(model => model.AdjustmentDate)</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-person me-1"></i>Bijgesteld door
+                                </label>
+                                <p class="fs-5">@Html.DisplayFor(model => model.AdjustedBy)</p>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-sticky me-1"></i>Reden
+                                </label>
+                                <p class="fs-5">
+                                    @if (!string.IsNullOrEmpty(Model.Reason))
+                                    {
+                                        <span>@Html.DisplayFor(model => model.Reason)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex gap-3 justify-content-end border-top pt-4 mt-4">
+                        <a asp-action="Index" class="btn btn-lg btn-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Terug naar Lijst
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@Model?.StockAdjustmentId" class="btn btn-lg btn-secondary">
+                            <i class="bi bi-pencil-fill me-2"></i>Bewerken
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

@@ -8,6 +8,15 @@ html {
   }
 }
 
+:root {
+  --color-primary: #0d6efd;
+  --color-success: #198754;
+  --color-info: #0dcaf0;
+  --color-warning: #ff8c42;
+  --color-danger: #dc3545;
+  --color-secondary: #6c757d;
+}
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
@@ -93,7 +102,7 @@ body {
 }
 
 .page-header-warning {
-    background: linear-gradient(135deg, #ffc107 0%, #cc9a06 100%);
+    background: linear-gradient(135deg, #ff8c42 0%, #d97031 100%);
 }
 
 .page-header-danger {
@@ -103,6 +112,42 @@ body {
 .page-header-secondary {
     background: linear-gradient(135deg, #6c757d 0%, #565e64 100%);
 }
+
+.page-header-custom {
+    background: linear-gradient(135deg, #ff8c42 0%, #e07030 100%);
+}
+
+.page-header-dark {
+    background: linear-gradient(135deg, #212529 0%, #000000 100%);
+}
+
+/* ============================================
+   CUSTOM COLOR UTILITIES
+   ============================================ */
+
+.bg-custom-orange {
+    background-color: #ff8c42;
+}
+
+.text-custom-orange {
+    color: #ff8c42;
+}
+
+.border-custom-orange {
+    border-color: #ff8c42;
+}
+
+.btn-custom-orange {
+    background-color: #ff8c42;
+    border-color: #ff8c42;
+    color: white;
+}
+
+    .btn-custom-orange:hover {
+        background-color: #e07030;
+        border-color: #e07030;
+        color: white;
+    }
 
 /* ============================================
    TABLE STYLES
@@ -122,11 +167,12 @@ body {
 
         .table-modern thead th {
             border: none;
-            padding: 1rem;
+            padding: 0.5rem 0.3rem;
             font-weight: 600;
             text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
+            font-size: 0.65rem;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
         }
 
     .table-modern tbody tr {
@@ -139,9 +185,10 @@ body {
         }
 
     .table-modern tbody td {
-        padding: 1rem;
+        padding: 0.5rem 0.3rem;
         vertical-align: middle;
         border-color: #f0f0f0;
+        font-size: 0.85rem;
     }
 
 /* ============================================
@@ -192,10 +239,15 @@ body {
    ============================================ */
 
 .badge-modern {
-    padding: 0.5rem 1rem;
+    padding: 0.3rem 0.6rem;
     border-radius: 20px;
     font-weight: 500;
-    font-size: 0.85rem;
+    font-size: 0.65rem;
+}
+
+.badge-custom-orange {
+    background-color: #ff8c42;
+    color: white;
 }
 
 /* ============================================
@@ -204,20 +256,21 @@ body {
 
 .action-buttons {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.3rem;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .btn-action {
-    padding: 0.5rem 1rem;
+    padding: 0.3rem 0.6rem;
     border-radius: 8px;
-    font-size: 0.875rem;
+    font-size: 0.7rem;
     font-weight: 500;
     transition: all 0.3s ease;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.3rem;
 }
 
     .btn-action:hover {
@@ -237,9 +290,49 @@ body {
 }
 
 .detail-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 1.5rem;
+}
+
+/* Module-spesifieke detail headers */
+.page-header-primary ~ .detail-card .detail-header,
+.page-header-primary ~ .row .detail-card .detail-header {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+}
+
+.page-header-success ~ .detail-card .detail-header,
+.page-header-success ~ .row .detail-card .detail-header {
+    background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+}
+
+.page-header-info ~ .detail-card .detail-header,
+.page-header-info ~ .row .detail-card .detail-header {
+    background: linear-gradient(135deg, #0dcaf0 0%, #087990 100%);
+}
+
+.page-header-warning ~ .detail-card .detail-header,
+.page-header-warning ~ .row .detail-card .detail-header {
+    background: linear-gradient(135deg, #ff8c42 0%, #d97031 100%);
+}
+
+.page-header-danger ~ .detail-card .detail-header,
+.page-header-danger ~ .row .detail-card .detail-header {
+    background: linear-gradient(135deg, #dc3545 0%, #b02a37 100%);
+}
+
+.page-header-secondary ~ .detail-card .detail-header,
+.page-header-secondary ~ .row .detail-card .detail-header {
+    background: linear-gradient(135deg, #6c757d 0%, #565e64 100%);
+}
+
+.page-header-custom ~ .detail-card .detail-header,
+.page-header-custom ~ .row .detail-card .detail-header {
+    background: linear-gradient(135deg, #ff8c42 0%, #e07030 100%);
+}
+
+.page-header-dark ~ .detail-card .detail-header,
+.page-header-dark ~ .row .detail-card .detail-header {
+    background: linear-gradient(135deg, #212529 0%, #000000 100%);
 }
 
 .detail-body {
@@ -309,4 +402,72 @@ body {
 
 .rounded-custom {
     border-radius: 12px !important;
+}
+
+/* ============================================
+   TABLE RESPONSIVE FIX
+   ============================================ */
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+}
+
+    .table-responsive .table {
+        min-width: 100%;
+        margin-bottom: 0;
+    }
+
+/* ============================================
+   TABLE COLUMN SIZING - OPTIMIZED
+   ============================================ */
+
+.table-modern {
+    width: 100%;
+    table-layout: auto;
+}
+
+/* Reduce icon size in table */
+.table-modern .bi {
+    font-size: 0.85rem;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 1200px) {
+    .table-modern thead th {
+        padding: 0.4rem 0.2rem;
+        font-size: 0.6rem;
+    }
+    
+    .table-modern tbody td {
+        padding: 0.4rem 0.2rem;
+        font-size: 0.8rem;
+    }
+    
+    .table-modern .badge-modern {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.6rem;
+    }
+    
+    .table-modern .btn-action {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.65rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .table-modern thead th {
+        padding: 0.3rem 0.15rem;
+        font-size: 0.55rem;
+    }
+    
+    .table-modern tbody td {
+        padding: 0.3rem 0.15rem;
+        font-size: 0.75rem;
+    }
+    
+    .action-buttons {
+        gap: 0.2rem;
+    }
 }

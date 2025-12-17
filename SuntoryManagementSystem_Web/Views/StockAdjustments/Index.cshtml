@@ -1,89 +1,117 @@
 ﻿@model IEnumerable<SuntoryManagementSystem.Models.StockAdjustment>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Voorraad Aanpassingen";
 }
 
-<h1>Index</h1>
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header page-header-secondary shadow-soft mb-4">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-5 fw-bold mb-2">
+                        <i class="bi bi-arrow-left-right me-3"></i>Voorraad Aanpassingen Beheer
+                    </h1>
+                    <p class="mb-0 opacity-75">Overzicht van alle voorraad aanpassingen</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Product)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AdjustmentType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.QuantityChange)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PreviousQuantity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NewQuantity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Reason)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AdjustmentDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AdjustedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeletedDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Product.Category)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AdjustmentType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.QuantityChange)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PreviousQuantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NewQuantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Reason)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AdjustmentDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AdjustedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeletedDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.StockAdjustmentId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.StockAdjustmentId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.StockAdjustmentId">Delete</a>
-            </td>
-        </tr>
+    <!-- Search Box -->
+    <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input type="text" id="searchInput" class="form-control form-control-lg shadow-sm" placeholder="Zoek op product, type of reden...">
+    </div>
+
+    <!-- Table Card -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-modern table-hover mb-0" id="adjustmentsTable">
+                    <thead>
+                        <tr>
+                            <th><i class="bi bi-box me-2"></i>Product</th>
+                            <th><i class="bi bi-arrow-left-right me-2"></i>Type Bijstelling</th>
+                            <th><i class="bi bi-percent me-2"></i>Hoeveelheid Wijziging</th>
+                            <th><i class="bi bi-archive me-2"></i>Vorige Hoeveelheid</th>
+                            <th><i class="bi bi-archive-fill me-2"></i>Nieuwe Hoeveelheid</th>
+                            <th><i class="bi bi-sticky me-2"></i>Reden</th>
+                            <th><i class="bi bi-calendar me-2"></i>Datum</th>
+                            <th><i class="bi bi-person me-2"></i>Bijgesteld door</th>
+                            <th class="text-center"><i class="bi bi-gear me-2"></i>Acties</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+@foreach (var item in Model.Where(s => !s.IsDeleted)) {
+                        <tr>
+                            <td class="fw-bold text-custom-orange">@Html.DisplayFor(modelItem => item.Product.ProductName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.AdjustmentType)</td>
+                            <td>
+                                @if (item.QuantityChange > 0)
+                                {
+                                    <span class="badge bg-success"><i class="bi bi-plus-circle me-1"></i>+@item.QuantityChange</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger"><i class="bi bi-dash-circle me-1"></i>@item.QuantityChange</span>
+                                }
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.PreviousQuantity)</td>
+                            <td>@Html.DisplayFor(modelItem => item.NewQuantity)</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.Reason))
+                                {
+                                    <span>@Html.DisplayFor(modelItem => item.Reason)</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.AdjustmentDate)</td>
+                            <td>@Html.DisplayFor(modelItem => item.AdjustedBy)</td>
+                            <td>
+                                <div class="action-buttons justify-content-center">
+                                    <a asp-action="Details" asp-route-id="@item.StockAdjustmentId" class="btn btn-sm btn-info btn-action text-white" title="Details">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.StockAdjustmentId" class="btn btn-sm btn-warning btn-action text-white" title="Bewerken">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.StockAdjustmentId" class="btn btn-sm btn-danger btn-action" title="Verwijderen">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
 }
-    </tbody>
-</table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Any(s => !s.IsDeleted))
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+            <p class="lead text-muted mt-3">Geen aanpassingen gevonden</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            var searchValue = this.value.toLowerCase();
+            var tableRows = document.querySelectorAll('#adjustmentsTable tbody tr');
+            
+            tableRows.forEach(function(row) {
+                var text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchValue) ? '' : 'none';
+            });
+        });
+    </script>
+}

@@ -1,71 +1,110 @@
 ﻿@model IEnumerable<SuntoryManagementSystem.Models.DeliveryItem>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Leveringsartikelen";
 }
 
-<h1>Index</h1>
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header page-header-dark shadow-soft mb-4">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-5 fw-bold mb-2">
+                        <i class="bi bi-box-seam me-3"></i>Leveringsartikelen Beheer
+                    </h1>
+                    <p class="mb-0 opacity-75">Overzicht van alle items in leveringen</p>
+                </div>
+                <a asp-action="Create" class="btn btn-light btn-lg shadow-sm">
+                    <i class="bi bi-plus-circle-fill me-2"></i>Nieuw Artikel
+                </a>
+            </div>
+        </div>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Delivery)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Product)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Quantity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UnitPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsProcessed)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeletedDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Delivery.DeliveryType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Product.Category)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UnitPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsProcessed)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeletedDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.DeliveryItemId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.DeliveryItemId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.DeliveryItemId">Delete</a>
-            </td>
-        </tr>
+    <!-- Search Box -->
+    <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input type="text" id="searchInput" class="form-control form-control-lg shadow-sm" placeholder="Zoek op product, leveringstype of prijs...">
+    </div>
+
+    <!-- Table Card -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-modern table-hover mb-0" id="itemsTable">
+                    <thead>
+                        <tr>
+                            <th><i class="bi bi-truck me-2"></i>Leveringstype</th>
+                            <th><i class="bi bi-box me-2"></i>Product</th>
+                            <th><i class="bi bi-collection me-2"></i>Hoeveelheid</th>
+                            <th><i class="bi bi-cash-coin me-2"></i>Eenheidsprijs</th>
+                            <th><i class="bi bi-check-circle me-2"></i>Verwerkt</th>
+                            <th class="text-center"><i class="bi bi-gear me-2"></i>Acties</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+@foreach (var item in Model.Where(s => !s.IsDeleted)) {
+                        <tr>
+                            <td class="fw-bold text-dark">@Html.DisplayFor(modelItem => item.Delivery.DeliveryType)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Product.ProductName)</td>
+                            <td>
+                                <span class="badge bg-info"><i class="bi bi-collection me-1"></i>@item.Quantity</span>
+                            </td>
+                            <td>€ @Html.DisplayFor(modelItem => item.UnitPrice)</td>
+                            <td>
+                                @if (item.IsProcessed)
+                                {
+                                    <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Ja</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning"><i class="bi bi-clock me-1"></i>Nee</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="action-buttons justify-content-center">
+                                    <a asp-action="Details" asp-route-id="@item.DeliveryItemId" class="btn btn-sm btn-info btn-action text-white" title="Details">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.DeliveryItemId" class="btn btn-sm btn-warning btn-action text-white" title="Bewerken">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.DeliveryItemId" class="btn btn-sm btn-danger btn-action" title="Verwijderen">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
 }
-    </tbody>
-</table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Any(s => !s.IsDeleted))
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+            <p class="lead text-muted mt-3">Geen leveringsartikelen gevonden</p>
+            <a asp-action="Create" class="btn btn-secondary btn-lg mt-3">
+                <i class="bi bi-plus-circle-fill me-2"></i>Eerste Artikel Toevoegen
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            var searchValue = this.value.toLowerCase();
+            var tableRows = document.querySelectorAll('#itemsTable tbody tr');
+            
+            tableRows.forEach(function(row) {
+                var text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchValue) ? '' : 'none';
+            });
+        });
+    </script>
+}

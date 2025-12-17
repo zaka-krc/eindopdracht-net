@@ -1,95 +1,114 @@
 ﻿@model IEnumerable<SuntoryManagementSystem.Models.Vehicle>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Voertuigen";
 }
 
-<h1>Index</h1>
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header page-header-danger shadow-soft mb-4">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-5 fw-bold mb-2">
+                        <i class="bi bi-truck-fill me-3"></i>Voertuigen Beheer
+                    </h1>
+                    <p class="mb-0 opacity-75">Overzicht van alle voertuigen en hun beschikbaarheid</p>
+                </div>
+                <a asp-action="Create" class="btn btn-light btn-lg shadow-sm">
+                    <i class="bi bi-plus-circle-fill me-2"></i>Nieuw Voertuig
+                </a>
+            </div>
+        </div>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.LicensePlate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Brand)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Model)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VehicleType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Capacity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsAvailable)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastMaintenanceDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Notes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeletedDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.LicensePlate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Brand)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Model)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VehicleType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Capacity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsAvailable)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastMaintenanceDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Notes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeletedDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.VehicleId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.VehicleId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.VehicleId">Delete</a>
-            </td>
-        </tr>
+    <!-- Search Box -->
+    <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input type="text" id="searchInput" class="form-control form-control-lg shadow-sm" placeholder="Zoek op kenteken, merk, model of type...">
+    </div>
+
+    <!-- Table Card -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-modern table-hover mb-0" id="vehiclesTable">
+                    <thead>
+                        <tr>
+                            <th><i class="bi bi-key me-2"></i>Kenteken</th>
+                            <th><i class="bi bi-car-front-fill me-2"></i>Merk</th>
+                            <th><i class="bi bi-car-front-fill me-2"></i>Model</th>
+                            <th><i class="bi bi-speedometer2 me-2"></i>Type</th>
+                            <th><i class="bi bi-box-seam me-2"></i>Capaciteit (kg)</th>
+                            <th><i class="bi bi-check-circle me-2"></i>Beschikbaar</th>
+                            <th><i class="bi bi-wrench me-2"></i>Laatste Onderhoud</th>
+                            <th><i class="bi bi-calendar me-2"></i>Aangemaakt</th>
+                            <th class="text-center"><i class="bi bi-gear me-2"></i>Acties</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+@foreach (var item in Model.Where(v => !v.IsDeleted)) {
+                        <tr>
+                            <td class="fw-bold text-primary">@Html.DisplayFor(modelItem => item.LicensePlate)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Brand)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Model)</td>
+                            <td>@Html.DisplayFor(modelItem => item.VehicleType)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Capacity)</td>
+                            <td>
+                                @if (item.IsAvailable)
+                                {
+                                    <span class="badge bg-success badge-modern"><i class="bi bi-check-circle me-1"></i>Ja</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning badge-modern"><i class="bi bi-dash-circle me-1"></i>Nee</span>
+                                }
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.LastMaintenanceDate)</td>
+                            <td>@Html.DisplayFor(modelItem => item.CreatedDate)</td>
+                            <td>
+                                <div class="action-buttons justify-content-center">
+                                    <a asp-action="Details" asp-route-id="@item.VehicleId" class="btn btn-sm btn-info btn-action text-white" title="Details">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.VehicleId" class="btn btn-sm btn-warning btn-action text-white" title="Bewerken">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.VehicleId" class="btn btn-sm btn-danger btn-action" title="Verwijderen">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
 }
-    </tbody>
-</table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Any(v => !v.IsDeleted))
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+            <p class="lead text-muted mt-3">Geen voertuigen gevonden</p>
+            <a asp-action="Create" class="btn btn-primary btn-lg mt-3">
+                <i class="bi bi-plus-circle-fill me-2"></i>Eerste Voertuig Toevoegen
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            var searchValue = this.value.toLowerCase();
+            var tableRows = document.querySelectorAll('#vehiclesTable tbody tr');
+            
+            tableRows.forEach(function(row) {
+                var text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchValue) ? '' : 'none';
+            });
+        });
+    </script>
+}

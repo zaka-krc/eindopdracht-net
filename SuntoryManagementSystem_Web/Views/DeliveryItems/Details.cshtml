@@ -1,60 +1,94 @@
 ﻿@model SuntoryManagementSystem.Models.DeliveryItem
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Artikel Details";
 }
 
-<h1>Details</h1>
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header page-header-dark shadow-soft mb-4">
+        <div class="container-fluid px-4">
+            <h1 class="display-5 fw-bold mb-2">
+                <i class="bi bi-eye-fill me-3"></i>Artikel Details
+            </h1>
+            <p class="mb-0 opacity-75">Volledige informatie van dit artikel</p>
+        </div>
+    </div>
 
-<div>
-    <h4>DeliveryItem</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Delivery)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Delivery.DeliveryType)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Product)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Product.Category)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Quantity)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Quantity)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UnitPrice)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UnitPrice)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsProcessed)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsProcessed)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsDeleted)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsDeleted)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DeletedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DeletedDate)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.DeliveryItemId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <!-- Basic Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-info-circle me-2"></i>Basis Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-truck me-1"></i>Leveringstype
+                                </label>
+                                <p class="fs-5 fw-bold text-dark">@Html.DisplayFor(model => model.Delivery.DeliveryType)</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-box me-1"></i>Product
+                                </label>
+                                <p class="fs-5">@Html.DisplayFor(model => model.Product.ProductName)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item Details -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-box-seam me-2"></i>Artikeldetails
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-collection me-1"></i>Hoeveelheid
+                                </label>
+                                <p class="fs-5">
+                                    <span class="badge bg-info"><i class="bi bi-collection me-1"></i>@Html.DisplayFor(model => model.Quantity)</span>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-cash-coin me-1"></i>Eenheidsprijs
+                                </label>
+                                <p class="fs-5">€ @Html.DisplayFor(model => model.UnitPrice)</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">
+                                    <i class="bi bi-check-circle me-1"></i>Verwerkt
+                                </label>
+                                <p class="fs-5">
+                                    @if (Model.IsProcessed)
+                                    {
+                                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Ja</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning"><i class="bi bi-clock me-1"></i>Nee</span>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex gap-3 justify-content-end border-top pt-4 mt-4">
+                        <a asp-action="Index" class="btn btn-lg btn-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Terug naar Lijst
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@Model?.DeliveryItemId" class="btn btn-lg btn-dark">
+                            <i class="bi bi-pencil-fill me-2"></i>Bewerken
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

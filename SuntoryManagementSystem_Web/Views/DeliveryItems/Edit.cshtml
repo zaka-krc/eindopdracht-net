@@ -1,62 +1,105 @@
 ﻿@model SuntoryManagementSystem.Models.DeliveryItem
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Leveringsartikel Bewerken";
 }
 
-<h1>Edit</h1>
-
-<h4>DeliveryItem</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="DeliveryItemId" />
-            <div class="form-group">
-                <label asp-for="DeliveryId" class="control-label"></label>
-                <select asp-for="DeliveryId" class="form-control" asp-items="ViewBag.DeliveryId"></select>
-                <span asp-validation-for="DeliveryId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ProductId" class="control-label"></label>
-                <select asp-for="ProductId" class="form-control" asp-items="ViewBag.ProductId"></select>
-                <span asp-validation-for="ProductId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Quantity" class="control-label"></label>
-                <input asp-for="Quantity" class="form-control" />
-                <span asp-validation-for="Quantity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UnitPrice" class="control-label"></label>
-                <input asp-for="UnitPrice" class="form-control" />
-                <span asp-validation-for="UnitPrice" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsProcessed" /> @Html.DisplayNameFor(model => model.IsProcessed)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="DeletedDate" class="control-label"></label>
-                <input asp-for="DeletedDate" class="form-control" />
-                <span asp-validation-for="DeletedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header page-header-dark shadow-soft mb-4">
+        <div class="container-fluid px-4">
+            <h1 class="display-5 fw-bold mb-2">
+                <i class="bi bi-pencil-square me-3"></i>Leveringsartikel Bewerken
+            </h1>
+            <p class="mb-0 opacity-75">Wijzig de gegevens van dit artikel</p>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="form-modern">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-custom" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    </div>
+                    <input type="hidden" asp-for="DeliveryItemId" />
+
+                    <!-- Basic Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-info-circle me-2"></i>Basis Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="DeliveryId" class="form-label">
+                                    <i class="bi bi-truck me-1"></i>Levering
+                                </label>
+                                <select asp-for="DeliveryId" class="form-select" asp-items="ViewBag.DeliveryId"></select>
+                                <span asp-validation-for="DeliveryId" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="ProductId" class="form-label">
+                                    <i class="bi bi-box me-1"></i>Product
+                                </label>
+                                <select asp-for="ProductId" class="form-select" asp-items="ViewBag.ProductId"></select>
+                                <span asp-validation-for="ProductId" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item Details -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-box-seam me-2"></i>Artikeldetails
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="Quantity" class="form-label">
+                                    <i class="bi bi-collection me-1"></i>Hoeveelheid
+                                </label>
+                                <input asp-for="Quantity" type="number" class="form-control" />
+                                <span asp-validation-for="Quantity" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="UnitPrice" class="form-label">
+                                    <i class="bi bi-cash-coin me-1"></i>Eenheidsprijs (€)
+                                </label>
+                                <input asp-for="UnitPrice" type="number" step="0.01" class="form-control" />
+                                <span asp-validation-for="UnitPrice" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-clipboard-check me-2"></i>Aanvullende Informatie
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-check form-switch pt-2">
+                                    <input class="form-check-input" type="checkbox" asp-for="IsProcessed" id="isProcessedCheck" />
+                                    <label class="form-check-label" for="isProcessedCheck">
+                                        <i class="bi bi-check-circle me-1"></i>Verwerkt
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex gap-3 justify-content-end border-top pt-4 mt-4">
+                        <a asp-action="Index" class="btn btn-lg btn-secondary">
+                            <i class="bi bi-x-circle me-2"></i>Annuleren
+                        </a>
+                        <button type="submit" class="btn btn-lg btn-dark">
+                            <i class="bi bi-check-circle-fill me-2"></i>Wijzigingen Opslaan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

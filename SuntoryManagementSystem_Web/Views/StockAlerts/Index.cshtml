@@ -1,77 +1,117 @@
 ﻿@model IEnumerable<SuntoryManagementSystem.Models.StockAlert>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Voorraadwaarschuwingen";
 }
 
-<h1>Index</h1>
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header page-header-custom shadow-soft mb-4">
+        <div class="container-fluid px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-5 fw-bold mb-2">
+                        <i class="bi bi-exclamation-circle-fill me-3"></i>Voorraadwaarschuwingen Beheer
+                    </h1>
+                    <p class="mb-0 opacity-75">Overzicht van alle voorraadwaarschuwingen</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Product)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AlertType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ResolvedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Notes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeletedDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Product.Category)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AlertType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ResolvedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Notes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeletedDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.StockAlertId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.StockAlertId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.StockAlertId">Delete</a>
-            </td>
-        </tr>
+    <!-- Search Box -->
+    <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input type="text" id="searchInput" class="form-control form-control-lg shadow-sm" placeholder="Zoek op product, type of status...">
+    </div>
+
+    <!-- Table Card -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-modern table-hover mb-0" id="alertsTable">
+                    <thead>
+                        <tr>
+                            <th><i class="bi bi-box me-2"></i>Product</th>
+                            <th><i class="bi bi-exclamation-triangle me-2"></i>Type Waarschuwing</th>
+                            <th><i class="bi bi-circle-fill me-2"></i>Status</th>
+                            <th><i class="bi bi-calendar me-2"></i>Aangemaakt</th>
+                            <th><i class="bi bi-calendar-check me-2"></i>Opgelost</th>
+                            <th><i class="bi bi-sticky me-2"></i>Opmerkingen</th>
+                            <th class="text-center"><i class="bi bi-gear me-2"></i>Acties</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+@foreach (var item in Model.Where(s => !s.IsDeleted)) {
+                        <tr>
+                            <td class="fw-bold" style="color: #ff8c42;">@Html.DisplayFor(modelItem => item.Product.ProductName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.AlertType)</td>
+                            <td>
+                                @if (item.Status == "Active")
+                                {
+                                    <span class="badge bg-danger badge-modern"><i class="bi bi-exclamation-circle me-1"></i>Actief</span>
+                                }
+                                else if (item.Status == "Resolved")
+                                {
+                                    <span class="badge bg-success badge-modern"><i class="bi bi-check-circle me-1"></i>Opgelost</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary badge-modern"><i class="bi bi-dash-circle me-1"></i>@item.Status</span>
+                                }
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.CreatedDate)</td>
+                            <td>@Html.DisplayFor(modelItem => item.ResolvedDate)</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.Notes))
+                                {
+                                    <span>@Html.DisplayFor(modelItem => item.Notes)</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="action-buttons justify-content-center">
+                                    <a asp-action="Details" asp-route-id="@item.StockAlertId" class="btn btn-sm btn-info btn-action text-white" title="Details">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.StockAlertId" class="btn btn-sm btn-warning btn-action text-white" title="Bewerken">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.StockAlertId" class="btn btn-sm btn-danger btn-action" title="Verwijderen">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
 }
-    </tbody>
-</table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Any(s => !s.IsDeleted))
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+            <p class="lead text-muted mt-3">Geen waarschuwingen gevonden</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            var searchValue = this.value.toLowerCase();
+            var tableRows = document.querySelectorAll('#alertsTable tbody tr');
+            
+            tableRows.forEach(function(row) {
+                var text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchValue) ? '' : 'none';
+            });
+        });
+    </script>
+}
