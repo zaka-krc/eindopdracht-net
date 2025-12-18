@@ -18,7 +18,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <div class="form-modern">
-                <form asp-action="Create">
+                <form asp-action="Create" method="post" id="deliveryForm">
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-custom" role="alert">
                         <i class="bi bi-exclamation-triangle-fill me-2"></i>
                     </div>
@@ -30,24 +30,21 @@
                         </h4>
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label asp-for="ReferenceNumber" class="form-label">
-                                    <i class="bi bi-tag me-1"></i>Referentienummer
-                                </label>
-                                <input asp-for="ReferenceNumber" class="form-control" placeholder="Bijv. DEL-2024-001" />
-                                <span asp-validation-for="ReferenceNumber" class="text-danger small"></span>
-                            </div>
-                            <div class="col-md-6">
                                 <label asp-for="DeliveryType" class="form-label">
                                     <i class="bi bi-box-seam me-1"></i>Levering Type
                                 </label>
-                                <select asp-for="DeliveryType" class="form-select">
-                                    <option value="">-- Selecteer Type --</option>
-                                    <option value="Inbound">Inkomend</option>
-                                    <option value="Outbound">Uitgaand</option>
-                                    <option value="Transfer">Transfer</option>
-                                    <option value="Return">Retour</option>
+                                <select asp-for="DeliveryType" class="form-select" id="deliveryTypeSelect">
+                                    <option value="Incoming">Incoming (Inkoop van leverancier)</option>
+                                    <option value="Outgoing">Outgoing (Verkoop naar klant)</option>
                                 </select>
                                 <span asp-validation-for="DeliveryType" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="ReferenceNumber" class="form-label">
+                                    <i class="bi bi-tag me-1"></i>Referentienummer
+                                </label>
+                                <input asp-for="ReferenceNumber" class="form-control" placeholder="Bijv. INC-2025-001" />
+                                <span asp-validation-for="ReferenceNumber" class="text-danger small"></span>
                             </div>
                         </div>
                     </div>
@@ -58,7 +55,7 @@
                             <i class="bi bi-people me-2"></i>Partijen
                         </h4>
                         <div class="row g-3">
-                            <div class="col-md-4">
+                            <div class="col-md-6" id="supplierSection">
                                 <label asp-for="SupplierId" class="form-label">
                                     <i class="bi bi-shop me-1"></i>Leverancier
                                 </label>
@@ -67,7 +64,7 @@
                                 </select>
                                 <span asp-validation-for="SupplierId" class="text-danger small"></span>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6" id="customerSection" style="display: none;">
                                 <label asp-for="CustomerId" class="form-label">
                                     <i class="bi bi-person me-1"></i>Klant
                                 </label>
@@ -76,9 +73,9 @@
                                 </select>
                                 <span asp-validation-for="CustomerId" class="text-danger small"></span>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label asp-for="VehicleId" class="form-label">
-                                    <i class="bi bi-car-front me-1"></i>Voertuig
+                                    <i class="bi bi-car-front me-1"></i>Voertuig (optioneel)
                                 </label>
                                 <select asp-for="VehicleId" class="form-select" asp-items="ViewBag.VehicleId">
                                     <option value="">-- Selecteer Voertuig --</option>
@@ -94,67 +91,99 @@
                             <i class="bi bi-calendar-check me-2"></i>Levering Details
                         </h4>
                         <div class="row g-3">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label asp-for="ExpectedDeliveryDate" class="form-label">
                                     <i class="bi bi-calendar me-1"></i>Verwachte Leverdatum
                                 </label>
-                                <input asp-for="ExpectedDeliveryDate" class="form-control" type="date" />
+                                <input asp-for="ExpectedDeliveryDate" class="form-control" type="datetime-local" />
                                 <span asp-validation-for="ExpectedDeliveryDate" class="text-danger small"></span>
                             </div>
-                            <div class="col-md-4">
-                                <label asp-for="ActualDeliveryDate" class="form-label">
-                                    <i class="bi bi-calendar-event me-1"></i>Werkelijke Leverdatum
-                                </label>
-                                <input asp-for="ActualDeliveryDate" class="form-control" type="date" />
-                                <span asp-validation-for="ActualDeliveryDate" class="text-danger small"></span>
-                            </div>
-                            <div class="col-md-4">
-                                <label asp-for="CreatedDate" class="form-label">
-                                    <i class="bi bi-calendar-plus me-1"></i>Aanmaakdatum
-                                </label>
-                                <input asp-for="CreatedDate" class="form-control" type="date" />
-                                <span asp-validation-for="CreatedDate" class="text-danger small"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Status & Financial -->
-                    <div class="mb-4">
-                        <h4 class="fw-bold text-gradient mb-3">
-                            <i class="bi bi-clipboard-check me-2"></i>Status & Financieel
-                        </h4>
-                        <div class="row g-3">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label asp-for="Status" class="form-label">
                                     <i class="bi bi-circle-fill me-1"></i>Status
                                 </label>
                                 <select asp-for="Status" class="form-select">
-                                    <option value="Pending">In Afwachting</option>
-                                    <option value="InTransit">Onderweg</option>
-                                    <option value="Delivered">Geleverd</option>
-                                    <option value="Cancelled">Geannuleerd</option>
+                                    <option value="Gepland">Gepland</option>
+                                    <option value="Delivered">Delivered</option>
+                                    <option value="Geannuleerd">Geannuleerd</option>
                                 </select>
                                 <span asp-validation-for="Status" class="text-danger small"></span>
                             </div>
-                            <div class="col-md-4">
-                                <label asp-for="TotalAmount" class="form-label">
-                                    <i class="bi bi-currency-euro me-1"></i>Totaalbedrag
-                                </label>
-                                <input asp-for="TotalAmount" class="form-control" type="number" step="0.01" placeholder="0.00" />
-                                <span asp-validation-for="TotalAmount" class="text-danger small"></span>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">
-                                    <i class="bi bi-check-square me-1"></i>Opties
-                                </label>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" asp-for="IsProcessed" />
-                                    <label class="form-check-label" asp-for="IsProcessed">
-                                        Verwerkt
-                                    </label>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Items Section -->
+                    <div class="mb-4">
+                        <h4 class="fw-bold text-gradient mb-3">
+                            <i class="bi bi-box-seam me-2"></i>Producten
+                        </h4>
+                        
+                        <!-- Add Product Form -->
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label for="productSelect" class="form-label">Product</label>
+                                        <select id="productSelect" class="form-select">
+                                            <option value="">-- Selecteer Product --</option>
+                                            @if (ViewBag.Products != null)
+                                            {
+                                                foreach (var product in ViewBag.Products)
+                                                {
+                                                    <option value="@product.ProductId" 
+                                                            data-name="@product.ProductName" 
+                                                            data-purchase="@product.PurchasePrice" 
+                                                            data-selling="@product.SellingPrice"
+                                                            data-stock="@product.StockQuantity">
+                                                        @product.ProductName (Voorraad: @product.StockQuantity)
+                                                    </option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="quantityInput" class="form-label">Hoeveelheid</label>
+                                        <input type="number" id="quantityInput" class="form-control" min="1" value="1" />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="unitPriceInput" class="form-label">Prijs per stuk (€)</label>
+                                        <input type="number" id="unitPriceInput" class="form-control" step="0.01" min="0" value="0.00" />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-primary w-100" id="addItemBtn">
+                                            <i class="bi bi-plus-circle me-1"></i>Toevoegen
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Items List -->
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="itemsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Hoeveelheid</th>
+                                        <th>Prijs/stuk</th>
+                                        <th>Totaal</th>
+                                        <th style="width: 100px;">Actie</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="itemsTableBody">
+                                    <!-- Items will be added here dynamically -->
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" class="text-end"><strong>Totaalbedrag:</strong></td>
+                                        <td colspan="2"><strong id="totalAmount">€ 0.00</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        
+                        <!-- Hidden field for total amount -->
+                        <input type="hidden" asp-for="TotalAmount" id="totalAmountInput" />
                     </div>
 
                     <!-- Additional Information -->
@@ -190,4 +219,177 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Array to store delivery items
+        let deliveryItems = [];
+        let itemCounter = 0;
+
+        $(document).ready(function() {
+            // Update supplier/customer visibility based on delivery type
+            $('#deliveryTypeSelect').change(function() {
+                updatePartnerVisibility();
+            });
+
+            // Update price when product is selected
+            $('#productSelect').change(function() {
+                updatePrice();
+            });
+
+            // Add item button click
+            $('#addItemBtn').click(function() {
+                addDeliveryItem();
+            });
+
+            // Initialize visibility
+            updatePartnerVisibility();
+        });
+
+        function updatePartnerVisibility() {
+            const deliveryType = $('#deliveryTypeSelect').val();
+            
+            if (deliveryType === 'Incoming') {
+                $('#supplierSection').show();
+                $('#customerSection').hide();
+                $('#CustomerId').val('');
+            } else {
+                $('#supplierSection').hide();
+                $('#customerSection').show();
+                $('#SupplierId').val('');
+            }
+        }
+
+        function updatePrice() {
+            const selectedOption = $('#productSelect option:selected');
+            const deliveryType = $('#deliveryTypeSelect').val();
+            
+            if (selectedOption.val()) {
+                const purchasePrice = parseFloat(selectedOption.data('purchase')) || 0;
+                const sellingPrice = parseFloat(selectedOption.data('selling')) || 0;
+                const price = deliveryType === 'Incoming' ? purchasePrice : sellingPrice;
+                
+                $('#unitPriceInput').val(price.toFixed(2));
+            }
+        }
+
+        function addDeliveryItem() {
+            const productSelect = $('#productSelect');
+            const selectedOption = productSelect.find('option:selected');
+            const quantity = parseInt($('#quantityInput').val()) || 0;
+            const unitPrice = parseFloat($('#unitPriceInput').val()) || 0;
+            
+            // Validation
+            if (!selectedOption.val()) {
+                alert('Selecteer een product!');
+                return;
+            }
+            
+            if (quantity <= 0) {
+                alert('Voer een geldige hoeveelheid in!');
+                return;
+            }
+            
+            if (unitPrice < 0) {
+                alert('Voer een geldige prijs in!');
+                return;
+            }
+
+            const productId = selectedOption.val();
+            const productName = selectedOption.data('name');
+            const stock = parseInt(selectedOption.data('stock')) || 0;
+            const deliveryType = $('#deliveryTypeSelect').val();
+
+            // Check stock for outgoing deliveries
+            if (deliveryType === 'Outgoing') {
+                const alreadyInList = deliveryItems
+                    .filter(item => item.productId === productId)
+                    .reduce((sum, item) => sum + item.quantity, 0);
+                
+                const totalRequested = alreadyInList + quantity;
+                
+                if (totalRequested > stock) {
+                    alert(`ONVOLDOENDE VOORRAAD!\n\n` +
+                          `Product: ${productName}\n` +
+                          `Beschikbare voorraad: ${stock}\n` +
+                          `Al in levering: ${alreadyInList}\n` +
+                          `Probeer toe te voegen: ${quantity}\n` +
+                          `Totaal gevraagd: ${totalRequested}\n\n` +
+                          `Je kunt maximaal ${stock - alreadyInList} stuks toevoegen.`);
+                    return;
+                }
+            }
+            
+            const total = quantity * unitPrice;
+            
+            // Add item to array
+            const item = {
+                id: itemCounter++,
+                productId: productId,
+                productName: productName,
+                quantity: quantity,
+                unitPrice: unitPrice,
+                total: total
+            };
+            
+            deliveryItems.push(item);
+            
+            // Add row to table
+            addItemRow(item);
+            
+            // Update total
+            updateTotal();
+            
+            // Reset form
+            $('#quantityInput').val('1');
+            updatePrice();
+        }
+
+        function addItemRow(item) {
+            const row = `
+                <tr data-item-id="${item.id}">
+                    <td>${item.productName}</td>
+                    <td>${item.quantity}</td>
+                    <td>€ ${item.unitPrice.toFixed(2)}</td>
+                    <td>€ ${item.total.toFixed(2)}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="removeItem(${item.id})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                    <input type="hidden" name="DeliveryItems[${item.id}].ProductId" value="${item.productId}" />
+                    <input type="hidden" name="DeliveryItems[${item.id}].Quantity" value="${item.quantity}" />
+                    <input type="hidden" name="DeliveryItems[${item.id}].UnitPrice" value="${item.unitPrice}" />
+                </tr>
+            `;
+            
+            $('#itemsTableBody').append(row);
+        }
+
+        function removeItem(itemId) {
+            // Remove from array
+            deliveryItems = deliveryItems.filter(item => item.id !== itemId);
+            
+            // Remove row
+            $(`tr[data-item-id="${itemId}"]`).remove();
+            
+            // Update total
+            updateTotal();
+        }
+
+        function updateTotal() {
+            const total = deliveryItems.reduce((sum, item) => sum + item.total, 0);
+            $('#totalAmount').text('€ ' + total.toFixed(2));
+            $('#totalAmountInput').val(total.toFixed(2));
+        }
+
+        // Form submission validation
+        $('#deliveryForm').submit(function(e) {
+            if (deliveryItems.length === 0) {
+                e.preventDefault();
+                alert('Voeg minimaal één product toe aan de levering!');
+                return false;
+            }
+            return true;
+        });
+    </script>
 }

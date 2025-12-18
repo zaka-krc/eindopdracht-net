@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -79,7 +79,7 @@ namespace SuntoryManagementSystem_Web.Controllers
                     return NotFound();
                 }
 
-                _logger.LogInformation("Details van Customer {CustomerName} (ID: {CustomerId}) bekeken door {User}", 
+                _logger.LogInformation("Details van Customer {CustomerName} (ID: {CustomerId}) bekeken door {User}",
                     customer.CustomerName, id, User.Identity?.Name ?? "Anonymous");
 
                 return View(customer);
@@ -123,7 +123,7 @@ namespace SuntoryManagementSystem_Web.Controllers
                     _context.Add(customer);
                     await _context.SaveChangesAsync();
 
-                    _logger.LogInformation("Customer {CustomerName} (ID: {CustomerId}) aangemaakt door {User}", 
+                    _logger.LogInformation("Customer {CustomerName} (ID: {CustomerId}) aangemaakt door {User}",
                         customer.CustomerName, customer.CustomerId, User.Identity?.Name ?? "Anonymous");
 
                     TempData["SuccessMessage"] = $"Klant '{customer.CustomerName}' succesvol toegevoegd!";
@@ -164,7 +164,7 @@ namespace SuntoryManagementSystem_Web.Controllers
                     return NotFound();
                 }
 
-                _logger.LogInformation("Edit pagina geopend voor Customer {CustomerName} (ID: {CustomerId}) door {User}", 
+                _logger.LogInformation("Edit pagina geopend voor Customer {CustomerName} (ID: {CustomerId}) door {User}",
                     customer.CustomerName, id, User.Identity?.Name ?? "Anonymous");
 
                 return View(customer);
@@ -199,7 +199,7 @@ namespace SuntoryManagementSystem_Web.Controllers
                     _context.Update(customer);
                     await _context.SaveChangesAsync();
 
-                    _logger.LogInformation("Customer {CustomerName} (ID: {CustomerId}) gewijzigd door {User}", 
+                    _logger.LogInformation("Customer {CustomerName} (ID: {CustomerId}) gewijzigd door {User}",
                         customer.CustomerName, customer.CustomerId, User.Identity?.Name ?? "Anonymous");
 
                     TempData["SuccessMessage"] = $"Klant '{customer.CustomerName}' succesvol gewijzigd!";
@@ -255,7 +255,7 @@ namespace SuntoryManagementSystem_Web.Controllers
                     return NotFound();
                 }
 
-                _logger.LogInformation("Delete confirmatie pagina geopend voor Customer {CustomerName} (ID: {CustomerId}) door {User}", 
+                _logger.LogInformation("Delete confirmatie pagina geopend voor Customer {CustomerName} (ID: {CustomerId}) door {User}",
                     customer.CustomerName, id, User.Identity?.Name ?? "Anonymous");
 
                 return View(customer);
@@ -291,7 +291,7 @@ namespace SuntoryManagementSystem_Web.Controllers
 
                     await _context.SaveChangesAsync();
 
-                    _logger.LogInformation("Customer {CustomerName} (ID: {CustomerId}) soft deleted door {User}", 
+                    _logger.LogInformation("Customer {CustomerName} (ID: {CustomerId}) soft deleted door {User}",
                         customer.CustomerName, id, User.Identity?.Name ?? "Anonymous");
 
                     TempData["SuccessMessage"] = $"Klant '{customer.CustomerName}' succesvol verwijderd!";

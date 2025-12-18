@@ -123,12 +123,22 @@ namespace SuntoryManagementSystem_Web.Controllers
                     product.IsDeleted = false;
 
                     _context.Add(product);
-                    await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync(); // EERST product opslaan zodat ProductId beschikbaar is
 
                     _logger.LogInformation("Product {ProductName} (ID: {ProductId}) aangemaakt door {User}", 
                         product.ProductName, product.ProductId, User.Identity?.Name ?? "Anonymous");
 
+                    // CHECK EN MAAK STOCK ALERT AAN indien nodig (NU met correcte ProductId)
+                    await CheckAndCreateStockAlert(product);
+
                     TempData["SuccessMessage"] = $"Product '{product.ProductName}' succesvol toegevoegd!";
+                    
+                    // Waarschuw gebruiker als voorraad laag is
+                    if (product.StockQuantity < product.MinimumStock)
+                    {
+                        TempData["WarningMessage"] = $"LET OP: Voorraad ({product.StockQuantity}) is onder minimum ({product.MinimumStock}). Een stock alert is automatisch aangemaakt.";
+                    }
+                    
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -200,13 +210,27 @@ namespace SuntoryManagementSystem_Web.Controllers
             {
                 try
                 {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
+                    // Haal oude waarden op voor vergelijking VOORDAT we updaten
+                    var originalProduct = await _context.Products.AsNoTracking().FirstOrDefaultAsync(p => p.ProductId == id);
+                    int previousStock = originalProduct?.StockQuantity ?? 0;
 
-                    _logger.LogInformation("Product {ProductName} (ID: {ProductId}) gewijzigd door {User}", 
-                        product.ProductName, product.ProductId, User.Identity?.Name ?? "Anonymous");
+                    _context.Update(product);
+                    await _context.SaveChangesAsync(); // EERST product updaten
+
+                    _logger.LogInformation("Product {ProductName} (ID: {ProductId}) gewijzigd door {User} - Voorraad: {OldStock} -> {NewStock}", 
+                        product.ProductName, product.ProductId, User.Identity?.Name ?? "Anonymous", previousStock, product.StockQuantity);
+
+                    // CHECK EN UPDATE STOCK ALERTS (NA het opslaan van product)
+                    await CheckAndUpdateStockAlerts(product, previousStock);
 
                     TempData["SuccessMessage"] = $"Product '{product.ProductName}' succesvol gewijzigd!";
+                    
+                    // Waarschuw gebruiker als voorraad laag is
+                    if (product.StockQuantity < product.MinimumStock)
+                    {
+                        TempData["WarningMessage"] = $"LET OP: Voorraad ({product.StockQuantity}) is onder minimum ({product.MinimumStock}).";
+                    }
+                    
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException ex)
@@ -319,8 +343,160 @@ namespace SuntoryManagementSystem_Web.Controllers
         }
 
         // =====================================================================
-        // HELPER METHODE: Check of product bestaat
+        // HELPER METHODS: Stock Alert Management
         // =====================================================================
+        
+        /// <summary>
+        /// Controleert voorraad en maakt stock alert aan indien nodig
+        /// </summary>
+        private async Task CheckAndCreateStockAlert(Product product)
+        {
+            if (product.StockQuantity >= product.MinimumStock)
+            {
+                _logger.LogInformation("Product {ProductName} (ID: {ProductId}) heeft voldoende voorraad ({Stock} >= {Min}), geen alert nodig", 
+                    product.ProductName, product.ProductId, product.StockQuantity, product.MinimumStock);
+                return; // Voorraad is OK, geen alert nodig
+            }
+
+            try
+            {
+                _logger.LogInformation("Checking for existing alerts for Product {ProductId}", product.ProductId);
+                
+                // Check of er al een actieve alert bestaat voor dit product
+                var existingAlert = await _context.StockAlerts
+                    .FirstOrDefaultAsync(sa => sa.ProductId == product.ProductId 
+                        && sa.Status == "Active" 
+                        && !sa.IsDeleted);
+
+                if (existingAlert == null)
+                {
+                    // Bepaal alert type
+                    string alertType = product.StockQuantity == 0 ? "Out of Stock" : 
+                                     product.StockQuantity < (product.MinimumStock / 2) ? "Critical" : 
+                                     "Low Stock";
+
+                    var alert = new StockAlert
+                    {
+                        ProductId = product.ProductId,
+                        AlertType = alertType,
+                        Status = "Active",
+                        CreatedDate = DateTime.Now,
+                        Notes = $"Voorraad is {product.StockQuantity} stuks, minimum is {product.MinimumStock}"
+                    };
+
+                    _context.StockAlerts.Add(alert);
+                    await _context.SaveChangesAsync();
+
+                    _logger.LogInformation("? Stock Alert SUCCESVOL aangemaakt voor Product {ProductName} (ID: {ProductId}) - Type: {AlertType}, StockAlertId: {StockAlertId}", 
+                        product.ProductName, product.ProductId, alertType, alert.StockAlertId);
+                }
+                else
+                {
+                    _logger.LogInformation("Stock Alert bestaat al voor Product {ProductName} (ID: {ProductId}) - Alert ID: {AlertId}", 
+                        product.ProductName, product.ProductId, existingAlert.StockAlertId);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "? FOUT bij aanmaken van stock alert voor Product {ProductName} (ID: {ProductId})", 
+                    product.ProductName, product.ProductId);
+                // We gooien de exception NIET verder, zodat het aanmaken van het product niet faalt
+            }
+        }
+
+        /// <summary>
+        /// Update stock alerts gebaseerd op voorraadwijzigingen
+        /// </summary>
+        private async Task CheckAndUpdateStockAlerts(Product product, int previousStock)
+        {
+            try
+            {
+                _logger.LogInformation("CheckAndUpdateStockAlerts voor Product {ProductId}: Voorraad {OldStock} -> {NewStock}, Minimum: {MinStock}", 
+                    product.ProductId, previousStock, product.StockQuantity, product.MinimumStock);
+
+                // Scenario 1: Voorraad is nu ONDER minimum (maak of update alert)
+                if (product.StockQuantity < product.MinimumStock)
+                {
+                    _logger.LogInformation("Voorraad ONDER minimum - checking for existing alert");
+                    
+                    var existingAlert = await _context.StockAlerts
+                        .FirstOrDefaultAsync(sa => sa.ProductId == product.ProductId 
+                            && sa.Status == "Active" 
+                            && !sa.IsDeleted);
+
+                    string alertType = product.StockQuantity == 0 ? "Out of Stock" : 
+                                     product.StockQuantity < (product.MinimumStock / 2) ? "Critical" : 
+                                     "Low Stock";
+
+                    if (existingAlert == null)
+                    {
+                        // Maak nieuwe alert
+                        var alert = new StockAlert
+                        {
+                            ProductId = product.ProductId,
+                            AlertType = alertType,
+                            Status = "Active",
+                            CreatedDate = DateTime.Now,
+                            Notes = $"Voorraad is {product.StockQuantity} stuks, minimum is {product.MinimumStock}"
+                        };
+
+                        _context.StockAlerts.Add(alert);
+                        await _context.SaveChangesAsync();
+                        
+                        _logger.LogInformation("? Stock Alert AANGEMAAKT voor Product {ProductName} (ID: {ProductId}) - Type: {AlertType}, AlertId: {AlertId}", 
+                            product.ProductName, product.ProductId, alertType, alert.StockAlertId);
+                    }
+                    else
+                    {
+                        // Update bestaande alert
+                        existingAlert.AlertType = alertType;
+                        existingAlert.Notes = $"Voorraad is {product.StockQuantity} stuks, minimum is {product.MinimumStock}. Laatst gewijzigd: {DateTime.Now:dd-MM-yyyy HH:mm}";
+                        _context.StockAlerts.Update(existingAlert);
+                        await _context.SaveChangesAsync();
+                        
+                        _logger.LogInformation("?? Stock Alert GEUPDATE voor Product {ProductName} (ID: {ProductId}) - Type: {AlertType}", 
+                            product.ProductName, product.ProductId, alertType);
+                    }
+                }
+                // Scenario 2: Voorraad was ONDER minimum, maar is nu BOVEN minimum (resolve alerts)
+                else if (previousStock < product.MinimumStock && product.StockQuantity >= product.MinimumStock)
+                {
+                    _logger.LogInformation("Voorraad HERSTELD - resolving active alerts");
+                    
+                    var activeAlerts = await _context.StockAlerts
+                        .Where(sa => sa.ProductId == product.ProductId 
+                            && sa.Status == "Active" 
+                            && !sa.IsDeleted)
+                        .ToListAsync();
+
+                    foreach (var alert in activeAlerts)
+                    {
+                        alert.Status = "Resolved";
+                        alert.ResolvedDate = DateTime.Now;
+                        alert.Notes += $" - Opgelost: voorraad is nu {product.StockQuantity} stuks (boven minimum van {product.MinimumStock})";
+                        _context.StockAlerts.Update(alert);
+                    }
+
+                    if (activeAlerts.Any())
+                    {
+                        await _context.SaveChangesAsync();
+                        _logger.LogInformation("? {Count} Stock Alert(s) OPGELOST voor Product {ProductName} (ID: {ProductId})", 
+                            activeAlerts.Count, product.ProductName, product.ProductId);
+                    }
+                }
+                else
+                {
+                    _logger.LogInformation("Geen stock alert actie nodig voor Product {ProductId}", product.ProductId);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "? FOUT bij updaten van stock alerts voor Product {ProductName} (ID: {ProductId})", 
+                    product.ProductName, product.ProductId);
+                // We gooien de exception NIET verder, zodat het updaten van het product niet faalt
+            }
+        }
+
         private bool ProductExists(int id)
         {
             return _context.Products.Any(e => e.ProductId == id && !e.IsDeleted);

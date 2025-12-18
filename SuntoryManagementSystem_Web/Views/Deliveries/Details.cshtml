@@ -220,6 +220,21 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
+                        @if (!Model.IsProcessed && Model.Status != "Geannuleerd" && Model.Status != "Cancelled")
+                        {
+                        <form asp-action="Process" asp-route-id="@Model.DeliveryId" method="post" onsubmit="return confirm('Weet u zeker dat u deze levering wilt verwerken? Dit zal de voorraad aanpassen.');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-check-circle-fill me-2"></i>Verwerk Levering
+                            </button>
+                        </form>
+                        }
+                        else if (Model.IsProcessed)
+                        {
+                        <div class="alert alert-success mb-2">
+                            <i class="bi bi-check-circle-fill me-2"></i>Levering is al verwerkt
+                        </div>
+                        }
                         <a asp-action="Edit" asp-route-id="@Model?.DeliveryId" class="btn btn-warning text-white">
                             <i class="bi bi-pencil-fill me-2"></i>Bewerken
                         </a>
