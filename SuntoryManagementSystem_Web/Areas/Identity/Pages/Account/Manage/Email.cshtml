@@ -1,41 +1,83 @@
 ﻿@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer _localizer
 @model EmailModel
 @{
-    ViewData["Title"] = "Manage Email";
+    ViewData["Title"] = _localizer["Title"];
     ViewData["ActivePage"] = ManageNavPages.Email;
 }
 
-<h3>@ViewData["Title"]</h3>
+<h3>
+    <i class="bi bi-envelope me-2"></i>@ViewData["Title"]
+</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
+
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-8">
         <form id="email-form" method="post">
             <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+            
             @if (Model.IsEmailConfirmed)
             {
-                <div class="form-floating mb-3 input-group">
-                    <input asp-for="Email" class="form-control" placeholder="Please enter your email." disabled />
-                        <div class="input-group-append">
-                            <span class="h-100 input-group-text text-success font-weight-bold">✓</span>
-                        </div>
-                    <label asp-for="Email" class="form-label"></label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">
+                        <i class="bi bi-envelope-check text-success"></i>
+                    </span>
+                    <input asp-for="Email" class="form-control" placeholder="@_localizer["PlaceholderEmail"]" disabled />
+                    <span class="input-group-text text-success">
+                        <i class="bi bi-check-circle"></i> @_localizer["Verified"]
+                    </span>
                 </div>
             }
             else
             {
-                <div class="form-floating mb-3">
-                    <input asp-for="Email" class="form-control" placeholder="Please enter your email." disabled />
-                    <label asp-for="Email" class="form-label"></label>
-                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
+                <div class="mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-envelope-exclamation text-warning"></i>
+                        </span>
+                        <input asp-for="Email" class="form-control" placeholder="@_localizer["PlaceholderEmail"]" disabled />
+                    </div>
+                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link mt-2">
+                        <i class="bi bi-send me-2"></i>@_localizer["SendVerificationEmail"]
+                    </button>
                 </div>
             }
+            
             <div class="form-floating mb-3">
-                <input asp-for="Input.NewEmail" class="form-control" autocomplete="email" aria-required="true" placeholder="Please enter new email." />
-                <label asp-for="Input.NewEmail" class="form-label"></label>
+                <input asp-for="Input.NewEmail" class="form-control" autocomplete="email" aria-required="true" placeholder="@_localizer["PlaceholderNewEmail"]" />
+                <label asp-for="Input.NewEmail" class="form-label">
+                    <i class="bi bi-envelope-plus me-2"></i>@_localizer["NewEmail"]
+                </label>
                 <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
             </div>
-            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="w-100 btn btn-lg btn-primary">Change email</button>
+            
+            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="w-100 btn btn-lg btn-primary">
+                <i class="bi bi-check-circle me-2"></i>@_localizer["ChangeEmail"]
+            </button>
         </form>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                <i class="bi bi-info-circle me-2"></i>@_localizer["EmailInfo"]
+            </div>
+            <div class="card-body">
+                <p>
+                    @_localizer["EmailUsedFor"]
+                </p>
+                <ul>
+                    <li>@_localizer["LoginAccount"]</li>
+                    <li>@_localizer["AccountNotifications"]</li>
+                    <li>@_localizer["PasswordRecovery"]</li>
+                    <li>@_localizer["SystemMessages"]</li>
+                </ul>
+                <p class="mb-0 text-muted">
+                    <small>@_localizer["EmailChangeNote"]</small>
+                </p>
+            </div>
+        </div>
     </div>
 </div>
 

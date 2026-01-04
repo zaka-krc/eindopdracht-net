@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  
+  <data name="Title" xml:space="preserve"><value>E-mail Beheren</value></data>
+  <data name="Verified" xml:space="preserve"><value>Geverifieerd</value></data>
+  <data name="SendVerificationEmail" xml:space="preserve"><value>Verificatie e-mail versturen</value></data>
+  <data name="NewEmail" xml:space="preserve"><value>Nieuw E-mailadres</value></data>
+  <data name="ChangeEmail" xml:space="preserve"><value>E-mail Wijzigen</value></data>
+  <data name="EmailInfo" xml:space="preserve"><value>E-mail Informatie</value></data>
+  <data name="EmailUsedFor" xml:space="preserve"><value>Uw e-mailadres wordt gebruikt voor:</value></data>
+  <data name="LoginAccount" xml:space="preserve"><value>Inloggen op uw account</value></data>
+  <data name="AccountNotifications" xml:space="preserve"><value>Account notificaties</value></data>
+  <data name="PasswordRecovery" xml:space="preserve"><value>Wachtwoord herstel</value></data>
+  <data name="SystemMessages" xml:space="preserve"><value>Belangrijke systeemberichten</value></data>
+  <data name="EmailChangeNote" xml:space="preserve"><value>Na het wijzigen van uw e-mailadres ontvangt u een bevestigingsmail op uw nieuwe adres.</value></data>
+  <data name="PlaceholderEmail" xml:space="preserve"><value>Voer uw e-mailadres in</value></data>
+  <data name="PlaceholderNewEmail" xml:space="preserve"><value>Voer nieuw e-mailadres in</value></data>
+</root>

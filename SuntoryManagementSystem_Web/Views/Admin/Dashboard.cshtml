@@ -1,0 +1,127 @@
+@model SuntoryManagementSystem_Web.Controllers.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">
+                <i class="bi bi-speedometer2"></i> Admin Dashboard
+            </h2>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Totaal Gebruikers</h5>
+                    <h2 class="mb-0">@Model.TotalUsers</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Actieve Gebruikers</h5>
+                    <h2 class="mb-0">@Model.ActiveUsers</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Inactieve Gebruikers</h5>
+                    <h2 class="mb-0">@Model.InactiveUsers</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Administrators</h5>
+                    <h2 class="mb-0">@Model.TotalAdministrators</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Role Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Rollen Verdeling</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-shield-check text-danger"></i> Administrators</span>
+                            <span class="badge bg-danger rounded-pill">@Model.TotalAdministrators</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-person-badge text-primary"></i> Managers</span>
+                            <span class="badge bg-primary rounded-pill">@Model.TotalManagers</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-person text-secondary"></i> Employees</span>
+                            <span class="badge bg-secondary rounded-pill">@Model.TotalEmployees</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Users -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Aangemaakte Gebruikers</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentUsers.Any())
+                    {
+                        <ul class="list-group">
+                            @foreach (var user in Model.RecentUsers)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>@user.FullName</strong>
+                                        <br />
+                                        <small class="text-muted">@user.Email</small>
+                                    </div>
+                                    <small class="text-muted">@user.CreatedDate.ToString("dd-MM-yyyy")</small>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">Geen recente gebruikers gevonden.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Snelle Acties</h5>
+                </div>
+                <div class="card-body">
+                    <a asp-action="Users" class="btn btn-primary me-2">
+                        <i class="bi bi-people"></i> Alle Gebruikers Bekijken
+                    </a>
+                    <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-success">
+                        <i class="bi bi-person-plus"></i> Nieuwe Gebruiker Aanmaken
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

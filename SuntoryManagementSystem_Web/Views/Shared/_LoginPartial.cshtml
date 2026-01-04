@@ -31,29 +31,47 @@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
-        <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="@_localizer["Manage"]">
-            @_localizer["Hello"] @UserManager.GetUserName(User)!
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarUser" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle me-1"></i>@UserManager.GetUserName(User)!
         </a>
-    </li>
-    <li class="nav-item">
-        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">
-                @_localizer["Logout"]
-            </button>
-        </form>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarUser">
+            <li>
+                <a class="dropdown-item" asp-controller="UserProfile" asp-action="Index">
+                    <i class="bi bi-person me-2"></i>Mijn Profiel
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+                    <i class="bi bi-gear me-2"></i>Account Instellingen
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/ChangePassword">
+                    <i class="bi bi-key me-2"></i>Wachtwoord Wijzigen
+                </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form id="logoutForm" class="d-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button type="submit" class="dropdown-item text-danger">
+                        <i class="bi bi-box-arrow-right me-2"></i>Uitloggen
+                    </button>
+                </form>
+            </li>
+        </ul>
     </li>
 }
 else
 {
     <li class="nav-item">
         <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">
-            @_localizer["Register"]
+            <i class="bi bi-person-plus me-1"></i>@_localizer["Register"]
         </a>
     </li>
     <li class="nav-item">
         <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">
-            @_localizer["Login"]
+            <i class="bi bi-box-arrow-in-right me-1"></i>@_localizer["Login"]
         </a>
     </li>
 }

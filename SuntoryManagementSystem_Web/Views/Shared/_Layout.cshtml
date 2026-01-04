@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer _localizer
+@inject Microsoft.AspNetCore.Identity.SignInManager<SuntoryManagementSystem.Models.ApplicationUser> SignInManager
+@inject Microsoft.AspNetCore.Identity.UserManager<SuntoryManagementSystem.Models.ApplicationUser> UserManager
 
 <!DOCTYPE html>
 <html lang="en">
@@ -78,6 +80,34 @@
                                 </li>
                             </ul>
                         </li>
+                        
+                        @* ADMIN MENU - Alleen voor Administrator rol *@
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Administrator"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-danger dropdown-toggle" href="#" id="navbarAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-shield-check me-1"></i>Admin
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarAdmin">
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Dashboard">
+                                            <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Users">
+                                            <i class="bi bi-people me-2"></i>Gebruikersbeheer
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">
+                                            <i class="bi bi-person-plus me-2"></i>Nieuwe Gebruiker
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

@@ -280,4 +280,40 @@
             </div>
         </div>
     }
+
+    @* Admin Panel Toegang - Alleen voor Administrator rol *@
+    @if (User.IsInRole("Administrator"))
+    {
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card border-danger shadow-lg">
+                    <div class="card-header bg-danger text-white">
+                        <h4 class="mb-0">
+                            <i class="bi bi-shield-check me-2"></i>Administrator Panel
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="lead mb-4">Beheer gebruikers, rollen en systeem instellingen.</p>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-danger w-100 py-3">
+                                    <i class="bi bi-speedometer2 me-2"></i>Admin Dashboard
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a asp-controller="Admin" asp-action="Users" class="btn btn-outline-danger w-100 py-3">
+                                    <i class="bi bi-people me-2"></i>Gebruikersbeheer
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-danger w-100 py-3">
+                                    <i class="bi bi-person-plus me-2"></i>Nieuwe Gebruiker
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>

@@ -1,0 +1,146 @@
+@model SuntoryManagementSystem_Web.Controllers.UserViewModel
+@{
+    ViewData["Title"] = "Gebruiker Details";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row mb-3">
+        <div class="col-12">
+            <h2 class="mb-0">
+                <i class="bi bi-person-circle"></i> Gebruiker Details
+            </h2>
+        </div>
+    </div>
+
+    <!-- User Info Card -->
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">@Model.User.FullName</h5>
+                    @if (Model.User.IsActive)
+                    {
+                        <span class="badge bg-success">Actief</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Inactief</span>
+                    }
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Persoonlijke Informatie</h6>
+                            <hr />
+                            <p><strong>Volledige Naam:</strong> @Model.User.FullName</p>
+                            <p><strong>Email:</strong> @Model.User.Email</p>
+                            <p><strong>Gebruikersnaam:</strong> @Model.User.UserName</p>
+                            <p><strong>Afdeling:</strong> @(Model.User.Department ?? "Niet ingesteld")</p>
+                            <p><strong>Functie:</strong> @(Model.User.JobTitle ?? "Niet ingesteld")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Account Informatie</h6>
+                            <hr />
+                            <p><strong>Account Aangemaakt:</strong> @Model.User.CreatedDate.ToString("dd-MM-yyyy HH:mm")</p>
+                            <p><strong>Laatste Login:</strong> 
+                                @if (Model.User.LastLoginDate.HasValue)
+                                {
+                                    @Model.User.LastLoginDate.Value.ToString("dd-MM-yyyy HH:mm")
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Nog niet ingelogd</span>
+                                }
+                            </p>
+                            <p><strong>Email Bevestigd:</strong> 
+                                @if (Model.User.EmailConfirmed)
+                                {
+                                    <span class="badge bg-success">Ja</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning">Nee</span>
+                                }
+                            </p>
+                            <p><strong>Status:</strong> 
+                                @if (Model.User.IsActive)
+                                {
+                                    <span class="badge bg-success">Actief</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Inactief</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Roles Card -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Toegewezen Rollen</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Roles.Any())
+                    {
+                        <ul class="list-group">
+                            @foreach (var role in Model.Roles)
+                            {
+                                <li class="list-group-item">
+                                    <i class="bi bi-shield-check text-@(role == "Administrator" ? "danger" : role == "Manager" ? "primary" : "secondary")"></i>
+                                    <strong>@role</strong>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">Geen rollen toegewezen</p>
+                    }
+                    
+                    <a asp-action="ManageRoles" asp-route-id="@Model.User.Id" class="btn btn-primary btn-sm w-100 mt-3">
+                        <i class="bi bi-pencil"></i> Rollen Beheren
+                    </a>
+                </div>
+            </div>
+
+            <!-- Actions Card -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Acties</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="ToggleActiveStatus" asp-route-id="@Model.User.Id" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-@(Model.User.IsActive ? "warning" : "success") w-100 mb-2"
+                                onclick="return confirm('Weet u zeker dat u deze gebruiker wilt @(Model.User.IsActive ? "deactiveren" : "activeren")?');">
+                            <i class="bi bi-@(Model.User.IsActive ? "pause-circle" : "play-circle")"></i>
+                            @(Model.User.IsActive ? "Deactiveren" : "Activeren")
+                        </button>
+                    </form>
+
+                    <form asp-action="ResetPassword" asp-route-id="@Model.User.Id" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger w-100"
+                                onclick="return confirm('Weet u zeker dat u het wachtwoord wilt resetten naar Reset@123?');">
+                            <i class="bi bi-key"></i> Wachtwoord Resetten
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="row mt-3">
+        <div class="col-12">
+            <a asp-action="Users" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Terug naar Gebruikerslijst
+            </a>
+        </div>
+    </div>
+</div>

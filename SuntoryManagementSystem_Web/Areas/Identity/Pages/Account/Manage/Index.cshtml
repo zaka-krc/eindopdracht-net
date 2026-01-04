@@ -1,0 +1,66 @@
+@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer _localizer
+@model IndexModel
+@{
+    ViewData["Title"] = _localizer["Title"];
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<div class="row">
+    <div class="col-md-8">
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            
+            <div class="form-floating mb-3">
+                <input asp-for="Input.FullName" class="form-control" placeholder="@_localizer["PlaceholderFullName"]" />
+                <label asp-for="Input.FullName" class="form-label">
+                    <i class="bi bi-person me-2"></i>@_localizer["FullName"]
+                </label>
+                <span asp-validation-for="Input.FullName" class="text-danger"></span>
+            </div>
+            
+            <div class="form-floating mb-3">
+                <input asp-for="Username" class="form-control" placeholder="@_localizer["PlaceholderUsername"]" disabled />
+                <label asp-for="Username" class="form-label">
+                    <i class="bi bi-at me-2"></i>@_localizer["Username"]
+                </label>
+            </div>
+            
+            <div class="form-floating mb-3">
+                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="@_localizer["PlaceholderPhoneNumber"]" />
+                <label asp-for="Input.PhoneNumber" class="form-label">
+                    <i class="bi bi-telephone me-2"></i>@_localizer["PhoneNumber"]
+                </label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Department" class="form-control" placeholder="@_localizer["PlaceholderDepartment"]" />
+                <label asp-for="Input.Department" class="form-label">
+                    <i class="bi bi-building me-2"></i>@_localizer["Department"]
+                </label>
+                <span asp-validation-for="Input.Department" class="text-danger"></span>
+            </div>
+            
+            <div class="form-floating mb-3">
+                <input asp-for="Input.JobTitle" class="form-control" placeholder="@_localizer["PlaceholderJobTitle"]" />
+                <label asp-for="Input.JobTitle" class="form-label">
+                    <i class="bi bi-briefcase me-2"></i>@_localizer["JobTitle"]
+                </label>
+                <span asp-validation-for="Input.JobTitle" class="text-danger"></span>
+            </div>
+            
+            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">
+                <i class="bi bi-save me-2"></i>@_localizer["Save"]
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,80 +1,82 @@
 ﻿@page
 @model LoginModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer _localizer
 
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Inloggen";
 }
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <form id="account" method="post">
-                <h2>Use a local account to log in.</h2>
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label asp-for="Input.Email" class="form-label">Email</label>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h2 class="mb-0">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Inloggen
+                    </h2>
+                    <p class="mb-0 mt-2">Welkom bij Suntory Management System</p>
                 </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label asp-for="Input.Password" class="form-label">Password</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
-                </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
-            </form>
-        </section>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
+                <div class="card-body p-4">
+                    <form id="account" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="naam@voorbeeld.com" />
+                            <label asp-for="Input.Email">
+                                <i class="bi bi-envelope me-2"></i>E-mailadres
+                            </label>
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Password" type="password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="wachtwoord" />
+                            <label asp-for="Input.Password">
+                                <i class="bi bi-key me-2"></i>Wachtwoord
+                            </label>
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" asp-for="Input.RememberMe" />
+                            <label class="form-check-label" asp-for="Input.RememberMe">
+                                Onthoud mij
+                            </label>
+                        </div>
+                        
+                        <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary mb-3">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Inloggen
+                        </button>
+                        
+                        <div class="text-center">
+                            <p class="mb-2">
+                                <a id="forgot-password" asp-page="./ForgotPassword">Wachtwoord vergeten?</a>
+                            </p>
+                            <p class="mb-2">
+                                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Registreren als nieuwe gebruiker</a>
+                            </p>
+                            <p class="mb-0">
+                                <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Bevestigingsmail opnieuw versturen</a>
                             </p>
                         </div>
                     </form>
-                }
-            }
-        </section>
+                </div>
+            </div>
+
+            <!-- Test Accounts Info -->
+            <div class="card mt-3 border-info">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="bi bi-info-circle me-2"></i>Test Accounts
+                    </h6>
+                    <small class="text-muted">
+                        <strong>Admin:</strong> admin@suntory.com / Admin@123<br />
+                        <strong>Manager:</strong> manager@suntory.com / Manager@123<br />
+                        <strong>Employee:</strong> employee@suntory.com / Employee@123
+                    </small>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

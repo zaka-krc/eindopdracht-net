@@ -7,7 +7,6 @@ namespace SuntoryManagementSystem_Web.Services
     /// </summary>
     public class SharedResource
     {
-        // Deze class hoeft geen code te bevatten
         // Het wordt alleen gebruikt voor localization lookup
     }
 }

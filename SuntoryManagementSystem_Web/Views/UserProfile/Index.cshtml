@@ -1,0 +1,250 @@
+@model SuntoryManagementSystem_Web.Controllers.UserProfileViewModel
+@inject Microsoft.AspNetCore.Identity.SignInManager<SuntoryManagementSystem.Models.ApplicationUser> SignInManager
+@{
+    ViewData["Title"] = "Mijn Profiel";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row mb-3">
+        <div class="col-12">
+            <h2 class="mb-0">
+                <i class="bi bi-person-circle"></i> Mijn Profiel
+            </h2>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Main Content -->
+    <div class="row">
+        <!-- User Info Card -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Persoonlijke Informatie</h5>
+                    @if (Model.User.IsActive)
+                    {
+                        <span class="badge bg-success">
+                            <i class="bi bi-check-circle"></i> Actief
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">
+                            <i class="bi bi-x-circle"></i> Inactief
+                        </span>
+                    }
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Basis Informatie</h6>
+                            <hr />
+                            <p><strong>Volledige Naam:</strong> @Model.User.FullName</p>
+                            <p><strong>Email:</strong> @Model.User.Email</p>
+                            <p><strong>Gebruikersnaam:</strong> @Model.User.UserName</p>
+                            <p><strong>Telefoonnummer:</strong> @(Model.User.PhoneNumber ?? "Niet ingesteld")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Werk Informatie</h6>
+                            <hr />
+                            <p><strong>Afdeling:</strong> @(Model.User.Department ?? "Niet ingesteld")</p>
+                            <p><strong>Functie:</strong> @(Model.User.JobTitle ?? "Niet ingesteld")</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Account Details</h6>
+                            <hr />
+                            <p><strong>Account Aangemaakt:</strong> @Model.User.CreatedDate.ToString("dd-MM-yyyy HH:mm")</p>
+                            <p><strong>Laatste Login:</strong>
+                                @if (Model.User.LastLoginDate.HasValue)
+                                {
+                                    @Model.User.LastLoginDate.Value.ToString("dd-MM-yyyy HH:mm")
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Nog niet ingelogd</span>
+                                }
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Verificatie Status</h6>
+                            <hr />
+                            <p><strong>Email Bevestigd:</strong>
+                                @if (Model.User.EmailConfirmed)
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle"></i> Bevestigd
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning">
+                                        <i class="bi bi-exclamation-triangle"></i> Niet Bevestigd
+                                    </span>
+                                }
+                            </p>
+                            <p><strong>Telefoonnummer Bevestigd:</strong>
+                                @if (Model.User.PhoneNumberConfirmed)
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle"></i> Bevestigd
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning">
+                                        <i class="bi bi-exclamation-triangle"></i> Niet Bevestigd
+                                    </span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <!-- Roles Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-shield-check"></i> Mijn Rollen
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Roles.Any())
+                    {
+                        <ul class="list-group">
+                            @foreach (var role in Model.Roles)
+                            {
+                                <li class="list-group-item">
+                                    <i class="bi bi-shield-check text-@(role == "Administrator" ? "danger" : role == "Manager" ? "primary" : "secondary")"></i>
+                                    <strong>@role</strong>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">Geen rollen toegewezen</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-lightning-charge"></i> Snelle Acties
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <a asp-area="Identity" asp-page="/Account/Manage/ChangePassword" class="btn btn-primary w-100 mb-2">
+                        <i class="bi bi-key"></i> Wachtwoord Wijzigen
+                    </a>
+                    <a asp-area="Identity" asp-page="/Account/Manage/Email" class="btn btn-outline-primary w-100 mb-2">
+                        <i class="bi bi-envelope"></i> Email Wijzigen
+                    </a>
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <hr />
+                        <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-danger w-100 mb-2">
+                            <i class="bi bi-shield-check"></i> Admin Panel
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Permissions Info (alleen voor gebruikers met rollen) -->
+    @if (Model.Roles.Any())
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-info-circle"></i> Mijn Rechten
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        @if (User.IsInRole("Administrator"))
+                        {
+                            <div class="alert alert-danger mb-0">
+                                <h6 class="alert-heading">
+                                    <i class="bi bi-shield-check"></i> Administrator Rechten
+                                </h6>
+                                <p class="mb-0">Als Administrator heeft u volledige toegang tot alle systeem functies, inclusief:</p>
+                                <ul class="mt-2 mb-0">
+                                    <li>Alle CRUD operaties op alle entiteiten</li>
+                                    <li>Gebruikersbeheer (rollen toewijzen, accounts activeren/deactiveren)</li>
+                                    <li>Wachtwoorden resetten</li>
+                                    <li>Leveringen verwerken</li>
+                                    <li>Rapporten genereren</li>
+                                    <li>Systeem configuratie</li>
+                                </ul>
+                            </div>
+                        }
+                        else if (User.IsInRole("Manager"))
+                        {
+                            <div class="alert alert-primary mb-0">
+                                <h6 class="alert-heading">
+                                    <i class="bi bi-person-badge"></i> Manager Rechten
+                                </h6>
+                                <p class="mb-0">Als Manager heeft u operationele toegang tot:</p>
+                                <ul class="mt-2 mb-0">
+                                    <li>Toevoegen, wijzigen en verwijderen van alle entiteiten</li>
+                                    <li>Leveringen verwerken en voorraad beheren</li>
+                                    <li>Rapporten genereren</li>
+                                    <li><strong>Geen</strong> toegang tot gebruikersbeheer</li>
+                                </ul>
+                            </div>
+                        }
+                        else if (User.IsInRole("Employee"))
+                        {
+                            <div class="alert alert-secondary mb-0">
+                                <h6 class="alert-heading">
+                                    <i class="bi bi-person"></i> Employee Rechten
+                                </h6>
+                                <p class="mb-0">Als Employee heeft u alleen-lezen toegang:</p>
+                                <ul class="mt-2 mb-0">
+                                    <li>Data bekijken (alle modules)</li>
+                                    <li>Rapporten genereren en exporteren</li>
+                                    <li><strong>Geen</strong> wijzigingen toestaan</li>
+                                </ul>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Back Button -->
+    <div class="row mt-3">
+        <div class="col-12">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Terug naar Home
+            </a>
+        </div>
+    </div>
+</div>
