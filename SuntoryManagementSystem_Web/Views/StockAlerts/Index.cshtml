@@ -1,7 +1,11 @@
 ﻿@model IEnumerable<SuntoryManagementSystem.Models.StockAlert>
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer _localizer
+@inject IHtmlLocalizer<SuntoryManagementSystem_Web.Services.SharedResource> _sharedLocalizer
 
 @{
-    ViewData["Title"] = "Voorraadwaarschuwingen";
+    ViewData["Title"] = _localizer["Title"];
     var currentFilter = ViewBag.CurrentFilter as string ?? "active";
     var activeCount = ViewBag.ActiveCount as int? ?? 0;
     var resolvedCount = ViewBag.ResolvedCount as int? ?? 0;
@@ -14,13 +18,13 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="display-5 fw-bold mb-2">
-                        <i class="bi bi-exclamation-triangle-fill me-3"></i>Voorraadwaarschuwingen
+                        <i class="bi bi-exclamation-triangle-fill me-3"></i>@_localizer["Stock Alerts"]
                     </h1>
-                    <p class="mb-0 opacity-75">Automatisch gegenereerde waarschuwingen voor lage voorraad</p>
+                    <p class="mb-0 opacity-75">@_localizer["Auto generated alerts"]</p>
                 </div>
                 <div>
                     <a asp-controller="Products" asp-action="Index" class="btn btn-outline-primary btn-lg">
-                        <i class="bi bi-box-seam me-2"></i>Ga naar Producten
+                        <i class="bi bi-box-seam me-2"></i>@_localizer["Go to Products"]
                     </a>
                 </div>
             </div>
@@ -33,19 +37,19 @@
             <ul class="nav nav-pills nav-fill">
                 <li class="nav-item">
                     <a class="nav-link @(currentFilter == "active" ? "active" : "")" asp-action="Index" asp-route-filter="active">
-                        <i class="bi bi-exclamation-circle-fill me-2"></i>Actieve Alerts
+                        <i class="bi bi-exclamation-circle-fill me-2"></i>@_localizer["Active Alerts"]
                         <span class="badge bg-danger ms-2">@activeCount</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link @(currentFilter == "resolved" ? "active" : "")" asp-action="Index" asp-route-filter="resolved">
-                        <i class="bi bi-check-circle-fill me-2"></i>Opgeloste Alerts
+                        <i class="bi bi-check-circle-fill me-2"></i>@_localizer["Resolved Alerts"]
                         <span class="badge bg-success ms-2">@resolvedCount</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link @(currentFilter == "all" ? "active" : "")" asp-action="Index" asp-route-filter="all">
-                        <i class="bi bi-list-ul me-2"></i>Alle Alerts
+                        <i class="bi bi-list-ul me-2"></i>@_localizer["All Alerts"]
                         <span class="badge bg-secondary ms-2">@(activeCount + resolvedCount)</span>
                     </a>
                 </li>
@@ -56,14 +60,14 @@
     <!-- Info Alert -->
     <div class="alert alert-info alert-dismissible fade show" role="alert">
         <i class="bi bi-info-circle-fill me-2"></i>
-        <strong>Automatisch beheer:</strong> Stock alerts worden automatisch aangemaakt wanneer de voorraad onder het minimum komt en worden opgelost wanneer de voorraad weer op peil is.
+        <strong>@_localizer["Auto management info"]</strong>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
     <!-- Search Box -->
     <div class="search-box">
         <i class="bi bi-search"></i>
-        <input type="text" id="searchInput" class="form-control form-control-lg shadow-sm" placeholder="Zoek op productnaam, type of notities...">
+        <input type="text" id="searchInput" class="form-control form-control-lg shadow-sm" placeholder="@_localizer["Search placeholder"]">
     </div>
 
     <!-- Table Card -->
@@ -73,14 +77,14 @@
                 <table class="table table-modern table-hover mb-0" id="alertsTable">
                     <thead>
                         <tr>
-                            <th><i class="bi bi-box me-2"></i>Product</th>
-                            <th><i class="bi bi-building me-2"></i>Leverancier</th>
-                            <th><i class="bi bi-exclamation-triangle me-2"></i>Type</th>
-                            <th><i class="bi bi-circle-fill me-2"></i>Status</th>
-                            <th><i class="bi bi-calendar me-2"></i>Aangemaakt</th>
-                            <th><i class="bi bi-calendar-check me-2"></i>Opgelost</th>
-                            <th><i class="bi bi-sticky me-2"></i>Notities</th>
-                            <th class="text-center"><i class="bi bi-gear me-2"></i>Acties</th>
+                            <th><i class="bi bi-box me-2"></i>@_localizer["Product"]</th>
+                            <th><i class="bi bi-building me-2"></i>@_localizer["Supplier"]</th>
+                            <th><i class="bi bi-exclamation-triangle me-2"></i>@_localizer["Type"]</th>
+                            <th><i class="bi bi-circle-fill me-2"></i>@_sharedLocalizer["Status"]</th>
+                            <th><i class="bi bi-calendar me-2"></i>@_localizer["Created"]</th>
+                            <th><i class="bi bi-calendar-check me-2"></i>@_localizer["Resolved"]</th>
+                            <th><i class="bi bi-sticky me-2"></i>@_localizer["Notes"]</th>
+                            <th class="text-center"><i class="bi bi-gear me-2"></i>@_sharedLocalizer["Actions"]</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -100,19 +104,19 @@
                                 @if (item.AlertType == "Out of Stock")
                                 {
                                     <span class="badge bg-danger badge-modern">
-                                        <i class="bi bi-x-circle me-1"></i>Uitverkocht
+                                        <i class="bi bi-x-circle me-1"></i>@_localizer["Type Out of Stock"]
                                     </span>
                                 }
                                 else if (item.AlertType == "Critical")
                                 {
                                     <span class="badge bg-warning badge-modern">
-                                        <i class="bi bi-exclamation-triangle me-1"></i>Kritiek
+                                        <i class="bi bi-exclamation-triangle me-1"></i>@_localizer["Type Critical"]
                                     </span>
                                 }
                                 else
                                 {
                                     <span class="badge bg-info badge-modern">
-                                        <i class="bi bi-info-circle me-1"></i>Laag
+                                        <i class="bi bi-info-circle me-1"></i>@_localizer["Type Low"]
                                     </span>
                                 }
                             </td>
@@ -120,13 +124,13 @@
                                 @if (item.Status == "Active")
                                 {
                                     <span class="badge bg-danger badge-modern">
-                                        <i class="bi bi-exclamation-circle me-1"></i>Actief
+                                        <i class="bi bi-exclamation-circle me-1"></i>@_localizer["Status Active"]
                                     </span>
                                 }
                                 else if (item.Status == "Resolved")
                                 {
                                     <span class="badge bg-success badge-modern">
-                                        <i class="bi bi-check-circle me-1"></i>Opgelost
+                                        <i class="bi bi-check-circle me-1"></i>@_localizer["Status Resolved"]
                                     </span>
                                 }
                                 else
@@ -165,12 +169,12 @@
                                 <div class="action-buttons justify-content-center">
                                     <a asp-action="Details" asp-route-id="@item.StockAlertId" 
                                        class="btn btn-sm btn-info btn-action text-white" 
-                                       title="Bekijk Details">
+                                       title="@_localizer["View Details"]">
                                         <i class="bi bi-eye-fill"></i>
                                     </a>
                                     <a asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId" 
                                        class="btn btn-sm btn-success btn-action text-white" 
-                                       title="Bekijk Product">
+                                       title="@_localizer["View Product"]">
                                         <i class="bi bi-box-seam-fill"></i>
                                     </a>
                                 </div>
@@ -183,7 +187,7 @@ else
                         <tr>
                             <td colspan="8" class="text-center py-5">
                                 <i class="bi bi-inbox display-1 text-muted d-block mb-3"></i>
-                                <p class="lead text-muted">Geen waarschuwingen gevonden</p>
+                                <p class="lead text-muted">@_localizer["No alerts found"]</p>
                             </td>
                         </tr>
 }

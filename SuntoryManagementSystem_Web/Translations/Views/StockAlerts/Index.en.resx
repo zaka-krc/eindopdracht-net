@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  
+  <data name="Title" xml:space="preserve"><value>Stock Alerts</value></data>
+  <data name="Stock Alerts" xml:space="preserve"><value>Stock Alerts</value></data>
+  <data name="Auto generated alerts" xml:space="preserve"><value>Automatically generated alerts for low stock</value></data>
+  <data name="Go to Products" xml:space="preserve"><value>Go to Products</value></data>
+  <data name="Active Alerts" xml:space="preserve"><value>Active Alerts</value></data>
+  <data name="Resolved Alerts" xml:space="preserve"><value>Resolved Alerts</value></data>
+  <data name="All Alerts" xml:space="preserve"><value>All Alerts</value></data>
+  <data name="Auto management info" xml:space="preserve"><value>Stock alerts are automatically created when stock falls below minimum and resolved when stock is replenished.</value></data>
+  <data name="Search placeholder" xml:space="preserve"><value>Search by product name, type or notes...</value></data>
+  <data name="Product" xml:space="preserve"><value>Product</value></data>
+  <data name="Supplier" xml:space="preserve"><value>Supplier</value></data>
+  <data name="Type" xml:space="preserve"><value>Type</value></data>
+  <data name="Created" xml:space="preserve"><value>Created</value></data>
+  <data name="Resolved" xml:space="preserve"><value>Resolved</value></data>
+  <data name="Notes" xml:space="preserve"><value>Notes</value></data>
+  <data name="Type Out of Stock" xml:space="preserve"><value>Out of Stock</value></data>
+  <data name="Type Critical" xml:space="preserve"><value>Critical</value></data>
+  <data name="Type Low" xml:space="preserve"><value>Low</value></data>
+  <data name="Status Active" xml:space="preserve"><value>Active</value></data>
+  <data name="Status Resolved" xml:space="preserve"><value>Resolved</value></data>
+  <data name="No alerts found" xml:space="preserve"><value>No alerts found</value></data>
+  <data name="View Details" xml:space="preserve"><value>View Details</value></data>
+  <data name="View Product" xml:space="preserve"><value>View Product</value></data>
+</root>

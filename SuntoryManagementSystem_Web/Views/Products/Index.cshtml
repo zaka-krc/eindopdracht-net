@@ -1,7 +1,11 @@
 ﻿@model IEnumerable<SuntoryManagementSystem.Models.Product>
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer _localizer
+@inject IHtmlLocalizer<SuntoryManagementSystem_Web.Services.SharedResource> _sharedLocalizer
 
 @{
-    ViewData["Title"] = "Producten";
+    ViewData["Title"] = _localizer["Title"];
 }
 
 <div class="container-fluid px-4">
@@ -10,12 +14,12 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="display-5 fw-bold mb-2">
-                        <i class="bi bi-box-seam-fill me-3"></i>Producten Beheer
+                        <i class="bi bi-box-seam-fill me-3"></i>@_localizer["Products Management"]
                     </h1>
-                    <p class="mb-0 opacity-75">Overzicht van alle Suntory dranken en voorraad</p>
+                    <p class="mb-0 opacity-75">@_localizer["Overview of all Suntory drinks and stock"]</p>
                 </div>
                 <a asp-action="Create" class="btn btn-light btn-lg shadow-sm">
-                    <i class="bi bi-plus-circle-fill me-2"></i>Nieuw Product
+                    <i class="bi bi-plus-circle-fill me-2"></i>@_localizer["New Product"]
                 </a>
             </div>
         </div>
@@ -23,7 +27,7 @@
 
     <div class="search-box">
         <i class="bi bi-search"></i>
-        <input type="text" id="searchInput" class="form-control form-control-lg shadow-sm" placeholder="Zoek op productnaam, SKU of categorie...">
+        <input type="text" id="searchInput" class="form-control form-control-lg shadow-sm" placeholder="@_localizer["Search placeholder"]">
     </div>
 
     <div class="card border-0 shadow-sm">
@@ -32,16 +36,16 @@
                 <table class="table table-modern table-hover mb-0" id="productsTable">
                     <thead>
                         <tr>
-                            <th><i class="bi bi-box me-2"></i>Product</th>
-                            <th><i class="bi bi-upc me-2"></i>SKU</th>
-                            <th><i class="bi bi-tag me-2"></i>Categorie</th>
-                            <th><i class="bi bi-building me-2"></i>Leverancier</th>
-                            <th><i class="bi bi-cash me-2"></i>Inkoop</th>
-                            <th><i class="bi bi-currency-euro me-2"></i>Verkoop</th>
-                            <th><i class="bi bi-box2 me-2"></i>Voorraad</th>
-                            <th><i class="bi bi-exclamation-triangle me-2"></i>Min.</th>
-                            <th><i class="bi bi-circle-fill me-2"></i>Status</th>
-                            <th class="text-center"><i class="bi bi-gear me-2"></i>Acties</th>
+                            <th><i class="bi bi-box me-2"></i>@_localizer["Product"]</th>
+                            <th><i class="bi bi-upc me-2"></i>@_localizer["SKU"]</th>
+                            <th><i class="bi bi-tag me-2"></i>@_localizer["Category"]</th>
+                            <th><i class="bi bi-building me-2"></i>@_localizer["Supplier"]</th>
+                            <th><i class="bi bi-cash me-2"></i>@_localizer["Purchase"]</th>
+                            <th><i class="bi bi-currency-euro me-2"></i>@_localizer["Sale"]</th>
+                            <th><i class="bi bi-box2 me-2"></i>@_localizer["Stock"]</th>
+                            <th><i class="bi bi-exclamation-triangle me-2"></i>@_localizer["Min"]</th>
+                            <th><i class="bi bi-circle-fill me-2"></i>@_sharedLocalizer["Status"]</th>
+                            <th class="text-center"><i class="bi bi-gear me-2"></i>@_sharedLocalizer["Actions"]</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -72,22 +76,22 @@
                             <td>
                                 @if (item.IsActive)
                                 {
-                                    <span class="badge bg-success badge-modern"><i class="bi bi-check-circle me-1"></i>Actief</span>
+                                    <span class="badge bg-success badge-modern"><i class="bi bi-check-circle me-1"></i>@_localizer["Active"]</span>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-secondary badge-modern"><i class="bi bi-dash-circle me-1"></i>Inactief</span>
+                                    <span class="badge bg-secondary badge-modern"><i class="bi bi-dash-circle me-1"></i>@_localizer["Inactive"]</span>
                                 }
                             </td>
                             <td>
                                 <div class="action-buttons justify-content-center">
-                                    <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-sm btn-info btn-action text-white" title="Details">
+                                    <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-sm btn-info btn-action text-white" title="@_sharedLocalizer["Details"]">
                                         <i class="bi bi-eye-fill"></i>
                                     </a>
-                                    <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-sm btn-warning btn-action text-white" title="Bewerken">
+                                    <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-sm btn-warning btn-action text-white" title="@_sharedLocalizer["Edit"]">
                                         <i class="bi bi-pencil-fill"></i>
                                     </a>
-                                    <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-sm btn-danger btn-action" title="Verwijderen">
+                                    <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-sm btn-danger btn-action" title="@_sharedLocalizer["Delete"]">
                                         <i class="bi bi-trash-fill"></i>
                                     </a>
                                 </div>
@@ -104,9 +108,9 @@
     {
         <div class="text-center py-5">
             <i class="bi bi-inbox display-1 text-muted"></i>
-            <p class="lead text-muted mt-3">Geen producten gevonden</p>
+            <p class="lead text-muted mt-3">@_localizer["No products found"]</p>
             <a asp-action="Create" class="btn btn-success btn-lg mt-3">
-                <i class="bi bi-plus-circle-fill me-2"></i>Eerste Product Toevoegen
+                <i class="bi bi-plus-circle-fill me-2"></i>@_localizer["Add First Product"]
             </a>
         </div>
     }

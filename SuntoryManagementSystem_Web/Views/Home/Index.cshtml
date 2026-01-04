@@ -1,5 +1,9 @@
-﻿@{
-    ViewData["Title"] = "Dashboard";
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer _localizer
+
+@{
+    ViewData["Title"] = _localizer["Title"];
 }
 
 <div class="container-fluid px-4 py-5">
@@ -7,9 +11,9 @@
     <div class="row mb-5">
         <div class="col-12">
             <h1 class="display-4 fw-bold text-primary">
-                <i class="bi bi-speedometer2 me-3"></i>Suntory Management Dashboard
+                <i class="bi bi-speedometer2 me-3"></i>@_localizer["Dashboard Title"]
             </h1>
-            <p class="lead text-muted">Welkom bij het Suntory beverage management systeem</p>
+            <p class="lead text-muted">@_localizer["Welcome"]</p>
             <hr class="my-4">
         </div>
     </div>
@@ -21,7 +25,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-white-50 text-uppercase mb-2">Actieve Klanten</h6>
+                            <h6 class="text-white-50 text-uppercase mb-2">@_localizer["Active Customers"]</h6>
                             <h2 class="mb-0 fw-bold">@ViewBag.ActiveCustomers</h2>
                         </div>
                         <i class="bi bi-people-fill fs-1 opacity-50"></i>
@@ -34,7 +38,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-white-50 text-uppercase mb-2">Producten</h6>
+                            <h6 class="text-white-50 text-uppercase mb-2">@_localizer["Products"]</h6>
                             <h2 class="mb-0 fw-bold">@ViewBag.TotalProducts</h2>
                         </div>
                         <i class="bi bi-box-seam-fill fs-1 opacity-50"></i>
@@ -47,7 +51,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-white-50 text-uppercase mb-2">Leveringen</h6>
+                            <h6 class="text-white-50 text-uppercase mb-2">@_localizer["Deliveries"]</h6>
                             <h2 class="mb-0 fw-bold">@ViewBag.PendingDeliveries</h2>
                         </div>
                         <i class="bi bi-truck me-3 fs-1 opacity-50"></i>
@@ -60,7 +64,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center text-white">
                         <div>
-                            <h6 class="text-white-50 text-uppercase mb-2">Stock Alerts</h6>
+                            <h6 class="text-white-50 text-uppercase mb-2">@_localizer["Stock Alerts"]</h6>
                             <h2 class="mb-0 fw-bold">@ViewBag.StockAlerts</h2>
                         </div>
                         <i class="bi bi-exclamation-triangle-fill fs-1 opacity-50"></i>
@@ -74,7 +78,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h3 class="fw-bold mb-4">
-                <i class="bi bi-grid-3x3-gap-fill me-2"></i>Modules
+                <i class="bi bi-grid-3x3-gap-fill me-2"></i>@_localizer["Modules"]
             </h3>
         </div>
     </div>
@@ -89,13 +93,13 @@
                         <div class="icon-box bg-primary bg-opacity-10 rounded-3 p-3 me-3">
                             <i class="bi bi-people-fill fs-2 text-primary"></i>
                         </div>
-                        <h4 class="card-title mb-0 fw-bold">Klanten</h4>
+                        <h4 class="card-title mb-0 fw-bold">@_localizer["Customers"]</h4>
                     </div>
                     <p class="card-text text-muted mb-4">
-                        Beheer klantgegevens, contactpersonen en leveradressen.
+                        @_localizer["Customers Description"]
                     </p>
                     <a asp-controller="Customers" asp-action="Index" class="btn btn-primary">
-                        <i class="bi bi-arrow-right-circle me-2"></i>Naar Klanten
+                        <i class="bi bi-arrow-right-circle me-2"></i>@_localizer["Go to Customers"]
                     </a>
                 </div>
             </div>
@@ -109,13 +113,13 @@
                         <div class="icon-box bg-success bg-opacity-10 rounded-3 p-3 me-3">
                             <i class="bi bi-box-seam-fill fs-2 text-success"></i>
                         </div>
-                        <h4 class="card-title mb-0 fw-bold">Producten</h4>
+                        <h4 class="card-title mb-0 fw-bold">@_localizer["Products"]</h4>
                     </div>
                     <p class="card-text text-muted mb-4">
-                        Overzicht van alle Suntory dranken met voorraad en prijzen.
+                        @_localizer["Products Description"]
                     </p>
                     <a asp-controller="Products" asp-action="Index" class="btn btn-success">
-                        <i class="bi bi-arrow-right-circle me-2"></i>Naar Producten
+                        <i class="bi bi-arrow-right-circle me-2"></i>@_localizer["Go to Products"]
                     </a>
                 </div>
             </div>
@@ -129,13 +133,13 @@
                         <div class="icon-box bg-info bg-opacity-10 rounded-3 p-3 me-3">
                             <i class="bi bi-building-fill fs-2 text-info"></i>
                         </div>
-                        <h4 class="card-title mb-0 fw-bold">Leveranciers</h4>
+                        <h4 class="card-title mb-0 fw-bold">@_localizer["Suppliers"]</h4>
                     </div>
                     <p class="card-text text-muted mb-4">
-                        Beheer leveranciers en hun contactgegevens.
+                        @_localizer["Suppliers Description"]
                     </p>
                     <a asp-controller="Suppliers" asp-action="Index" class="btn btn-info text-white">
-                        <i class="bi bi-arrow-right-circle me-2"></i>Naar Leveranciers
+                        <i class="bi bi-arrow-right-circle me-2"></i>@_localizer["Go to Suppliers"]
                     </a>
                 </div>
             </div>
@@ -149,13 +153,13 @@
                         <div class="icon-box bg-warning bg-opacity-10 rounded-3 p-3 me-3">
                             <i class="bi bi-truck fs-2 text-warning"></i>
                         </div>
-                        <h4 class="card-title mb-0 fw-bold">Leveringen</h4>
+                        <h4 class="card-title mb-0 fw-bold">@_localizer["Deliveries"]</h4>
                     </div>
                     <p class="card-text text-muted mb-4">
-                        Plan en volg leveringen naar klanten met status tracking.
+                        @_localizer["Deliveries Description"]
                     </p>
                     <a asp-controller="Deliveries" asp-action="Index" class="btn btn-warning text-white">
-                        <i class="bi bi-arrow-right-circle me-2"></i>Naar Leveringen
+                        <i class="bi bi-arrow-right-circle me-2"></i>@_localizer["Go to Deliveries"]
                     </a>
                 </div>
             </div>
@@ -169,13 +173,13 @@
                         <div class="icon-box bg-danger bg-opacity-10 rounded-3 p-3 me-3">
                             <i class="bi bi-truck-front-fill fs-2 text-danger"></i>
                         </div>
-                        <h4 class="card-title mb-0 fw-bold">Voertuigen</h4>
+                        <h4 class="card-title mb-0 fw-bold">@_localizer["Vehicles"]</h4>
                     </div>
                     <p class="card-text text-muted mb-4">
-                        Beheer de vloot: registratienummers, capaciteit en status.
+                        @_localizer["Vehicles Description"]
                     </p>
                     <a asp-controller="Vehicles" asp-action="Index" class="btn btn-danger">
-                        <i class="bi bi-arrow-right-circle me-2"></i>Naar Voertuigen
+                        <i class="bi bi-arrow-right-circle me-2"></i>@_localizer["Go to Vehicles"]
                     </a>
                 </div>
             </div>
@@ -189,13 +193,13 @@
                         <div class="icon-box bg-secondary bg-opacity-10 rounded-3 p-3 me-3">
                             <i class="bi bi-clipboard-check-fill fs-2 text-secondary"></i>
                         </div>
-                        <h4 class="card-title mb-0 fw-bold">Voorraad Aanpassingen</h4>
+                        <h4 class="card-title mb-0 fw-bold">@_localizer["Stock Adjustments"]</h4>
                     </div>
                     <p class="card-text text-muted mb-4">
-                        Log voorraadwijzigingen: inkomend, uitgaand en correcties.
+                        @_localizer["Stock Adjustments Description"]
                     </p>
                     <a asp-controller="StockAdjustments" asp-action="Index" class="btn btn-secondary">
-                        <i class="bi bi-arrow-right-circle me-2"></i>Naar Aanpassingen
+                        <i class="bi bi-arrow-right-circle me-2"></i>@_localizer["Go to Adjustments"]
                     </a>
                 </div>
             </div>
@@ -209,13 +213,13 @@
                         <div class="icon-box rounded-3 p-3 me-3" style="background-color: rgba(255, 140, 66, 0.1);">
                             <i class="bi bi-exclamation-triangle-fill fs-2" style="color: #ff8c42;"></i>
                         </div>
-                        <h4 class="card-title mb-0 fw-bold">Stock Alerts</h4>
+                        <h4 class="card-title mb-0 fw-bold">@_localizer["Stock Alerts"]</h4>
                     </div>
                     <p class="card-text text-muted mb-4">
-                        Waarschuwingen voor lage voorraad en kritieke niveaus.
+                        @_localizer["Stock Alerts Description"]
                     </p>
                     <a asp-controller="StockAlerts" asp-action="Index" class="btn" style="background-color: #ff8c42; color: white; border: 1px solid #ff8c42;">
-                        <i class="bi bi-bell-fill me-2"></i>Bekijk Alerts
+                        <i class="bi bi-bell-fill me-2"></i>@_localizer["View Alerts"]
                     </a>
                 </div>
             </div>
@@ -229,13 +233,13 @@
                         <div class="icon-box bg-dark bg-opacity-10 rounded-3 p-3 me-3">
                             <i class="bi bi-list-check fs-2 text-dark"></i>
                         </div>
-                        <h4 class="card-title mb-0 fw-bold">Levering Items</h4>
+                        <h4 class="card-title mb-0 fw-bold">@_localizer["Delivery Items"]</h4>
                     </div>
                     <p class="card-text text-muted mb-4">
-                        Detailregels van leveringen: producten en hoeveelheden.
+                        @_localizer["Delivery Items Description"]
                     </p>
                     <a asp-controller="DeliveryItems" asp-action="Index" class="btn btn-dark">
-                        <i class="bi bi-arrow-right-circle me-2"></i>Naar Items
+                        <i class="bi bi-arrow-right-circle me-2"></i>@_localizer["Go to Items"]
                     </a>
                 </div>
             </div>
@@ -249,29 +253,29 @@
         <div class="row mt-5">
             <div class="col-12">
                 <h3 class="fw-bold mb-4">
-                    <i class="bi bi-lightning-charge-fill me-2"></i>Snelle Acties
+                    <i class="bi bi-lightning-charge-fill me-2"></i>@_localizer["Quick Actions"]
                 </h3>
             </div>
         </div>
         <div class="row g-3">
             <div class="col-md-3">
                 <a asp-controller="Customers" asp-action="Create" class="btn btn-outline-primary w-100 py-3">
-                    <i class="bi bi-plus-circle-fill me-2"></i>Nieuwe Klant
+                    <i class="bi bi-plus-circle-fill me-2"></i>@_localizer["New Customer"]
                 </a>
             </div>
             <div class="col-md-3">
                 <a asp-controller="Products" asp-action="Create" class="btn btn-outline-success w-100 py-3">
-                    <i class="bi bi-plus-circle-fill me-2"></i>Nieuw Product
+                    <i class="bi bi-plus-circle-fill me-2"></i>@_localizer["New Product"]
                 </a>
             </div>
             <div class="col-md-3">
                 <a asp-controller="Deliveries" asp-action="Create" class="btn btn-outline-warning w-100 py-3">
-                    <i class="bi bi-plus-circle-fill me-2"></i>Nieuwe Levering
+                    <i class="bi bi-plus-circle-fill me-2"></i>@_localizer["New Delivery"]
                 </a>
             </div>
             <div class="col-md-3">
                 <a asp-controller="Suppliers" asp-action="Create" class="btn btn-outline-info w-100 py-3">
-                    <i class="bi bi-plus-circle-fill me-2"></i>Nieuwe Leverancier
+                    <i class="bi bi-plus-circle-fill me-2"></i>@_localizer["New Supplier"]
                 </a>
             </div>
         </div>

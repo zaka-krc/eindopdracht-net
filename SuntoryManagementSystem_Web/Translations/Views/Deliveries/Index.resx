@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  
+  <data name="Title" xml:space="preserve"><value>Leveringen</value></data>
+  <data name="Deliveries Management" xml:space="preserve"><value>Leveringen Beheer</value></data>
+  <data name="Overview of all deliveries and their status" xml:space="preserve"><value>Overzicht van alle leveringen en hun status</value></data>
+  <data name="New Delivery" xml:space="preserve"><value>Nieuwe Levering</value></data>
+  <data name="Search placeholder" xml:space="preserve"><value>Zoek op referentienummer, leverancier, klant of status...</value></data>
+  <data name="Reference" xml:space="preserve"><value>Referentie</value></data>
+  <data name="Type" xml:space="preserve"><value>Type</value></data>
+  <data name="Supplier" xml:space="preserve"><value>Leverancier</value></data>
+  <data name="Customer" xml:space="preserve"><value>Klant</value></data>
+  <data name="Vehicle" xml:space="preserve"><value>Voertuig</value></data>
+  <data name="Expected" xml:space="preserve"><value>Verwacht</value></data>
+  <data name="Delivered" xml:space="preserve"><value>Geleverd</value></data>
+  <data name="Amount" xml:space="preserve"><value>Bedrag</value></data>
+  <data name="Status Delivered" xml:space="preserve"><value>Geleverd</value></data>
+  <data name="Status Pending" xml:space="preserve"><value>In Afwachting</value></data>
+  <data name="Status InTransit" xml:space="preserve"><value>Onderweg</value></data>
+  <data name="No deliveries found" xml:space="preserve"><value>Geen leveringen gevonden</value></data>
+  <data name="Add First Delivery" xml:space="preserve"><value>Eerste Levering Toevoegen</value></data>
+</root>

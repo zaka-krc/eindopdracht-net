@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  
+  <data name="Title" xml:space="preserve"><value>Voertuigen</value></data>
+  <data name="Vehicles Management" xml:space="preserve"><value>Voertuigen Beheer</value></data>
+  <data name="Overview" xml:space="preserve"><value>Overzicht van alle voertuigen en hun beschikbaarheid</value></data>
+  <data name="New Vehicle" xml:space="preserve"><value>Nieuw Voertuig</value></data>
+  <data name="Search placeholder" xml:space="preserve"><value>Zoek op kenteken, merk, model of type...</value></data>
+  <data name="License Plate" xml:space="preserve"><value>Kenteken</value></data>
+  <data name="Brand" xml:space="preserve"><value>Merk</value></data>
+  <data name="Model" xml:space="preserve"><value>Model</value></data>
+  <data name="Type" xml:space="preserve"><value>Type</value></data>
+  <data name="Capacity" xml:space="preserve"><value>Capaciteit (kg)</value></data>
+  <data name="Available" xml:space="preserve"><value>Beschikbaar</value></data>
+  <data name="Last Maintenance" xml:space="preserve"><value>Laatste Onderhoud</value></data>
+  <data name="Created" xml:space="preserve"><value>Aangemaakt</value></data>
+  <data name="Yes" xml:space="preserve"><value>Ja</value></data>
+  <data name="No" xml:space="preserve"><value>Nee</value></data>
+  <data name="No vehicles found" xml:space="preserve"><value>Geen voertuigen gevonden</value></data>
+  <data name="Add First Vehicle" xml:space="preserve"><value>Eerste Voertuig Toevoegen</value></data>
+</root>

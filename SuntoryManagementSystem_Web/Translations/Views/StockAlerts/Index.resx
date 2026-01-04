@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  
+  <data name="Title" xml:space="preserve"><value>Voorraadwaarschuwingen</value></data>
+  <data name="Stock Alerts" xml:space="preserve"><value>Voorraadwaarschuwingen</value></data>
+  <data name="Auto generated alerts" xml:space="preserve"><value>Automatisch gegenereerde waarschuwingen voor lage voorraad</value></data>
+  <data name="Go to Products" xml:space="preserve"><value>Ga naar Producten</value></data>
+  <data name="Active Alerts" xml:space="preserve"><value>Actieve Alerts</value></data>
+  <data name="Resolved Alerts" xml:space="preserve"><value>Opgeloste Alerts</value></data>
+  <data name="All Alerts" xml:space="preserve"><value>Alle Alerts</value></data>
+  <data name="Auto management info" xml:space="preserve"><value>Stock alerts worden automatisch aangemaakt wanneer de voorraad onder het minimum komt en worden opgelost wanneer de voorraad weer op peil is.</value></data>
+  <data name="Search placeholder" xml:space="preserve"><value>Zoek op productnaam, type of notities...</value></data>
+  <data name="Product" xml:space="preserve"><value>Product</value></data>
+  <data name="Supplier" xml:space="preserve"><value>Leverancier</value></data>
+  <data name="Type" xml:space="preserve"><value>Type</value></data>
+  <data name="Created" xml:space="preserve"><value>Aangemaakt</value></data>
+  <data name="Resolved" xml:space="preserve"><value>Opgelost</value></data>
+  <data name="Notes" xml:space="preserve"><value>Notities</value></data>
+  <data name="Type Out of Stock" xml:space="preserve"><value>Uitverkocht</value></data>
+  <data name="Type Critical" xml:space="preserve"><value>Kritiek</value></data>
+  <data name="Type Low" xml:space="preserve"><value>Laag</value></data>
+  <data name="Status Active" xml:space="preserve"><value>Actief</value></data>
+  <data name="Status Resolved" xml:space="preserve"><value>Opgelost</value></data>
+  <data name="No alerts found" xml:space="preserve"><value>Geen waarschuwingen gevonden</value></data>
+  <data name="View Details" xml:space="preserve"><value>Bekijk Details</value></data>
+  <data name="View Product" xml:space="preserve"><value>Bekijk Product</value></data>
+</root>

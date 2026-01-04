@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  
+  <data name="Title" xml:space="preserve"><value>Customers</value></data>
+  <data name="Customers Management" xml:space="preserve"><value>Customers Management</value></data>
+  <data name="Overview of all customers and their data" xml:space="preserve"><value>Overview of all customers and their data</value></data>
+  <data name="New Customer" xml:space="preserve"><value>New Customer</value></data>
+  <data name="Search placeholder" xml:space="preserve"><value>Search by name, email, city or phone number...</value></data>
+  <data name="Name" xml:space="preserve"><value>Name</value></data>
+  <data name="Address" xml:space="preserve"><value>Address</value></data>
+  <data name="Postal Code" xml:space="preserve"><value>Postal Code</value></data>
+  <data name="City" xml:space="preserve"><value>City</value></data>
+  <data name="Phone" xml:space="preserve"><value>Phone</value></data>
+  <data name="Email" xml:space="preserve"><value>Email</value></data>
+  <data name="Contact Person" xml:space="preserve"><value>Contact Person</value></data>
+  <data name="Type" xml:space="preserve"><value>Type</value></data>
+  <data name="No customers found" xml:space="preserve"><value>No customers found</value></data>
+  <data name="Add First Customer" xml:space="preserve"><value>Add First Customer</value></data>
+</root>

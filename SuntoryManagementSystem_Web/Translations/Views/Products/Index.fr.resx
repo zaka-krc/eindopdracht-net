@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  
+  <data name="Title" xml:space="preserve"><value>Produits</value></data>
+  <data name="Products Management" xml:space="preserve"><value>Gestion des Produits</value></data>
+  <data name="Overview of all Suntory drinks and stock" xml:space="preserve"><value>Apercu de toutes les boissons et stocks Suntory</value></data>
+  <data name="New Product" xml:space="preserve"><value>Nouveau Produit</value></data>
+  <data name="Search placeholder" xml:space="preserve"><value>Rechercher par nom de produit, SKU ou categorie...</value></data>
+  <data name="Product" xml:space="preserve"><value>Produit</value></data>
+  <data name="SKU" xml:space="preserve"><value>SKU</value></data>
+  <data name="Category" xml:space="preserve"><value>Categorie</value></data>
+  <data name="Supplier" xml:space="preserve"><value>Fournisseur</value></data>
+  <data name="Purchase" xml:space="preserve"><value>Achat</value></data>
+  <data name="Sale" xml:space="preserve"><value>Vente</value></data>
+  <data name="Stock" xml:space="preserve"><value>Stock</value></data>
+  <data name="Min" xml:space="preserve"><value>Min.</value></data>
+  <data name="Active" xml:space="preserve"><value>Actif</value></data>
+  <data name="Inactive" xml:space="preserve"><value>Inactif</value></data>
+  <data name="No products found" xml:space="preserve"><value>Aucun produit trouve</value></data>
+  <data name="Add First Product" xml:space="preserve"><value>Ajouter le Premier Produit</value></data>
+</root>

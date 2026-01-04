@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  
+  <data name="Title" xml:space="preserve"><value>Dashboard</value></data>
+  <data name="Dashboard Title" xml:space="preserve"><value>Suntory Management Dashboard</value></data>
+  <data name="Welcome" xml:space="preserve"><value>Welcome to the Suntory beverage management system</value></data>
+  <data name="Active Customers" xml:space="preserve"><value>Active Customers</value></data>
+  <data name="Products" xml:space="preserve"><value>Products</value></data>
+  <data name="Deliveries" xml:space="preserve"><value>Deliveries</value></data>
+  <data name="Stock Alerts" xml:space="preserve"><value>Stock Alerts</value></data>
+  <data name="Modules" xml:space="preserve"><value>Modules</value></data>
+  <data name="Customers" xml:space="preserve"><value>Customers</value></data>
+  <data name="Customers Description" xml:space="preserve"><value>Manage customer data, contacts and delivery addresses.</value></data>
+  <data name="Go to Customers" xml:space="preserve"><value>Go to Customers</value></data>
+  <data name="Products Description" xml:space="preserve"><value>Overview of all Suntory drinks with stock and prices.</value></data>
+  <data name="Go to Products" xml:space="preserve"><value>Go to Products</value></data>
+  <data name="Suppliers" xml:space="preserve"><value>Suppliers</value></data>
+  <data name="Suppliers Description" xml:space="preserve"><value>Manage suppliers and their contact information.</value></data>
+  <data name="Go to Suppliers" xml:space="preserve"><value>Go to Suppliers</value></data>
+  <data name="Deliveries Description" xml:space="preserve"><value>Plan and track deliveries to customers with status tracking.</value></data>
+  <data name="Go to Deliveries" xml:space="preserve"><value>Go to Deliveries</value></data>
+  <data name="Vehicles" xml:space="preserve"><value>Vehicles</value></data>
+  <data name="Vehicles Description" xml:space="preserve"><value>Manage the fleet: license plates, capacity and status.</value></data>
+  <data name="Go to Vehicles" xml:space="preserve"><value>Go to Vehicles</value></data>
+  <data name="Stock Adjustments" xml:space="preserve"><value>Stock Adjustments</value></data>
+  <data name="Stock Adjustments Description" xml:space="preserve"><value>Log stock changes: incoming, outgoing and corrections.</value></data>
+  <data name="Go to Adjustments" xml:space="preserve"><value>Go to Adjustments</value></data>
+  <data name="Stock Alerts Description" xml:space="preserve"><value>Warnings for low stock and critical levels.</value></data>
+  <data name="View Alerts" xml:space="preserve"><value>View Alerts</value></data>
+  <data name="Delivery Items" xml:space="preserve"><value>Delivery Items</value></data>
+  <data name="Delivery Items Description" xml:space="preserve"><value>Delivery detail lines: products and quantities.</value></data>
+  <data name="Go to Items" xml:space="preserve"><value>Go to Items</value></data>
+  <data name="Quick Actions" xml:space="preserve"><value>Quick Actions</value></data>
+  <data name="New Customer" xml:space="preserve"><value>New Customer</value></data>
+  <data name="New Product" xml:space="preserve"><value>New Product</value></data>
+  <data name="New Delivery" xml:space="preserve"><value>New Delivery</value></data>
+  <data name="New Supplier" xml:space="preserve"><value>New Supplier</value></data>
+</root>

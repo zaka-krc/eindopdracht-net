@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  
+  <data name="Title" xml:space="preserve"><value>Dashboard</value></data>
+  <data name="Dashboard Title" xml:space="preserve"><value>Suntory Management Dashboard</value></data>
+  <data name="Welcome" xml:space="preserve"><value>Welkom bij het Suntory beverage management systeem</value></data>
+  <data name="Active Customers" xml:space="preserve"><value>Actieve Klanten</value></data>
+  <data name="Products" xml:space="preserve"><value>Producten</value></data>
+  <data name="Deliveries" xml:space="preserve"><value>Leveringen</value></data>
+  <data name="Stock Alerts" xml:space="preserve"><value>Stock Alerts</value></data>
+  <data name="Modules" xml:space="preserve"><value>Modules</value></data>
+  <data name="Customers" xml:space="preserve"><value>Klanten</value></data>
+  <data name="Customers Description" xml:space="preserve"><value>Beheer klantgegevens, contactpersonen en leveradressen.</value></data>
+  <data name="Go to Customers" xml:space="preserve"><value>Naar Klanten</value></data>
+  <data name="Products Description" xml:space="preserve"><value>Overzicht van alle Suntory dranken met voorraad en prijzen.</value></data>
+  <data name="Go to Products" xml:space="preserve"><value>Naar Producten</value></data>
+  <data name="Suppliers" xml:space="preserve"><value>Leveranciers</value></data>
+  <data name="Suppliers Description" xml:space="preserve"><value>Beheer leveranciers en hun contactgegevens.</value></data>
+  <data name="Go to Suppliers" xml:space="preserve"><value>Naar Leveranciers</value></data>
+  <data name="Deliveries Description" xml:space="preserve"><value>Plan en volg leveringen naar klanten met status tracking.</value></data>
+  <data name="Go to Deliveries" xml:space="preserve"><value>Naar Leveringen</value></data>
+  <data name="Vehicles" xml:space="preserve"><value>Voertuigen</value></data>
+  <data name="Vehicles Description" xml:space="preserve"><value>Beheer de vloot: registratienummers, capaciteit en status.</value></data>
+  <data name="Go to Vehicles" xml:space="preserve"><value>Naar Voertuigen</value></data>
+  <data name="Stock Adjustments" xml:space="preserve"><value>Voorraad Aanpassingen</value></data>
+  <data name="Stock Adjustments Description" xml:space="preserve"><value>Log voorraadwijzigingen: inkomend, uitgaand en correcties.</value></data>
+  <data name="Go to Adjustments" xml:space="preserve"><value>Naar Aanpassingen</value></data>
+  <data name="Stock Alerts Description" xml:space="preserve"><value>Waarschuwingen voor lage voorraad en kritieke niveaus.</value></data>
+  <data name="View Alerts" xml:space="preserve"><value>Bekijk Alerts</value></data>
+  <data name="Delivery Items" xml:space="preserve"><value>Levering Items</value></data>
+  <data name="Delivery Items Description" xml:space="preserve"><value>Detailregels van leveringen: producten en hoeveelheden.</value></data>
+  <data name="Go to Items" xml:space="preserve"><value>Naar Items</value></data>
+  <data name="Quick Actions" xml:space="preserve"><value>Snelle Acties</value></data>
+  <data name="New Customer" xml:space="preserve"><value>Nieuwe Klant</value></data>
+  <data name="New Product" xml:space="preserve"><value>Nieuw Product</value></data>
+  <data name="New Delivery" xml:space="preserve"><value>Nieuwe Levering</value></data>
+  <data name="New Supplier" xml:space="preserve"><value>Nieuwe Leverancier</value></data>
+</root>

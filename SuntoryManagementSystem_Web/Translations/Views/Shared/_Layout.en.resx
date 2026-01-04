@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  
+  <data name="Home" xml:space="preserve"><value>Home</value></data>
+  <data name="Management" xml:space="preserve"><value>Management</value></data>
+  <data name="Products" xml:space="preserve"><value>Products</value></data>
+  <data name="Suppliers" xml:space="preserve"><value>Suppliers</value></data>
+  <data name="Customers" xml:space="preserve"><value>Customers</value></data>
+  <data name="Deliveries" xml:space="preserve"><value>Deliveries</value></data>
+  <data name="Vehicles" xml:space="preserve"><value>Vehicles</value></data>
+  <data name="Stock Alerts" xml:space="preserve"><value>Stock Alerts</value></data>
+  <data name="Delivery Items" xml:space="preserve"><value>Delivery Items</value></data>
+  <data name="Privacy" xml:space="preserve"><value>Privacy</value></data>
+</root>

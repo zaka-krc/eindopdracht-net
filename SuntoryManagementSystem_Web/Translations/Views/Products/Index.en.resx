@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  
+  <data name="Title" xml:space="preserve"><value>Products</value></data>
+  <data name="Products Management" xml:space="preserve"><value>Products Management</value></data>
+  <data name="Overview of all Suntory drinks and stock" xml:space="preserve"><value>Overview of all Suntory drinks and stock</value></data>
+  <data name="New Product" xml:space="preserve"><value>New Product</value></data>
+  <data name="Search placeholder" xml:space="preserve"><value>Search by product name, SKU or category...</value></data>
+  <data name="Product" xml:space="preserve"><value>Product</value></data>
+  <data name="SKU" xml:space="preserve"><value>SKU</value></data>
+  <data name="Category" xml:space="preserve"><value>Category</value></data>
+  <data name="Supplier" xml:space="preserve"><value>Supplier</value></data>
+  <data name="Purchase" xml:space="preserve"><value>Purchase</value></data>
+  <data name="Sale" xml:space="preserve"><value>Sale</value></data>
+  <data name="Stock" xml:space="preserve"><value>Stock</value></data>
+  <data name="Min" xml:space="preserve"><value>Min.</value></data>
+  <data name="Active" xml:space="preserve"><value>Active</value></data>
+  <data name="Inactive" xml:space="preserve"><value>Inactive</value></data>
+  <data name="No products found" xml:space="preserve"><value>No products found</value></data>
+  <data name="Add First Product" xml:space="preserve"><value>Add First Product</value></data>
+</root>
