@@ -115,13 +115,15 @@ public partial class DeliveryDetailPage : ContentPage
             {
                 Debug.WriteLine($"LoadDataAsync: Loading delivery {deliveryId}");
                 // Edit/View mode - load existing delivery
-                _delivery = await _context.Deliveries
+                var deliveryFromDb = await _context.Deliveries
                     .Include(d => d.Supplier)
                     .Include(d => d.Customer)
                     .Include(d => d.Vehicle)
-                    .Include(d => d.DeliveryItems)
+                    .Include(d => d.DeliveryItems!)
                         .ThenInclude(di => di.Product)
                     .FirstOrDefaultAsync(d => d.DeliveryId == deliveryId.Value);
+                
+                _delivery = deliveryFromDb;
                 
                 if (_delivery != null)
                 {
@@ -573,18 +575,21 @@ public partial class DeliveryDetailPage : ContentPage
             // Save delivery
             if (isNewDelivery)
             {
-                // Create new
+                // Geef nieuwe delivery een NEGATIEF TIJDELIJK ID voor sync
                 _delivery.CreatedDate = DateTime.Now;
+                _delivery.DeliveryId = -(int)(DateTime.Now.Ticks % int.MaxValue);
+                
                 await _context.Deliveries.AddAsync(_delivery);
                 await _context.SaveChangesAsync();
                 
-                Debug.WriteLine($"Created new delivery with ID: {_delivery.DeliveryId}");
+                Debug.WriteLine($"Created new LOCAL delivery with TEMPORARY ID: {_delivery.DeliveryId} (will be uploaded to server on next sync)");
                 
-                // Add items
+                // Add items (met negatieve IDs)
                 foreach (var itemVM in _deliveryItems)
                 {
                     var deliveryItem = new DeliveryItem
                     {
+                        DeliveryItemId = -(int)(DateTime.Now.Ticks % int.MaxValue), // Negatief tijdelijk ID
                         DeliveryId = _delivery.DeliveryId,
                         ProductId = itemVM.ProductId,
                         Quantity = itemVM.Quantity,

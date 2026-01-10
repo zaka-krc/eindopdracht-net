@@ -343,13 +343,19 @@ public partial class ProductDetailPage : ContentPage
                 // Parse adjustment type from picker
                 if (quantityChange < 0)
                 {
-                    var selectedType = AdjustmentTypePicker.SelectedItem.ToString();
-                    adjustmentType = selectedType.Split('-')[0].Trim();
+                    var selectedType = AdjustmentTypePicker.SelectedItem?.ToString();
+                    if (!string.IsNullOrEmpty(selectedType))
+                    {
+                        adjustmentType = selectedType.Split('-')[0].Trim();
+                    }
                 }
                 else
                 {
-                    var selectedType = AdditionTypePicker.SelectedItem.ToString();
-                    adjustmentType = selectedType.Split('-')[0].Trim();
+                    var selectedType = AdditionTypePicker.SelectedItem?.ToString();
+                    if (!string.IsNullOrEmpty(selectedType))
+                    {
+                        adjustmentType = selectedType.Split('-')[0].Trim();
+                    }
                 }
             }
             
@@ -370,12 +376,18 @@ public partial class ProductDetailPage : ContentPage
             // Save product
             if (isNewProduct)
             {
-                // Create new
+                // BELANGRIJKE WIJZING: Geef nieuw product een NEGATIEF TIJDELIJK ID
+                // Dit helpt SyncService om lokale producten te identificeren voor upload
                 _product.CreatedDate = DateTime.Now;
+                
+                // Genereer een uniek negatief ID gebaseerd op timestamp
+                // Dit voorkomt conflicten tussen meerdere lokale nieuwe producten
+                _product.ProductId = -(int)(DateTime.Now.Ticks % int.MaxValue);
+                
                 await _context.Products.AddAsync(_product);
                 await _context.SaveChangesAsync();
                 
-                Debug.WriteLine($"Created new product with ID: {_product.ProductId}");
+                Debug.WriteLine($"Created new LOCAL product with TEMPORARY ID: {_product.ProductId} (will be uploaded to server on next sync)");
                 
                 // Create initial stock adjustment if stock > 0
                 if (stockQuantity > 0)

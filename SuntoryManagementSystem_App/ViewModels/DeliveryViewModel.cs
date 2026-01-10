@@ -48,7 +48,7 @@ public partial class DeliveryViewModel : ObservableObject
                 .Include(d => d.Supplier)
                 .Include(d => d.Customer)
                 .Include(d => d.Vehicle)
-                .Include(d => d.DeliveryItems)
+                .Include(d => d.DeliveryItems!)
                     .ThenInclude(di => di.Product)
                 .Where(d => !d.IsDeleted)
                 .OrderByDescending(d => d.ExpectedDeliveryDate)

@@ -212,12 +212,14 @@ public partial class CustomerDetailPage : ContentPage
             // Save customer
             if (isNewCustomer)
             {
-                // Create new
+                // Geef nieuwe customer een NEGATIEF TIJDELIJK ID voor sync
                 _customer.CreatedDate = DateTime.Now;
+                _customer.CustomerId = -(int)(DateTime.Now.Ticks % int.MaxValue);
+                
                 await _context.Customers.AddAsync(_customer);
                 await _context.SaveChangesAsync();
                 
-                Debug.WriteLine($"Created new customer with ID: {_customer.CustomerId}");
+                Debug.WriteLine($"Created new LOCAL customer with TEMPORARY ID: {_customer.CustomerId} (will be uploaded to server on next sync)");
             }
             else
             {

@@ -38,6 +38,13 @@ namespace SuntoryManagementSystem.Models
         [Required]
         [Display(Name = "Actief")]
         public bool IsActive { get; set; } = true;
+        
+        // Refresh token voor mobiele app authenticatie
+        [StringLength(256)]
+        public string? RefreshToken { get; set; }
+        
+        // Vervaldatum van de refresh token
+        public DateTime? RefreshTokenExpiryTime { get; set; }
 
         public override string ToString()
         {

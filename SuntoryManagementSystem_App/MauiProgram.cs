@@ -19,6 +19,12 @@ namespace SuntoryManagementSystem_App
             builder.Services.AddDbContext<Data.LocalDbContext>();
             builder.Services.AddSingleton<Services.DatabaseService>();
 
+            // Connectivity & API Services
+            builder.Services.AddSingleton<Services.ConnectivityService>();
+            builder.Services.AddSingleton<Services.AuthService>();
+            builder.Services.AddSingleton<Services.ApiService>();
+            builder.Services.AddSingleton<Services.SyncService>();
+
             // Registreer ViewModels en Pages voor Dependency Injection
             builder.Services.AddSingleton<ViewModels.MainViewModel>();
             builder.Services.AddSingleton<Pages.MainPage>();
