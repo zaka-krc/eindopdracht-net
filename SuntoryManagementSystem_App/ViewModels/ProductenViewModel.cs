@@ -84,7 +84,11 @@ public partial class ProductenViewModel : ObservableObject
         {
             Debug.WriteLine($"LoadProductenAsync ERROR: {ex.Message}");
             Debug.WriteLine($"LoadProductenAsync STACK: {ex.StackTrace}");
-            await Shell.Current.DisplayAlert("Error", $"Kan producten niet laden: {ex.Message}", "OK");
+            
+            if (Application.Current?.MainPage != null)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Kan producten niet laden: {ex.Message}", "OK");
+            }
         }
         finally
         {
@@ -98,65 +102,97 @@ public partial class ProductenViewModel : ObservableObject
     {
         try
         {
+            Debug.WriteLine("VoegProductToe: Command triggered");
             Debug.WriteLine("VoegProductToe: Navigating to ProductDetailPage");
             await Shell.Current.GoToAsync(nameof(Pages.ProductDetailPage));
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"VoegProductToe ERROR: {ex.Message}");
-            await Shell.Current.DisplayAlert("Error", $"Kan niet navigeren: {ex.Message}", "OK");
+            Debug.WriteLine($"VoegProductToe STACK: {ex.StackTrace}");
+            
+            if (Application.Current?.MainPage != null)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Kan niet navigeren: {ex.Message}", "OK");
+            }
         }
     }
     
     [RelayCommand]
-    private async Task BekijkProduct(Product product)
+    private async Task BekijkProduct(Product? product)
     {
-        if (product == null) return;
+        if (product == null)
+        {
+            Debug.WriteLine("BekijkProduct: Product is null");
+            return;
+        }
         
         try
         {
-            Debug.WriteLine($"BekijkProduct: Navigating with ProductId={product.ProductId} in View mode");
+            Debug.WriteLine($"BekijkProduct: Command triggered for {product.ProductName}");
+            Debug.WriteLine($"BekijkProduct: Navigating with ProductId={product.ProductId} in VIEW mode (read-only)");
             await Shell.Current.GoToAsync($"{nameof(Pages.ProductDetailPage)}?ProductId={product.ProductId}&ViewMode=true");
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"BekijkProduct ERROR: {ex.Message}");
-            await Shell.Current.DisplayAlert("Error", $"Kan niet navigeren: {ex.Message}", "OK");
+            Debug.WriteLine($"BekijkProduct STACK: {ex.StackTrace}");
+            
+            if (Application.Current?.MainPage != null)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Kan niet navigeren: {ex.Message}", "OK");
+            }
         }
     }
     
     [RelayCommand]
-    private async Task BewerkProduct(Product product)
+    private async Task BewerkProduct(Product? product)
     {
-        if (product == null) return;
+        if (product == null)
+        {
+            Debug.WriteLine("BewerkProduct: Product is null");
+            return;
+        }
         
         try
         {
-            Debug.WriteLine($"BewerkProduct: Navigating with ProductId={product.ProductId} in Edit mode");
+            Debug.WriteLine($"BewerkProduct: Command triggered for {product.ProductName}");
+            Debug.WriteLine($"BewerkProduct: Navigating with ProductId={product.ProductId} in EDIT mode");
             await Shell.Current.GoToAsync($"{nameof(Pages.ProductDetailPage)}?ProductId={product.ProductId}&ViewMode=false");
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"BewerkProduct ERROR: {ex.Message}");
-            await Shell.Current.DisplayAlert("Error", $"Kan niet navigeren: {ex.Message}", "OK");
+            Debug.WriteLine($"BewerkProduct STACK: {ex.StackTrace}");
+            
+            if (Application.Current?.MainPage != null)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Kan niet navigeren: {ex.Message}", "OK");
+            }
         }
     }
     
     [RelayCommand]
-    private async Task VerwijderProduct(Product product)
+    private async Task VerwijderProduct(Product? product)
     {
-        if (product == null) return;
-        
-        bool bevestiging = await Shell.Current.DisplayAlert(
-            "Verwijderen", 
-            $"Weet je zeker dat je '{product.ProductName}' wilt verwijderen?",
-            "Ja", 
-            "Nee"
-        );
-        
-        if (bevestiging)
+        if (product == null)
         {
-            try
+            Debug.WriteLine("VerwijderProduct: Product is null");
+            return;
+        }
+        
+        try
+        {
+            Debug.WriteLine($"VerwijderProduct: Command triggered for {product.ProductName}");
+            
+            bool bevestiging = await Shell.Current.DisplayAlert(
+                "Verwijderen", 
+                $"Weet je zeker dat je '{product.ProductName}' wilt verwijderen?",
+                "Ja", 
+                "Nee"
+            );
+            
+            if (bevestiging)
             {
                 product.IsDeleted = true;
                 product.DeletedDate = DateTime.Now;
@@ -171,34 +207,27 @@ public partial class ProductenViewModel : ObservableObject
                 
                 Debug.WriteLine($"VerwijderProduct: Product {product.ProductName} deleted");
             }
-            catch (Exception ex)
+            else
             {
-                Debug.WriteLine($"VerwijderProduct ERROR: {ex.Message}");
-                await Shell.Current.DisplayAlert("Error", $"Fout bij verwijderen: {ex.Message}", "OK");
+                Debug.WriteLine($"VerwijderProduct: User cancelled deletion");
             }
-        }
-    }
-    
-    [RelayCommand]
-    private async Task VoorraadAanpassen(Product product)
-    {
-        if (product == null) return;
-        
-        try
-        {
-            Debug.WriteLine($"VoorraadAanpassen: Navigating with ProductId={product.ProductId} for stock adjustment");
-            await Shell.Current.GoToAsync($"{nameof(Pages.ProductDetailPage)}?ProductId={product.ProductId}&StockAdjustmentMode=true");
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"VoorraadAanpassen ERROR: {ex.Message}");
-            await Shell.Current.DisplayAlert("Error", $"Kan niet navigeren: {ex.Message}", "OK");
+            Debug.WriteLine($"VerwijderProduct ERROR: {ex.Message}");
+            Debug.WriteLine($"VerwijderProduct STACK: {ex.StackTrace}");
+            
+            if (Application.Current?.MainPage != null)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", $"Fout bij verwijderen: {ex.Message}", "OK");
+            }
         }
     }
     
     [RelayCommand]
     private async Task Refresh()
     {
+        Debug.WriteLine("Refresh: Command triggered");
         await LoadProductenAsync();
     }
 }

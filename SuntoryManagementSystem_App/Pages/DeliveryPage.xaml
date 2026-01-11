@@ -17,245 +17,300 @@
     <Grid RowDefinitions="Auto,*" Padding="20">
         
         <!-- HEADER SECTIE -->
-        <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" Margin="0,0,0,20">
+        <VerticalStackLayout Grid.Row="0" Spacing="15">
             
             <!-- Zoekbalk -->
-            <Border Grid.Column="0"
-                    BackgroundColor="#F5F5F5"
-                    Stroke="#E0E0E0"
-                    StrokeThickness="1"
-                    Padding="15,10"
-                    Margin="0,0,10,0">
+            <Border BackgroundColor="#F5F5F5"
+                    StrokeThickness="0">
                 <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="8"/>
+                    <RoundRectangle CornerRadius="10"/>
                 </Border.StrokeShape>
                 
-                <Entry Placeholder="Zoek leveringen..."
-                       Text="{Binding ZoekTekst}"
-                       BackgroundColor="Transparent"
-                       VerticalOptions="Center"/>
+                <SearchBar Placeholder="Zoek leveringen op referentie, partner, notities..."
+                           Text="{Binding ZoekTekst}"
+                           BackgroundColor="Transparent"/>
             </Border>
             
-            <!-- Type Filter Picker -->
-            <Picker Grid.Column="1"
-                    SelectedItem="{Binding GeselecteerdType}"
-                    BackgroundColor="#F5F5F5"
-                    WidthRequest="120"
-                    Margin="0,0,10,0">
-                <Picker.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>Alle</x:String>
-                        <x:String>Incoming</x:String>
-                        <x:String>Outgoing</x:String>
-                    </x:Array>
-                </Picker.ItemsSource>
-            </Picker>
+            <!-- Filters Grid -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <!-- Type Filter -->
+                <Border Grid.Column="0"
+                        BackgroundColor="#F5F5F5"
+                        StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10"/>
+                    </Border.StrokeShape>
+                    <Picker Title="Type"
+                            SelectedItem="{Binding GeselecteerdType}"
+                            BackgroundColor="Transparent">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Alle</x:String>
+                                <x:String>Incoming</x:String>
+                                <x:String>Outgoing</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </Border>
+                
+                <!-- Status Filter -->
+                <Border Grid.Column="1"
+                        BackgroundColor="#F5F5F5"
+                        StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10"/>
+                    </Border.StrokeShape>
+                    <Picker Title="Status"
+                            SelectedItem="{Binding GeselecteerdeStatus}"
+                            BackgroundColor="Transparent">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Alle</x:String>
+                                <x:String>Gepland</x:String>
+                                <x:String>Delivered</x:String>
+                                <x:String>Geannuleerd</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </Border>
+            </Grid>
             
-            <!-- Status Filter Picker -->
-            <Picker Grid.Column="2"
-                    SelectedItem="{Binding GeselecteerdeStatus}"
-                    BackgroundColor="#F5F5F5"
-                    WidthRequest="120"
-                    Margin="0,0,10,0">
-                <Picker.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>Alle</x:String>
-                        <x:String>Gepland</x:String>
-                        <x:String>Delivered</x:String>
-                        <x:String>Geannuleerd</x:String>
-                    </x:Array>
-                </Picker.ItemsSource>
-            </Picker>
-            
-            <!-- Refresh Button -->
-            <Button Grid.Column="3"
-                    Text="Vernieuwen"
-                    FontSize="14"
-                    BackgroundColor="#512BD4"
-                    TextColor="White"
-                    Padding="15,10"
-                    CornerRadius="8"
-                    Margin="0,0,10,0"
-                    Command="{Binding RefreshCommand}"/>
-            
-            <!-- Nieuwe Levering Button -->
-            <Button Grid.Column="4"
-                    Text="+ Nieuw"
-                    FontSize="14"
-                    BackgroundColor="#16A34A"
-                    TextColor="White"
-                    Padding="15,10"
-                    CornerRadius="8"
-                    Command="{Binding VoegLeveringToeCommand}"/>
-        </Grid>
+            <!-- Action Buttons -->
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                <Button Grid.Column="0"
+                        x:Name="BtnNieuw"
+                        Text="+ Nieuwe Levering"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        BackgroundColor="#28a745"
+                        TextColor="White"
+                        HeightRequest="50"
+                        CornerRadius="10"
+                        Clicked="OnNieuwClicked"/>
+                
+                <Button Grid.Column="1"
+                        x:Name="BtnRefresh"
+                        Text="Vernieuwen"
+                        FontSize="14"
+                        BackgroundColor="#512BD4"
+                        TextColor="White"
+                        WidthRequest="110"
+                        HeightRequest="50"
+                        CornerRadius="10"
+                        Clicked="OnRefreshClicked"/>
+            </Grid>
+        </VerticalStackLayout>
 
         <!-- LEVERINGEN LIJST -->
-        <Border Grid.Row="1"
-                BackgroundColor="#F5F5F5"
-                Stroke="#E0E0E0"
-                StrokeThickness="1">
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="12"/>
-            </Border.StrokeShape>
-            
-            <Grid>
-                <!-- Loading Indicator -->
-                <ActivityIndicator IsRunning="{Binding IsLoading}"
-                                 IsVisible="{Binding IsLoading}"
-                                 Color="#512BD4"
-                                 VerticalOptions="Center"
-                                 HorizontalOptions="Center"/>
-                
-                <!-- Leveringen CollectionView -->
-                <CollectionView ItemsSource="{Binding GefilterdeLeveringen}"
-                              IsVisible="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}"
-                              SelectionMode="None">
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Refreshing="OnRefreshViewRefreshing">
+            <ScrollView>
+                <VerticalStackLayout Spacing="0">
                     
-                    <CollectionView.EmptyView>
-                        <StackLayout Padding="40"
-                                   VerticalOptions="Center"
-                                   HorizontalOptions="Center">
-                            <Label Text="Geen leveringen gevonden"
-                                 FontSize="18"
-                                 FontAttributes="Bold"
-                                 HorizontalTextAlignment="Center"
-                                 TextColor="Gray"/>
-                            <Label Text="Voeg een levering toe of pas je zoekfilter aan"
-                                 FontSize="14"
-                                 HorizontalTextAlignment="Center"
-                                 TextColor="Gray"
-                                 Margin="0,5,0,0"/>
-                        </StackLayout>
-                    </CollectionView.EmptyView>
+                    <!-- Loading Indicator -->
+                    <ActivityIndicator IsRunning="{Binding IsLoading}"
+                                     IsVisible="{Binding IsLoading}"
+                                     Color="#512BD4"
+                                     WidthRequest="50"
+                                     HeightRequest="50"
+                                     Margin="0,20,0,0"
+                                     VerticalOptions="Center"
+                                     HorizontalOptions="Center"/>
                     
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="models:Delivery">
-                            <SwipeView>
-                                <SwipeView.RightItems>
-                                    <SwipeItems>
-                                        <SwipeItem Text="Bewerk"
-                                                 BackgroundColor="#512BD4"
-                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DeliveryViewModel}}, Path=BewerkLeveringCommand}"
-                                                 CommandParameter="{Binding .}"/>
-                                        <SwipeItem Text="Verwijder"
-                                                 BackgroundColor="#DC2626"
-                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DeliveryViewModel}}, Path=VerwijderLeveringCommand}"
-                                                 CommandParameter="{Binding .}"/>
-                                    </SwipeItems>
-                                </SwipeView.RightItems>
-                                
-                                <!-- Delivery Card -->
-                                <Border Margin="15,10"
-                                      BackgroundColor="White"
-                                      Stroke="#E0E0E0"
-                                      StrokeThickness="1"
-                                      Padding="15">
+                    <!-- Leveringen CollectionView -->
+                    <CollectionView ItemsSource="{Binding GefilterdeLeveringen}"
+                                  IsVisible="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}"
+                                  SelectionMode="None">
+                        
+                        <CollectionView.EmptyView>
+                            <VerticalStackLayout Padding="20"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="Center">
+                                <Label Text="Geen leveringen gevonden"
+                                     FontSize="18"
+                                     FontAttributes="Bold"
+                                     TextColor="Gray"
+                                     HorizontalOptions="Center"/>
+                                <Label Text="Voeg een levering toe of pas je zoekfilter aan"
+                                     FontSize="14"
+                                     TextColor="Gray"
+                                     HorizontalOptions="Center"
+                                     Margin="0,10,0,0"/>
+                            </VerticalStackLayout>
+                        </CollectionView.EmptyView>
+                        
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Delivery">
+                                <Border Padding="15"
+                                        Margin="0,5"
+                                        BackgroundColor="#F8F9FA"
+                                        StrokeThickness="0">
                                     <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="8"/>
+                                        <RoundRectangle CornerRadius="10"/>
                                     </Border.StrokeShape>
                                     
                                     <Border.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DeliveryViewModel}}, Path=BekijkLeveringCommand}"
-                                                            CommandParameter="{Binding .}"/>
+                                        <TapGestureRecognizer Tapped="OnCardTapped"/>
                                     </Border.GestureRecognizers>
                                     
-                                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+                                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
                                         
-                                        <!-- Header: Reference + Type -->
-                                        <VerticalStackLayout Grid.Row="0" Grid.Column="0">
-                                            <Label Text="{Binding ReferenceNumber}"
-                                                 FontSize="18"
-                                                 FontAttributes="Bold"
-                                                 TextColor="#212121"/>
-                                            <Label Text="{Binding DeliveryType}"
-                                                 FontSize="12"
-                                                 TextColor="Gray"
-                                                 Margin="0,2,0,0"/>
-                                        </VerticalStackLayout>
+                                        <!-- Reference Number -->
+                                        <Label Grid.Row="0" Grid.Column="0"
+                                               Text="{Binding ReferenceNumber}"
+                                               FontSize="18"
+                                               FontAttributes="Bold"
+                                               TextColor="#212121"/>
                                         
                                         <!-- Status Badge -->
                                         <Border Grid.Row="0" Grid.Column="1"
-                                              Padding="10,5"
-                                              VerticalOptions="Start"
-                                              HorizontalOptions="End"
-                                              BackgroundColor="{Binding Status, Converter={StaticResource DeliveryStatusColorConverter}}">
+                                                BackgroundColor="{Binding Status, Converter={StaticResource DeliveryStatusColorConverter}}"
+                                                Padding="8,4"
+                                                StrokeThickness="0">
                                             <Border.StrokeShape>
                                                 <RoundRectangle CornerRadius="12"/>
                                             </Border.StrokeShape>
-                                            
                                             <Label Text="{Binding Status}"
-                                                 FontSize="12"
-                                                 FontAttributes="Bold"
-                                                 TextColor="White"/>
+                                                   TextColor="White"
+                                                   FontSize="12"
+                                                   FontAttributes="Bold"/>
                                         </Border>
                                         
-                                        <!-- Details: Partner, Datum, Bedrag -->
-                                        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                                            ColumnDefinitions="*,*,*"
-                                            Margin="0,10,0,0">
+                                        <!-- Delivery Type -->
+                                        <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                                             Spacing="5"
+                                                             Margin="0,5,0,0">
+                                            <Label Text="Type:"
+                                                   FontSize="14"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#666"/>
+                                            <Label Text="{Binding DeliveryType}"
+                                                   FontSize="14"
+                                                   TextColor="#666"/>
+                                        </HorizontalStackLayout>
+                                        
+                                        <!-- Partner & Date Info -->
+                                        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                              ColumnDefinitions="*,*"
+                                              Margin="0,5,0,0">
                                             
-                                            <VerticalStackLayout Grid.Column="0">
+                                            <VerticalStackLayout Grid.Column="0" Spacing="2">
                                                 <Label Text="Partner"
-                                                     FontSize="11"
-                                                     TextColor="Gray"/>
+                                                       FontSize="11"
+                                                       TextColor="Gray"/>
                                                 <Label Text="{Binding PartnerName}"
-                                                     FontSize="14"
-                                                     FontAttributes="Bold"
-                                                     TextColor="#424242"/>
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#424242"/>
                                             </VerticalStackLayout>
                                             
-                                            <VerticalStackLayout Grid.Column="1">
+                                            <VerticalStackLayout Grid.Column="1" Spacing="2">
                                                 <Label Text="Verwachte datum"
-                                                     FontSize="11"
-                                                     TextColor="Gray"/>
+                                                       FontSize="11"
+                                                       TextColor="Gray"/>
                                                 <Label Text="{Binding ExpectedDeliveryDate, StringFormat='{0:dd-MM-yyyy}'}"
-                                                     FontSize="14"
-                                                     FontAttributes="Bold"
-                                                     TextColor="#424242"/>
-                                            </VerticalStackLayout>
-                                            
-                                            <VerticalStackLayout Grid.Column="2">
-                                                <Label Text="Bedrag"
-                                                     FontSize="11"
-                                                     TextColor="Gray"/>
-                                                <Label Text="{Binding TotalAmount, StringFormat='EUR {0:F2}'}"
-                                                     FontSize="14"
-                                                     FontAttributes="Bold"
-                                                     TextColor="#16A34A"/>
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#424242"/>
                                             </VerticalStackLayout>
                                         </Grid>
                                         
+                                        <!-- Total Amount -->
+                                        <VerticalStackLayout Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" 
+                                                           Spacing="2" 
+                                                           Margin="0,10,0,0">
+                                            <Label Text="Totaalbedrag"
+                                                   FontSize="11"
+                                                   TextColor="Gray"/>
+                                            <Label Text="{Binding TotalAmount, StringFormat='EUR {0:F2}'}"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#16A34A"/>
+                                        </VerticalStackLayout>
+                                        
                                         <!-- Action Buttons -->
-                                        <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                                                             Spacing="10"
-                                                             Margin="0,10,0,0">
-                                            <Button Text="Details"
-                                                  FontSize="12"
-                                                  Padding="10,5"
-                                                  BackgroundColor="#512BD4"
-                                                  TextColor="White"
-                                                  CornerRadius="6"
-                                                  Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DeliveryViewModel}}, Path=BewerkLeveringCommand}"
-                                                  CommandParameter="{Binding .}"/>
+                                        <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
+                                              ColumnDefinitions="*,Auto,Auto"
+                                              Margin="0,10,0,0">
                                             
-                                            <!-- Verwerk button alleen tonen als nog niet verwerkt -->
-                                            <Button Text="Verwerk"
-                                                  FontSize="12"
-                                                  Padding="10,5"
-                                                  BackgroundColor="#16A34A"
-                                                  TextColor="White"
-                                                  CornerRadius="6"
-                                                  IsVisible="{Binding IsProcessed, Converter={StaticResource InvertedBoolConverter}}"
-                                                  Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DeliveryViewModel}}, Path=VerwerkLeveringCommand}"
-                                                  CommandParameter="{Binding .}"/>
-                                        </HorizontalStackLayout>
+                                            <!-- Verwerk Button - Prominent als belangrijkste actie (alleen als niet verwerkt) -->
+                                            <Button Grid.Column="0"
+                                                    Text="✓ Verwerk Levering"
+                                                    FontSize="15"
+                                                    FontAttributes="Bold"
+                                                    BackgroundColor="#28a745"
+                                                    TextColor="White"
+                                                    HeightRequest="45"
+                                                    CornerRadius="8"
+                                                    Margin="0,0,5,0"
+                                                    IsVisible="{Binding IsProcessed, Converter={StaticResource InvertedBoolConverter}}"
+                                                    Clicked="OnVerwerkClicked"/>
+                                            
+                                            <!-- Verwerkt indicator (als al verwerkt) -->
+                                            <Border Grid.Column="0"
+                                                    BackgroundColor="#d4edda"
+                                                    Stroke="#28a745"
+                                                    StrokeThickness="2"
+                                                    Padding="10"
+                                                    HeightRequest="45"
+                                                    Margin="0,0,5,0"
+                                                    IsVisible="{Binding IsProcessed}">
+                                                <Border.StrokeShape>
+                                                    <RoundRectangle CornerRadius="8"/>
+                                                </Border.StrokeShape>
+                                                <HorizontalStackLayout Spacing="8" VerticalOptions="Center" HorizontalOptions="Center">
+                                                    <Label Text="✓"
+                                                           FontSize="20"
+                                                           FontAttributes="Bold"
+                                                           TextColor="#28a745"
+                                                           VerticalOptions="Center"/>
+                                                    <Label Text="Verwerkt"
+                                                           FontSize="15"
+                                                           FontAttributes="Bold"
+                                                           TextColor="#28a745"
+                                                           VerticalOptions="Center"/>
+                                                </HorizontalStackLayout>
+                                            </Border>
+                                            
+                                            <!-- Edit Button -->
+                                            <Button Grid.Column="1"
+                                                    Text="Bewerken"
+                                                    FontSize="14"
+                                                    BackgroundColor="#ffc107"
+                                                    TextColor="White"
+                                                    WidthRequest="95"
+                                                    HeightRequest="45"
+                                                    CornerRadius="8"
+                                                    Padding="0"
+                                                    Margin="0,0,5,0"
+                                                    Clicked="OnDetailsClicked"/>
+                                            
+                                            <!-- Delete Button -->
+                                            <Button Grid.Column="2"
+                                                    Text="Verwijder"
+                                                    FontSize="14"
+                                                    BackgroundColor="#dc3545"
+                                                    TextColor="White"
+                                                    WidthRequest="95"
+                                                    HeightRequest="45"
+                                                    CornerRadius="8"
+                                                    Padding="0"
+                                                    Clicked="OnSwipeVerwijderInvoked"/>
+                                        </Grid>
+                                        
+                                        <!-- Type Indicator -->
+                                        <BoxView Grid.Row="0" Grid.RowSpan="5" Grid.Column="0"
+                                                WidthRequest="4"
+                                                HorizontalOptions="Start"
+                                                Color="{Binding Status, Converter={StaticResource DeliveryStatusColorConverter}}"/>
                                     </Grid>
                                 </Border>
-                            </SwipeView>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </Grid>
-        </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </ScrollView>
+        </RefreshView>
     </Grid>
 </ContentPage>

@@ -30,6 +30,9 @@ public partial class DeliveryViewModel : ObservableObject
     [ObservableProperty]
     private bool isLoading = false;
 
+    [ObservableProperty]
+    private bool isRefreshing = false;
+
     public DeliveryViewModel(LocalDbContext context)
     {
         _context = context;
@@ -38,9 +41,13 @@ public partial class DeliveryViewModel : ObservableObject
 
     private async Task LoadLeveringenAsync()
     {
+        if (IsLoading && !IsRefreshing) return;
+
         try
         {
-            IsLoading = true;
+            if (!IsRefreshing)
+                IsLoading = true;
+
             Debug.WriteLine("LoadLeveringenAsync: Starting...");
 
             // Haal leveringen op inclusief relaties
@@ -69,6 +76,7 @@ public partial class DeliveryViewModel : ObservableObject
         finally
         {
             IsLoading = false;
+            IsRefreshing = false;
         }
     }
 
@@ -194,8 +202,8 @@ public partial class DeliveryViewModel : ObservableObject
                 _context.Deliveries.Update(delivery);
                 await _context.SaveChangesAsync();
 
-                Deliveries.Remove(delivery);
-                FilterLeveringen();
+                // Reload data to refresh the list
+                await LoadLeveringenAsync();
 
                 await Shell.Current.DisplayAlert("Succes", "Levering verwijderd!", "OK");
             }
@@ -358,6 +366,7 @@ public partial class DeliveryViewModel : ObservableObject
     [RelayCommand]
     private async Task Refresh()
     {
+        IsRefreshing = true;
         await LoadLeveringenAsync();
     }
 }
