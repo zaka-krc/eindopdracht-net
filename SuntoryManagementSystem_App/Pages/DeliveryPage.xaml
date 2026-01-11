@@ -216,62 +216,54 @@
                                             </VerticalStackLayout>
                                         </Grid>
                                         
-                                        <!-- Total Amount -->
-                                        <VerticalStackLayout Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" 
-                                                           Spacing="2" 
-                                                           Margin="0,10,0,0">
-                                            <Label Text="Totaalbedrag"
-                                                   FontSize="11"
-                                                   TextColor="Gray"/>
-                                            <Label Text="{Binding TotalAmount, StringFormat='EUR {0:F2}'}"
-                                                   FontSize="18"
-                                                   FontAttributes="Bold"
-                                                   TextColor="#16A34A"/>
-                                        </VerticalStackLayout>
-                                        
-                                        <!-- Action Buttons -->
-                                        <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
-                                              ColumnDefinitions="*,Auto,Auto"
+                                        <!-- Total Amount & Processed Status -->
+                                        <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" 
+                                              ColumnDefinitions="*,Auto"
                                               Margin="0,10,0,0">
                                             
-                                            <!-- Verwerk Button - Prominent als belangrijkste actie (alleen als niet verwerkt) -->
-                                            <Button Grid.Column="0"
-                                                    Text="✓ Verwerk Levering"
-                                                    FontSize="15"
-                                                    FontAttributes="Bold"
-                                                    BackgroundColor="#28a745"
-                                                    TextColor="White"
-                                                    HeightRequest="45"
-                                                    CornerRadius="8"
-                                                    Margin="0,0,5,0"
-                                                    IsVisible="{Binding IsProcessed, Converter={StaticResource InvertedBoolConverter}}"
-                                                    Clicked="OnVerwerkClicked"/>
+                                            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                                <Label Text="Totaalbedrag"
+                                                       FontSize="11"
+                                                       TextColor="Gray"/>
+                                                <Label Text="{Binding TotalAmount, StringFormat='EUR {0:F2}'}"
+                                                       FontSize="18"
+                                                       FontAttributes="Bold"
+                                                       TextColor="#16A34A"/>
+                                            </VerticalStackLayout>
                                             
-                                            <!-- Verwerkt indicator (als al verwerkt) -->
-                                            <Border Grid.Column="0"
+                                            <!-- Verwerkt Badge -->
+                                            <Border Grid.Column="1"
                                                     BackgroundColor="#d4edda"
                                                     Stroke="#28a745"
                                                     StrokeThickness="2"
-                                                    Padding="10"
-                                                    HeightRequest="45"
-                                                    Margin="0,0,5,0"
+                                                    Padding="10,5"
+                                                    VerticalOptions="Center"
                                                     IsVisible="{Binding IsProcessed}">
                                                 <Border.StrokeShape>
                                                     <RoundRectangle CornerRadius="8"/>
                                                 </Border.StrokeShape>
-                                                <HorizontalStackLayout Spacing="8" VerticalOptions="Center" HorizontalOptions="Center">
+                                                <HorizontalStackLayout Spacing="5">
                                                     <Label Text="✓"
-                                                           FontSize="20"
+                                                           FontSize="16"
                                                            FontAttributes="Bold"
                                                            TextColor="#28a745"
                                                            VerticalOptions="Center"/>
                                                     <Label Text="Verwerkt"
-                                                           FontSize="15"
+                                                           FontSize="13"
                                                            FontAttributes="Bold"
                                                            TextColor="#28a745"
                                                            VerticalOptions="Center"/>
                                                 </HorizontalStackLayout>
                                             </Border>
+                                        </Grid>
+                                        
+                                        <!-- Action Buttons - Consistent met andere pages -->
+                                        <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
+                                              ColumnDefinitions="*,Auto,Auto"
+                                              Margin="0,10,0,0">
+                                            
+                                            <!-- Spacer voor alignment -->
+                                            <BoxView Grid.Column="0" IsVisible="False"/>
                                             
                                             <!-- Edit Button -->
                                             <Button Grid.Column="1"

@@ -52,6 +52,9 @@ namespace SuntoryManagementSystem_Web.API_Controllers
                 return BadRequest();
             }
 
+            // Detach navigation properties to prevent EF from trying to update related entities
+            stockAlert.Product = null;
+
             _context.Entry(stockAlert).State = EntityState.Modified;
 
             try
@@ -78,6 +81,12 @@ namespace SuntoryManagementSystem_Web.API_Controllers
         [HttpPost]
         public async Task<ActionResult<StockAlert>> PostStockAlert(StockAlert stockAlert)
         {
+            // Reset identity column for new entities (EF will generate the ID)
+            stockAlert.StockAlertId = 0;
+            
+            // Detach navigation properties to prevent EF from trying to insert related entities
+            stockAlert.Product = null;
+            
             _context.StockAlerts.Add(stockAlert);
             await _context.SaveChangesAsync();
 

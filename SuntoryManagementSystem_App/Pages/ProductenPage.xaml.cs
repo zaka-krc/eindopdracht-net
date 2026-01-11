@@ -15,13 +15,6 @@ public partial class ProductenPage : ContentPage
         BindingContext = _viewModel;
         
         Debug.WriteLine("ProductenPage: Initialized with ViewModel");
-        Debug.WriteLine($"ProductenPage: ViewModel type = {viewModel.GetType().Name}");
-        Debug.WriteLine($"ProductenPage: ViewModel commands:");
-        Debug.WriteLine($"  - VoegProductToeCommand: {(viewModel.VoegProductToeCommand != null ? "OK" : "NULL")}");
-        Debug.WriteLine($"  - BekijkProductCommand: {(viewModel.BekijkProductCommand != null ? "OK" : "NULL")}");
-        Debug.WriteLine($"  - BewerkProductCommand: {(viewModel.BewerkProductCommand != null ? "OK" : "NULL")}");
-        Debug.WriteLine($"  - VerwijderProductCommand: {(viewModel.VerwijderProductCommand != null ? "OK" : "NULL")}");
-        Debug.WriteLine($"  - RefreshCommand: {(viewModel.RefreshCommand != null ? "OK" : "NULL")}");
     }
     
     protected override void OnAppearing()
@@ -31,7 +24,7 @@ public partial class ProductenPage : ContentPage
         Debug.WriteLine($"ProductenPage: Gefilterd Producten count = {_viewModel.GefilterdProducten.Count}");
     }
     
-    // Card tap event handler
+    // Card tap event handler - navigeert naar bewerk pagina
     private async void OnCardTapped(object sender, EventArgs e)
     {
         try
@@ -41,7 +34,7 @@ public partial class ProductenPage : ContentPage
             if (sender is Grid grid && grid.BindingContext is Product product)
             {
                 Debug.WriteLine($"OnCardTapped: Product = {product.ProductName}");
-                await _viewModel.BekijkProductCommand.ExecuteAsync(product);
+                await _viewModel.BewerkProductCommand.ExecuteAsync(product);
             }
             else
             {
@@ -85,29 +78,6 @@ public partial class ProductenPage : ContentPage
     }
     
     // Product card button event handlers
-    private async void OnDetailsClicked(object sender, EventArgs e)
-    {
-        try
-        {
-            Debug.WriteLine("OnDetailsClicked: Button clicked");
-            
-            if (sender is Button button && button.BindingContext is Product product)
-            {
-                Debug.WriteLine($"OnDetailsClicked: Product = {product.ProductName}");
-                await _viewModel.BekijkProductCommand.ExecuteAsync(product);
-            }
-            else
-            {
-                Debug.WriteLine("OnDetailsClicked: Could not get product from BindingContext");
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"OnDetailsClicked ERROR: {ex.Message}");
-            await DisplayAlert("Error", $"Fout: {ex.Message}", "OK");
-        }
-    }
-    
     private async void OnBewerkClicked(object sender, EventArgs e)
     {
         try

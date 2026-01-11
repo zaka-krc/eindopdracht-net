@@ -52,6 +52,9 @@ namespace SuntoryManagementSystem_Web.API_Controllers
                 return BadRequest();
             }
 
+            // Detach navigation properties to prevent EF from trying to update related entities
+            vehicle.Deliveries = null;
+
             _context.Entry(vehicle).State = EntityState.Modified;
 
             try
@@ -78,6 +81,12 @@ namespace SuntoryManagementSystem_Web.API_Controllers
         [HttpPost]
         public async Task<ActionResult<Vehicle>> PostVehicle(Vehicle vehicle)
         {
+            // Reset identity column for new entities (EF will generate the ID)
+            vehicle.VehicleId = 0;
+            
+            // Detach navigation properties to prevent EF from trying to insert related entities
+            vehicle.Deliveries = null;
+            
             _context.Vehicles.Add(vehicle);
             await _context.SaveChangesAsync();
 

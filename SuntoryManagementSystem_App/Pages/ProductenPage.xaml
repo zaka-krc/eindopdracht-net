@@ -17,48 +17,45 @@
     <Grid RowDefinitions="Auto,*" Padding="20">
         
         <!-- HEADER SECTIE -->
-        <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,20">
+        <VerticalStackLayout Grid.Row="0" Spacing="15">
             
             <!-- Zoekbalk -->
-            <Border Grid.Column="0"
-                    BackgroundColor="#F5F5F5"
-                    Stroke="#E0E0E0"
-                    StrokeThickness="1"
-                    Padding="15,10"
-                    Margin="0,0,10,0">
+            <Border BackgroundColor="#F5F5F5"
+                    StrokeThickness="0">
                 <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="8"/>
+                    <RoundRectangle CornerRadius="10"/>
                 </Border.StrokeShape>
                 
-                <Entry Placeholder="Zoek producten..."
-                       Text="{Binding ZoekTekst}"
-                       BackgroundColor="Transparent"
-                       VerticalOptions="Center"/>
+                <SearchBar Placeholder="Zoek producten op naam, SKU, categorie..."
+                           Text="{Binding ZoekTekst}"
+                           BackgroundColor="Transparent"/>
             </Border>
             
-            <!-- Refresh Button -->
-            <Button Grid.Column="1"
-                    x:Name="BtnRefresh"
-                    Text="Vernieuwen"
-                    FontSize="14"
-                    BackgroundColor="#512BD4"
-                    TextColor="White"
-                    Padding="15,10"
-                    CornerRadius="8"
-                    Margin="0,0,10,0"
-                    Clicked="OnRefreshClicked"/>
-            
-            <!-- Nieuw Product Button -->
-            <Button Grid.Column="2"
-                    x:Name="BtnNieuw"
-                    Text="+ Nieuw"
-                    FontSize="14"
-                    BackgroundColor="#16A34A"
-                    TextColor="White"
-                    Padding="15,10"
-                    CornerRadius="8"
-                    Clicked="OnNieuwClicked"/>
-        </Grid>
+            <!-- Action Buttons -->
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                <Button Grid.Column="0"
+                        x:Name="BtnNieuw"
+                        Text="+ Nieuw Product"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        BackgroundColor="#28a745"
+                        TextColor="White"
+                        HeightRequest="50"
+                        CornerRadius="10"
+                        Clicked="OnNieuwClicked"/>
+                
+                <Button Grid.Column="1"
+                        x:Name="BtnRefresh"
+                        Text="Vernieuwen"
+                        FontSize="14"
+                        BackgroundColor="#512BD4"
+                        TextColor="White"
+                        WidthRequest="110"
+                        HeightRequest="50"
+                        CornerRadius="10"
+                        Clicked="OnRefreshClicked"/>
+            </Grid>
+        </VerticalStackLayout>
 
         <!-- PRODUCTEN LIJST -->
         <Border Grid.Row="1"
@@ -106,23 +103,22 @@
                                 <SwipeView.RightItems>
                                     <SwipeItems>
                                         <SwipeItem Text="Bewerk"
-                                                 BackgroundColor="#512BD4"
+                                                 BackgroundColor="#ffc107"
                                                  Invoked="OnSwipeBewerkInvoked"/>
                                         
                                         <SwipeItem Text="Verwijder"
-                                                 BackgroundColor="#DC2626"
+                                                 BackgroundColor="#dc3545"
                                                  Invoked="OnSwipeVerwijderInvoked"/>
                                     </SwipeItems>
                                 </SwipeView.RightItems>
                                 
                                 <!-- Product Card -->
-                                <Border Margin="15,10"
-                                      BackgroundColor="White"
-                                      Stroke="#E0E0E0"
-                                      StrokeThickness="1"
-                                      Padding="15">
+                                <Border Padding="15"
+                                        Margin="0,5"
+                                        BackgroundColor="#F8F9FA"
+                                        StrokeThickness="0">
                                     <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="8"/>
+                                        <RoundRectangle CornerRadius="10"/>
                                     </Border.StrokeShape>
                                     
                                     <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
@@ -147,7 +143,8 @@
                                         <Border Grid.Row="0" Grid.Column="1"
                                               Padding="10,5"
                                               VerticalOptions="Start"
-                                              HorizontalOptions="End">
+                                              HorizontalOptions="End"
+                                              StrokeThickness="0">
                                             <Border.StrokeShape>
                                                 <RoundRectangle CornerRadius="12"/>
                                             </Border.StrokeShape>
@@ -206,7 +203,7 @@
                                         
                                         <!-- Leverancier & Actie Buttons -->
                                         <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                                            ColumnDefinitions="*,Auto,Auto,Auto"
+                                            ColumnDefinitions="*,Auto,Auto"
                                             Margin="0,10,0,0">
                                             
                                             <HorizontalStackLayout Grid.Column="0" Spacing="5">
@@ -221,33 +218,29 @@
                                                      VerticalOptions="Center"/>
                                             </HorizontalStackLayout>
                                             
+                                            <!-- Edit Button -->
                                             <Button Grid.Column="1"
-                                                  Text="Details"
-                                                  FontSize="12"
+                                                  Text="Bewerken"
+                                                  FontSize="14"
                                                   Padding="10,5"
-                                                  BackgroundColor="#0284C7"
+                                                  BackgroundColor="#ffc107"
                                                   TextColor="White"
-                                                  CornerRadius="6"
-                                                  Margin="0,0,5,0"
-                                                  Clicked="OnDetailsClicked"/>
-                                            
-                                            <Button Grid.Column="2"
-                                                  Text="Bewerk"
-                                                  FontSize="12"
-                                                  Padding="10,5"
-                                                  BackgroundColor="#512BD4"
-                                                  TextColor="White"
-                                                  CornerRadius="6"
+                                                  WidthRequest="95"
+                                                  HeightRequest="45"
+                                                  CornerRadius="8"
                                                   Margin="0,0,5,0"
                                                   Clicked="OnBewerkClicked"/>
                                             
-                                            <Button Grid.Column="3"
+                                            <!-- Delete Button -->
+                                            <Button Grid.Column="2"
                                                   Text="Verwijder"
-                                                  FontSize="12"
+                                                  FontSize="14"
                                                   Padding="10,5"
-                                                  BackgroundColor="#DC2626"
+                                                  BackgroundColor="#dc3545"
                                                   TextColor="White"
-                                                  CornerRadius="6"
+                                                  WidthRequest="95"
+                                                  HeightRequest="45"
+                                                  CornerRadius="8"
                                                   Clicked="OnVerwijderClicked"/>
                                         </Grid>
                                     </Grid>

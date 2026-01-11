@@ -52,6 +52,10 @@ namespace SuntoryManagementSystem_Web.API_Controllers
                 return BadRequest();
             }
 
+            // Detach navigation properties to prevent EF from trying to update related entities
+            supplier.Products = null;
+            supplier.Deliveries = null;
+
             _context.Entry(supplier).State = EntityState.Modified;
 
             try
@@ -78,6 +82,13 @@ namespace SuntoryManagementSystem_Web.API_Controllers
         [HttpPost]
         public async Task<ActionResult<Supplier>> PostSupplier(Supplier supplier)
         {
+            // Reset identity column for new entities (EF will generate the ID)
+            supplier.SupplierId = 0;
+            
+            // Detach navigation properties to prevent EF from trying to insert related entities
+            supplier.Products = null;
+            supplier.Deliveries = null;
+            
             _context.Suppliers.Add(supplier);
             await _context.SaveChangesAsync();
 

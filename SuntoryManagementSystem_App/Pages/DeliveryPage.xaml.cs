@@ -102,30 +102,7 @@ public partial class DeliveryPage : ContentPage
         }
     }
     
-    private async void OnVerwerkClicked(object sender, EventArgs e)
-    {
-        try
-        {
-            Debug.WriteLine("OnVerwerkClicked: Button clicked");
-            
-            if (sender is Button button && button.BindingContext is Delivery delivery)
-            {
-                Debug.WriteLine($"OnVerwerkClicked: Delivery = {delivery.ReferenceNumber}");
-                await _viewModel.VerwerkLeveringCommand.ExecuteAsync(delivery);
-            }
-            else
-            {
-                Debug.WriteLine("OnVerwerkClicked: Could not get delivery from BindingContext");
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"OnVerwerkClicked ERROR: {ex.Message}");
-            await DisplayAlert("Error", $"Fout: {ex.Message}", "OK");
-        }
-    }
-    
-    // Delete button event handler (changed from SwipeItem to regular Button)
+    // Delete button event handler
     private async void OnSwipeVerwijderInvoked(object sender, EventArgs e)
     {
         try

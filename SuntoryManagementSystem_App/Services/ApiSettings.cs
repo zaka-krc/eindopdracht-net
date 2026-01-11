@@ -11,8 +11,8 @@ public static class ApiSettings
     // Voor iOS simulator: localhost werkt direct
     // Voor fysieke apparaten: gebruik het IP adres van je ontwikkelmachine
     public static string BaseUrl => DeviceInfo.Platform == DevicePlatform.Android 
-        ? "https://10.0.2.2:7001" 
-        : "https://localhost:7001";
+        ? "https://10.0.2.2:7172" 
+        : "https://localhost:7172";
 #else
     // Productie URL
     public static string BaseUrl => "https://your-production-api.com";
