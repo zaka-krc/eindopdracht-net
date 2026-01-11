@@ -224,12 +224,7 @@
                                             Padding="0"
                                             Clicked="OnDeleteCustomerClicked" />
                                 </Grid>
-                                
-                                <!-- Status Indicator -->
-                                <BoxView Grid.Row="0" Grid.RowSpan="4" Grid.Column="0"
-                                        WidthRequest="4"
-                                        HorizontalOptions="Start"
-                                        Color="{Binding Status, Converter={StaticResource StatusColorConverter}}" />
+
                             </Grid>
                         </Border>
                     </DataTemplate>

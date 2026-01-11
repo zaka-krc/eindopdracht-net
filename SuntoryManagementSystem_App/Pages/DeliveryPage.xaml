@@ -290,12 +290,6 @@
                                                     Padding="0"
                                                     Clicked="OnSwipeVerwijderInvoked"/>
                                         </Grid>
-                                        
-                                        <!-- Type Indicator -->
-                                        <BoxView Grid.Row="0" Grid.RowSpan="5" Grid.Column="0"
-                                                WidthRequest="4"
-                                                HorizontalOptions="Start"
-                                                Color="{Binding Status, Converter={StaticResource DeliveryStatusColorConverter}}"/>
                                     </Grid>
                                 </Border>
                             </DataTemplate>
