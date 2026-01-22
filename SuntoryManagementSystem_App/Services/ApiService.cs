@@ -83,7 +83,13 @@ public class ApiService
         await SetAuthorizationHeaderAsync();
         
         var response = await _httpClient.PostAsJsonAsync(ApiSettings.ProductsEndpoint, product, _jsonOptions);
-        response.EnsureSuccessStatusCode();
+        
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            System.Diagnostics.Debug.WriteLine($"ApiService: CreateProduct failed - Status: {response.StatusCode}, Content: {errorContent}");
+            response.EnsureSuccessStatusCode();
+        }
         
         return await response.Content.ReadFromJsonAsync<Product>(_jsonOptions) ?? product;
     }
@@ -141,7 +147,13 @@ public class ApiService
         await SetAuthorizationHeaderAsync();
         
         var response = await _httpClient.PostAsJsonAsync(ApiSettings.CustomersEndpoint, customer, _jsonOptions);
-        response.EnsureSuccessStatusCode();
+        
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            System.Diagnostics.Debug.WriteLine($"ApiService: CreateCustomer failed - Status: {response.StatusCode}, Content: {errorContent}");
+            response.EnsureSuccessStatusCode();
+        }
         
         return await response.Content.ReadFromJsonAsync<Customer>(_jsonOptions) ?? customer;
     }
@@ -199,7 +211,13 @@ public class ApiService
         await SetAuthorizationHeaderAsync();
         
         var response = await _httpClient.PostAsJsonAsync(ApiSettings.DeliveriesEndpoint, delivery, _jsonOptions);
-        response.EnsureSuccessStatusCode();
+        
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            System.Diagnostics.Debug.WriteLine($"ApiService: CreateDelivery failed - Status: {response.StatusCode}, Content: {errorContent}");
+            response.EnsureSuccessStatusCode();
+        }
         
         return await response.Content.ReadFromJsonAsync<Delivery>(_jsonOptions) ?? delivery;
     }

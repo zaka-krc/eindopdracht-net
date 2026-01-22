@@ -17,7 +17,7 @@ namespace SuntoryManagementSystem_Models.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.10")
+                .HasAnnotation("ProductVersion", "9.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -318,7 +318,7 @@ namespace SuntoryManagementSystem_Models.Migrations
 
                     b.HasKey("CustomerId");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("SuntoryManagementSystem.Models.Delivery", b =>
@@ -387,7 +387,7 @@ namespace SuntoryManagementSystem_Models.Migrations
 
                     b.HasIndex("VehicleId");
 
-                    b.ToTable("Deliveries");
+                    b.ToTable("Deliveries", (string)null);
                 });
 
             modelBuilder.Entity("SuntoryManagementSystem.Models.DeliveryItem", b =>
@@ -425,7 +425,7 @@ namespace SuntoryManagementSystem_Models.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("DeliveryItems");
+                    b.ToTable("DeliveryItems", (string)null);
                 });
 
             modelBuilder.Entity("SuntoryManagementSystem.Models.Product", b =>
@@ -487,7 +487,7 @@ namespace SuntoryManagementSystem_Models.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("SuntoryManagementSystem.Models.StockAdjustment", b =>
@@ -538,7 +538,7 @@ namespace SuntoryManagementSystem_Models.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("StockAdjustments");
+                    b.ToTable("StockAdjustments", (string)null);
                 });
 
             modelBuilder.Entity("SuntoryManagementSystem.Models.StockAlert", b =>
@@ -583,7 +583,7 @@ namespace SuntoryManagementSystem_Models.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("StockAlerts");
+                    b.ToTable("StockAlerts", (string)null);
                 });
 
             modelBuilder.Entity("SuntoryManagementSystem.Models.Supplier", b =>
@@ -650,7 +650,7 @@ namespace SuntoryManagementSystem_Models.Migrations
 
                     b.HasKey("SupplierId");
 
-                    b.ToTable("Suppliers");
+                    b.ToTable("Suppliers", (string)null);
                 });
 
             modelBuilder.Entity("SuntoryManagementSystem.Models.Vehicle", b =>
@@ -706,7 +706,7 @@ namespace SuntoryManagementSystem_Models.Migrations
 
                     b.HasKey("VehicleId");
 
-                    b.ToTable("Vehicles");
+                    b.ToTable("Vehicles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

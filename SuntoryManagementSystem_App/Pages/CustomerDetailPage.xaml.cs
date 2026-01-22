@@ -1,4 +1,5 @@
 using SuntoryManagementSystem_App.Data;
+using SuntoryManagementSystem_App.Services;
 using SuntoryManagementSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -10,6 +11,7 @@ namespace SuntoryManagementSystem_App.Pages;
 public partial class CustomerDetailPage : ContentPage
 {
     private readonly LocalDbContext _context;
+    private readonly DataService _dataService;
     private Customer? _customer;
     private string? _customerIdString;
     private bool _viewMode;
@@ -41,10 +43,11 @@ public partial class CustomerDetailPage : ContentPage
         }
     }
     
-    public CustomerDetailPage(LocalDbContext context)
+    public CustomerDetailPage(LocalDbContext context, DataService dataService)
     {
         InitializeComponent();
         _context = context;
+        _dataService = dataService;
     }
     
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
@@ -209,23 +212,17 @@ public partial class CustomerDetailPage : ContentPage
             
             bool isNewCustomer = string.IsNullOrEmpty(_customerIdString);
             
-            // Save customer
+            // Save customer using DataService for realtime sync
             if (isNewCustomer)
             {
-                // Geef nieuwe customer een NEGATIEF TIJDELIJK ID voor sync
-                _customer.CreatedDate = DateTime.Now;
-                _customer.CustomerId = -(int)(DateTime.Now.Ticks % int.MaxValue);
+                var savedCustomer = await _dataService.CreateCustomerAsync(_customer);
+                _customer = savedCustomer; // Update met server ID indien online
                 
-                await _context.Customers.AddAsync(_customer);
-                await _context.SaveChangesAsync();
-                
-                Debug.WriteLine($"Created new LOCAL customer with TEMPORARY ID: {_customer.CustomerId} (will be uploaded to server on next sync)");
+                Debug.WriteLine($"Created customer with ID: {_customer.CustomerId}");
             }
             else
             {
-                // Update existing
-                _context.Customers.Update(_customer);
-                await _context.SaveChangesAsync();
+                await _dataService.UpdateCustomerAsync(_customer);
                 
                 Debug.WriteLine($"Updated customer {_customer.CustomerId}");
             }

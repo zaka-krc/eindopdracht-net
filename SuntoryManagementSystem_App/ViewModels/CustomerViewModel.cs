@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SuntoryManagementSystem.Models;
 using SuntoryManagementSystem_App.Data;
+using SuntoryManagementSystem_App.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -11,6 +12,7 @@ namespace SuntoryManagementSystem_App.ViewModels;
 public partial class CustomerViewModel : ObservableObject
 {
     private readonly LocalDbContext _context;
+    private readonly DataService _dataService;
 
     [ObservableProperty]
     private ObservableCollection<Customer> customers = new();
@@ -33,9 +35,10 @@ public partial class CustomerViewModel : ObservableObject
     [ObservableProperty]
     private bool isRefreshing = false;
 
-    public CustomerViewModel(LocalDbContext context)
+    public CustomerViewModel(LocalDbContext context, DataService dataService)
     {
         _context = context;
+        _dataService = dataService;
         _ = LoadCustomersAsync();
     }
 
@@ -192,15 +195,12 @@ public partial class CustomerViewModel : ObservableObject
 
         try
         {
-            // Soft delete
-            customer.IsDeleted = true;
-            customer.DeletedDate = DateTime.Now;
-
-            _context.Customers.Update(customer);
-            await _context.SaveChangesAsync();
+            // Gebruik DataService voor realtime sync met server
+            await _dataService.DeleteCustomerAsync(customer);
 
             await LoadCustomersAsync();
-            await Shell.Current.DisplayAlert("Succes", "Klant verwijderd", "OK");
+            await Shell.Current.DisplayAlert("Succes", "Klant verwijderd!", "OK");
+            Debug.WriteLine($"DeleteCustomerAsync: Customer {customer.CustomerName} deleted (local + server if online)");
         }
         catch (Exception ex)
         {

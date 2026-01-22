@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using SuntoryManagementSystem.Models;
 using SuntoryManagementSystem_App.Data;
+using SuntoryManagementSystem_App.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -11,6 +12,7 @@ namespace SuntoryManagementSystem_App.ViewModels;
 public partial class ProductenViewModel : ObservableObject
 {
     private readonly LocalDbContext _context;
+    private readonly DataService _dataService;
     
     [ObservableProperty]
     private ObservableCollection<Product> producten = new();
@@ -25,9 +27,10 @@ public partial class ProductenViewModel : ObservableObject
     private bool isLoading = false;
     
     // Constructor met DI
-    public ProductenViewModel(LocalDbContext context)
+    public ProductenViewModel(LocalDbContext context, DataService dataService)
     {
         _context = context;
+        _dataService = dataService;
         _ = LoadProductenAsync();
     }
     
@@ -85,10 +88,7 @@ public partial class ProductenViewModel : ObservableObject
             Debug.WriteLine($"LoadProductenAsync ERROR: {ex.Message}");
             Debug.WriteLine($"LoadProductenAsync STACK: {ex.StackTrace}");
             
-            if (Application.Current?.MainPage != null)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", $"Kan producten niet laden: {ex.Message}", "OK");
-            }
+            await Shell.Current.DisplayAlert("Error", $"Kan producten niet laden: {ex.Message}", "OK");
         }
         finally
         {
@@ -111,10 +111,7 @@ public partial class ProductenViewModel : ObservableObject
             Debug.WriteLine($"VoegProductToe ERROR: {ex.Message}");
             Debug.WriteLine($"VoegProductToe STACK: {ex.StackTrace}");
             
-            if (Application.Current?.MainPage != null)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", $"Kan niet navigeren: {ex.Message}", "OK");
-            }
+            await Shell.Current.DisplayAlert("Error", $"Kan niet navigeren: {ex.Message}", "OK");
         }
     }
     
@@ -138,10 +135,7 @@ public partial class ProductenViewModel : ObservableObject
             Debug.WriteLine($"BekijkProduct ERROR: {ex.Message}");
             Debug.WriteLine($"BekijkProduct STACK: {ex.StackTrace}");
             
-            if (Application.Current?.MainPage != null)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", $"Kan niet navigeren: {ex.Message}", "OK");
-            }
+            await Shell.Current.DisplayAlert("Error", $"Kan niet navigeren: {ex.Message}", "OK");
         }
     }
     
@@ -165,10 +159,7 @@ public partial class ProductenViewModel : ObservableObject
             Debug.WriteLine($"BewerkProduct ERROR: {ex.Message}");
             Debug.WriteLine($"BewerkProduct STACK: {ex.StackTrace}");
             
-            if (Application.Current?.MainPage != null)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", $"Kan niet navigeren: {ex.Message}", "OK");
-            }
+            await Shell.Current.DisplayAlert("Error", $"Kan niet navigeren: {ex.Message}", "OK");
         }
     }
     
@@ -188,24 +179,20 @@ public partial class ProductenViewModel : ObservableObject
             bool bevestiging = await Shell.Current.DisplayAlert(
                 "Verwijderen", 
                 $"Weet je zeker dat je '{product.ProductName}' wilt verwijderen?",
-                "Ja", 
-                "Nee"
-            );
+                "Ja",
+                "Nee");
             
             if (bevestiging)
             {
-                product.IsDeleted = true;
-                product.DeletedDate = DateTime.Now;
-                
-                _context.Products.Update(product);
-                await _context.SaveChangesAsync();
+                // Gebruik DataService voor realtime sync met server
+                await _dataService.DeleteProductAsync(product);
                 
                 Producten.Remove(product);
                 FilterProducten();
                 
                 await Shell.Current.DisplayAlert("Succes", "Product verwijderd!", "OK");
                 
-                Debug.WriteLine($"VerwijderProduct: Product {product.ProductName} deleted");
+                Debug.WriteLine($"VerwijderProduct: Product {product.ProductName} deleted (local + server if online)");
             }
             else
             {
@@ -217,10 +204,7 @@ public partial class ProductenViewModel : ObservableObject
             Debug.WriteLine($"VerwijderProduct ERROR: {ex.Message}");
             Debug.WriteLine($"VerwijderProduct STACK: {ex.StackTrace}");
             
-            if (Application.Current?.MainPage != null)
-            {
-                await Application.Current.MainPage.DisplayAlert("Error", $"Fout bij verwijderen: {ex.Message}", "OK");
-            }
+            await Shell.Current.DisplayAlert("Error", $"Fout bij verwijderen: {ex.Message}", "OK");
         }
     }
     

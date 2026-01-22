@@ -1,4 +1,5 @@
 using SuntoryManagementSystem_App.Data;
+using SuntoryManagementSystem_App.Services;
 using SuntoryManagementSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -11,6 +12,7 @@ namespace SuntoryManagementSystem_App.Pages;
 public partial class ProductDetailPage : ContentPage
 {
     private readonly LocalDbContext _context;
+    private readonly DataService _dataService;
     private Product? _product;
     private string? _productIdString;
     private bool _stockAdjustmentMode;
@@ -58,10 +60,11 @@ public partial class ProductDetailPage : ContentPage
         }
     }
     
-    public ProductDetailPage(LocalDbContext context)
+    public ProductDetailPage(LocalDbContext context, DataService dataService)
     {
         InitializeComponent();
         _context = context;
+        _dataService = dataService;
     }
     
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
@@ -376,18 +379,11 @@ public partial class ProductDetailPage : ContentPage
             // Save product
             if (isNewProduct)
             {
-                // BELANGRIJKE WIJZING: Geef nieuw product een NEGATIEF TIJDELIJK ID
-                // Dit helpt SyncService om lokale producten te identificeren voor upload
-                _product.CreatedDate = DateTime.Now;
+                // Gebruik DataService voor realtime sync met server
+                var savedProduct = await _dataService.CreateProductAsync(_product);
+                _product = savedProduct; // Update met server ID indien online
                 
-                // Genereer een uniek negatief ID gebaseerd op timestamp
-                // Dit voorkomt conflicten tussen meerdere lokale nieuwe producten
-                _product.ProductId = -(int)(DateTime.Now.Ticks % int.MaxValue);
-                
-                await _context.Products.AddAsync(_product);
-                await _context.SaveChangesAsync();
-                
-                Debug.WriteLine($"Created new LOCAL product with TEMPORARY ID: {_product.ProductId} (will be uploaded to server on next sync)");
+                Debug.WriteLine($"Created product with ID: {_product.ProductId}");
                 
                 // Create initial stock adjustment if stock > 0
                 if (stockQuantity > 0)
@@ -397,9 +393,8 @@ public partial class ProductDetailPage : ContentPage
             }
             else
             {
-                // Update existing
-                _context.Products.Update(_product);
-                await _context.SaveChangesAsync();
+                // Gebruik DataService voor realtime sync met server
+                await _dataService.UpdateProductAsync(_product);
                 
                 Debug.WriteLine($"Updated product {_product.ProductId}");
                 

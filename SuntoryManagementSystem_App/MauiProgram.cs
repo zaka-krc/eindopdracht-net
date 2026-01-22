@@ -24,6 +24,9 @@ namespace SuntoryManagementSystem_App
             builder.Services.AddSingleton<Services.AuthService>();
             builder.Services.AddSingleton<Services.ApiService>();
             builder.Services.AddSingleton<Services.SyncService>();
+            
+            // DataService - centrale service voor realtime sync
+            builder.Services.AddSingleton<Services.DataService>();
 
             // Registreer ViewModels en Pages voor Dependency Injection
             builder.Services.AddSingleton<ViewModels.MainViewModel>();

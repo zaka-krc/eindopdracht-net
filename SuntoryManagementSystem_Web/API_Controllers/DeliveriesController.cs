@@ -25,14 +25,18 @@ namespace SuntoryManagementSystem_Web.API_Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Delivery>>> GetDeliveries()
         {
-            return await _context.Deliveries.ToListAsync();
+            // Filter soft deleted deliveries
+            return await _context.Deliveries
+                .Where(d => !d.IsDeleted)
+                .ToListAsync();
         }
 
         // GET: api/Deliveries/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Delivery>> GetDelivery(int id)
         {
-            var delivery = await _context.Deliveries.FindAsync(id);
+            var delivery = await _context.Deliveries
+                .FirstOrDefaultAsync(d => d.DeliveryId == id && !d.IsDeleted);
 
             if (delivery == null)
             {
@@ -87,19 +91,51 @@ namespace SuntoryManagementSystem_Web.API_Controllers
             // Reset identity column for new entities (EF will generate the ID)
             delivery.DeliveryId = 0;
             
+            // Ensure required fields have default values if missing
+            if (string.IsNullOrWhiteSpace(delivery.ReferenceNumber))
+            {
+                return BadRequest(new { message = "Referentienummer is verplicht" });
+            }
+            
+            if (string.IsNullOrWhiteSpace(delivery.DeliveryType))
+            {
+                delivery.DeliveryType = "Outgoing";
+            }
+            
+            if (string.IsNullOrWhiteSpace(delivery.Status))
+            {
+                delivery.Status = "Gepland";
+            }
+            
+            if (delivery.CreatedDate == default)
+            {
+                delivery.CreatedDate = DateTime.Now;
+            }
+            
+            // Ensure empty strings for optional fields instead of null
+            delivery.Notes ??= string.Empty;
+            
             // Detach navigation properties to prevent EF from trying to insert related entities
             delivery.Supplier = null;
             delivery.Customer = null;
             delivery.Vehicle = null;
             delivery.DeliveryItems = null;
             
-            _context.Deliveries.Add(delivery);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Deliveries.Add(delivery);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetDelivery", new { id = delivery.DeliveryId }, delivery);
+                return CreatedAtAction("GetDelivery", new { id = delivery.DeliveryId }, delivery);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = $"Fout bij opslaan levering: {ex.InnerException?.Message ?? ex.Message}" });
+            }
         }
 
         // DELETE: api/Deliveries/5
+        // SOFT DELETE implementatie - consistent met MAUI app
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDelivery(int id)
         {
@@ -109,7 +145,10 @@ namespace SuntoryManagementSystem_Web.API_Controllers
                 return NotFound();
             }
 
-            _context.Deliveries.Remove(delivery);
+            // SOFT DELETE: markeer als verwijderd in plaats van hard delete
+            delivery.IsDeleted = true;
+            delivery.DeletedDate = DateTime.Now;
+            _context.Deliveries.Update(delivery);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,7 +156,7 @@ namespace SuntoryManagementSystem_Web.API_Controllers
 
         private bool DeliveryExists(int id)
         {
-            return _context.Deliveries.Any(e => e.DeliveryId == id);
+            return _context.Deliveries.Any(e => e.DeliveryId == id && !e.IsDeleted);
         }
     }
 }

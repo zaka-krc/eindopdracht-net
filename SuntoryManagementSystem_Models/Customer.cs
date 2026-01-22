@@ -49,11 +49,11 @@ namespace SuntoryManagementSystem.Models
         [Display(Name = "Contactpersoon")]
         public string ContactPerson { get; set; } = string.Empty;
 
-        // Type klant: "Retail", "Wholesale", "HoReCa"
-        [Required]
-        [StringLength(20)]
-        [Display(Name = "Type")]
-        public string CustomerType { get; set; } = "Retail";
+    // Type klant: "Retail", "Wholesale", "HoReCa"
+    [Required]
+    [StringLength(20)]
+    [Display(Name = "Type")]
+    public string CustomerType { get; set; } = "Retail";
 
         // Status van de klant: "Active", "Inactive"
         [Required]

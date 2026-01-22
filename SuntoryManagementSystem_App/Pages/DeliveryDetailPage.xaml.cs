@@ -1,4 +1,5 @@
 using SuntoryManagementSystem_App.Data;
+using SuntoryManagementSystem_App.Services;
 using SuntoryManagementSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
@@ -11,6 +12,7 @@ namespace SuntoryManagementSystem_App.Pages;
 public partial class DeliveryDetailPage : ContentPage
 {
     private readonly LocalDbContext _context;
+    private readonly DataService _dataService;
     private Delivery? _delivery;
     private string? _deliveryIdString;
     private bool _viewMode;
@@ -52,10 +54,11 @@ public partial class DeliveryDetailPage : ContentPage
         }
     }
 
-    public DeliveryDetailPage(LocalDbContext context)
+    public DeliveryDetailPage(LocalDbContext context, DataService dataService)
     {
         InitializeComponent();
         _context = context;
+        _dataService = dataService;
     }
     
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
@@ -572,24 +575,22 @@ public partial class DeliveryDetailPage : ContentPage
             
             bool isNewDelivery = !deliveryId.HasValue || deliveryId.Value == 0;
             
-            // Save delivery
+            // Save delivery using DataService for realtime sync
             if (isNewDelivery)
             {
-                // Geef nieuwe delivery een NEGATIEF TIJDELIJK ID voor sync
                 _delivery.CreatedDate = DateTime.Now;
-                _delivery.DeliveryId = -(int)(DateTime.Now.Ticks % int.MaxValue);
                 
-                await _context.Deliveries.AddAsync(_delivery);
-                await _context.SaveChangesAsync();
+                // Gebruik DataService voor realtime sync met server
+                var savedDelivery = await _dataService.CreateDeliveryAsync(_delivery);
+                _delivery = savedDelivery; // Update met server ID indien online
                 
-                Debug.WriteLine($"Created new LOCAL delivery with TEMPORARY ID: {_delivery.DeliveryId} (will be uploaded to server on next sync)");
+                Debug.WriteLine($"Created delivery with ID: {_delivery.DeliveryId}");
                 
-                // Add items (met negatieve IDs)
+                // Add items (met correcte DeliveryId)
                 foreach (var itemVM in _deliveryItems)
                 {
                     var deliveryItem = new DeliveryItem
                     {
-                        DeliveryItemId = -(int)(DateTime.Now.Ticks % int.MaxValue), // Negatief tijdelijk ID
                         DeliveryId = _delivery.DeliveryId,
                         ProductId = itemVM.ProductId,
                         Quantity = itemVM.Quantity,
@@ -605,8 +606,8 @@ public partial class DeliveryDetailPage : ContentPage
             }
             else
             {
-                // Update existing
-                _context.Deliveries.Update(_delivery);
+                // Gebruik DataService voor realtime sync met server
+                await _dataService.UpdateDeliveryAsync(_delivery);
                 
                 // Remove old items
                 var existingItems = await _context.DeliveryItems

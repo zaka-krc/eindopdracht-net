@@ -349,6 +349,28 @@ public class SyncService
                     
                     try
                     {
+                        // Ensure required fields are set before uploading
+                        if (string.IsNullOrWhiteSpace(localCustomer.CustomerName))
+                        {
+                            Debug.WriteLine($"? Skipping customer - CustomerName is empty");
+                            continue;
+                        }
+                        
+                        if (localCustomer.CreatedDate == default)
+                        {
+                            localCustomer.CreatedDate = DateTime.Now;
+                        }
+                        
+                        if (string.IsNullOrWhiteSpace(localCustomer.CustomerType))
+                        {
+                            localCustomer.CustomerType = "Retail";
+                        }
+                        
+                        if (string.IsNullOrWhiteSpace(localCustomer.Status))
+                        {
+                            localCustomer.Status = "Active";
+                        }
+                        
                         var serverCustomer = await _apiService.CreateCustomerAsync(localCustomer);
                         
                         // Remove old entity and add new one with server ID
@@ -365,6 +387,11 @@ public class SyncService
                             uploadCount++;
                             Debug.WriteLine($"? Customer uploaded successfully! Local ID {oldId} ? Server ID {serverCustomer.CustomerId}");
                         }
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        Debug.WriteLine($"? Failed to upload customer '{localCustomer.CustomerName}': {ex.StatusCode} - {ex.Message}");
+                        errors.Add($"Upload customer '{localCustomer.CustomerName}' mislukt: HTTP {ex.StatusCode}");
                     }
                     catch (Exception ex)
                     {

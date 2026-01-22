@@ -25,14 +25,18 @@ namespace SuntoryManagementSystem_Web.API_Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
         {
-            return await _context.Customers.ToListAsync();
+            // Filter soft deleted customers
+            return await _context.Customers
+                .Where(c => !c.IsDeleted)
+                .ToListAsync();
         }
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Customer>> GetCustomer(int id)
         {
-            var customer = await _context.Customers.FindAsync(id);
+            var customer = await _context.Customers
+                .FirstOrDefaultAsync(c => c.CustomerId == id && !c.IsDeleted);
 
             if (customer == null)
             {
@@ -84,16 +88,62 @@ namespace SuntoryManagementSystem_Web.API_Controllers
             // Reset identity column for new entities (EF will generate the ID)
             customer.CustomerId = 0;
             
+            // Ensure required fields have default values if missing
+            if (string.IsNullOrWhiteSpace(customer.CustomerName))
+            {
+                return BadRequest(new { message = "Klantnaam is verplicht" });
+            }
+            
+            if (customer.CreatedDate == default)
+            {
+                customer.CreatedDate = DateTime.Now;
+            }
+            
+            if (string.IsNullOrWhiteSpace(customer.CustomerType))
+            {
+                customer.CustomerType = "Retail";
+            }
+            
+            if (string.IsNullOrWhiteSpace(customer.Status))
+            {
+                customer.Status = "Active";
+            }
+            
+            // Ensure empty strings for optional fields instead of null
+            customer.Address ??= string.Empty;
+            customer.PostalCode ??= string.Empty;
+            customer.City ??= string.Empty;
+            customer.PhoneNumber ??= string.Empty;
+            customer.Email ??= string.Empty;
+            customer.ContactPerson ??= string.Empty;
+            customer.Notes ??= string.Empty;
+            
             // Detach navigation properties to prevent EF from trying to insert related entities
             customer.Deliveries = null;
             
-            _context.Customers.Add(customer);
-            await _context.SaveChangesAsync();
+            // Validate ModelState before saving
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                var errorMessage = string.Join("; ", errors.Select(e => e.ErrorMessage));
+                return BadRequest(new { message = errorMessage });
+            }
+            
+            try
+            {
+                _context.Customers.Add(customer);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCustomer", new { id = customer.CustomerId }, customer);
+                return CreatedAtAction("GetCustomer", new { id = customer.CustomerId }, customer);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = $"Fout bij opslaan klant: {ex.InnerException?.Message ?? ex.Message}" });
+            }
         }
 
         // DELETE: api/Customers/5
+        // SOFT DELETE implementatie - consistent met MAUI app
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomer(int id)
         {
@@ -103,7 +153,10 @@ namespace SuntoryManagementSystem_Web.API_Controllers
                 return NotFound();
             }
 
-            _context.Customers.Remove(customer);
+            // SOFT DELETE: markeer als verwijderd in plaats van hard delete
+            customer.IsDeleted = true;
+            customer.DeletedDate = DateTime.Now;
+            _context.Customers.Update(customer);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -111,7 +164,7 @@ namespace SuntoryManagementSystem_Web.API_Controllers
 
         private bool CustomerExists(int id)
         {
-            return _context.Customers.Any(e => e.CustomerId == id);
+            return _context.Customers.Any(e => e.CustomerId == id && !e.IsDeleted);
         }
     }
 }

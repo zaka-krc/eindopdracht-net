@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using SuntoryManagementSystem.Models;
 using SuntoryManagementSystem_App.Data;
+using SuntoryManagementSystem_App.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -11,6 +12,7 @@ namespace SuntoryManagementSystem_App.ViewModels;
 public partial class DeliveryViewModel : ObservableObject
 {
     private readonly LocalDbContext _context;
+    private readonly DataService _dataService;
 
     [ObservableProperty]
     private ObservableCollection<Delivery> deliveries = new();
@@ -33,9 +35,10 @@ public partial class DeliveryViewModel : ObservableObject
     [ObservableProperty]
     private bool isRefreshing = false;
 
-    public DeliveryViewModel(LocalDbContext context)
+    public DeliveryViewModel(LocalDbContext context, DataService dataService)
     {
         _context = context;
+        _dataService = dataService;
         _ = LoadLeveringenAsync();
     }
 
@@ -196,16 +199,14 @@ public partial class DeliveryViewModel : ObservableObject
         {
             try
             {
-                delivery.IsDeleted = true;
-                delivery.DeletedDate = DateTime.Now;
-
-                _context.Deliveries.Update(delivery);
-                await _context.SaveChangesAsync();
+                // Gebruik DataService voor realtime sync met server
+                await _dataService.DeleteDeliveryAsync(delivery);
 
                 // Reload data to refresh the list
                 await LoadLeveringenAsync();
 
                 await Shell.Current.DisplayAlert("Succes", "Levering verwijderd!", "OK");
+                Debug.WriteLine($"VerwijderLevering: Delivery {delivery.ReferenceNumber} deleted (local + server if online)");
             }
             catch (Exception ex)
             {
