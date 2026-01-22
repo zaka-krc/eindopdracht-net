@@ -381,6 +381,7 @@ _Volledig REST API met CRUD operaties voor alle entiteiten_
 | Microsoft.EntityFrameworkCore.SqlServer | 9.0.0 | SQL Server provider |
 | Microsoft.EntityFrameworkCore.Tools | 9.0.0 | EF Core CLI tools |
 | Microsoft.AspNetCore.Identity.EntityFrameworkCore | 9.0.0 | Identity framework |
+| Microsoft.Data.SqlClient | 5.2.2 | ADO.NET SQL Server provider |
 
 ### WPF Desktop
 | Package | Versie | Gebruik |

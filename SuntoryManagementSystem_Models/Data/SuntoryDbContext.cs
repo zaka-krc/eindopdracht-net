@@ -35,7 +35,7 @@ namespace SuntoryManagementSystem_Models.Data
             if (!optionsBuilder.IsConfigured)
             {
                 //string connectionString = "Server=localhost;Database=SuntoryManagementDb;User Id=sa;Password=Your_password123;MultipleActiveResultSets=true";
-                string connectionString = "Server=(localdb)\\mssqllocaldb;Database=SuntoryManagementDb;Trusted_Connection=true;MultipleActiveResultSets=true";
+                string connectionString = "Server=tcp:zakariaserverdbsun.database.windows.net,1433;Initial Catalog=free-sql-db-7596343;Persist Security Info=False;User ID=admin123;Password=Zakaria2003;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
                 
                 optionsBuilder.UseSqlServer(connectionString);
             }
